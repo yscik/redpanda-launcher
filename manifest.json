@@ -1,0 +1,60 @@
+{
+
+  "manifest_version": 2,
+  "name": "Red Panda Launcher",
+  "version": "0.1",
+
+  "description": "",
+
+  "icons": {
+    "48": "icons/redpanda-48.png",
+    "96": "icons/redpanda-256.png"
+  },
+  "permissions": [
+    "activeTab",
+    "alarms",
+    "bookmarks",
+    "browsingData",
+    "browserSettings",
+    "contextMenus",
+    "contextualIdentities",
+    "cookies",
+    "downloads",
+    "downloads.open",
+    "geolocation",
+    "history",
+    "identity",
+    "idle",
+    "management",
+    "nativeMessaging",
+    "notifications",
+    "proxy",
+    "sessions",
+    "storage",
+    "tabs",
+    "theme",
+    "topSites",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "chrome_url_overrides":
+  {
+    "newtab": "index.html"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "commands": {
+    "open-launcher": {
+      "suggested_key": { "default": "Ctrl+Space" },
+      "description": "Open Launcher"
+    }
+  },
+  "web_accessible_resources": [
+    "dist/build.js",
+    "icons/*.png",
+    "icons/*.svg"
+  ]
+
+}
