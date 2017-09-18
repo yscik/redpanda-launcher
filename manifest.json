@@ -11,6 +11,7 @@
     "96": "icons/redpanda-256.png"
   },
   "permissions": [
+    "<all_urls>",
     "activeTab",
     "alarms",
     "bookmarks",
@@ -42,6 +43,12 @@
   {
     "newtab": "index.html"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/content.js"]
+    }
+  ],
   "background": {
     "scripts": ["background.js"]
   },
@@ -52,9 +59,9 @@
     }
   },
   "web_accessible_resources": [
-    "dist/build.js",
     "icons/*.png",
-    "icons/*.svg"
+    "icons/*.svg",
+    "dist/*.js"
   ]
 
 }

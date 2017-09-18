@@ -5,6 +5,7 @@ const startTime = new Date(Date.now() - 1000*60*60*24*60);
 
 import ResultList from './ResultList';
 import Entry from './Entry';
+import sites from './sites'
 
 export default class Datasource
 {
@@ -100,9 +101,14 @@ export default class Datasource
     const all = await browser.bookmarks.search({});
     const engines = all.filter(b =>
         b.url && b.url.includes('%s')
-    ).map(Entry.wrap);
+    );
 
-    engines.forEach(e => {e.source = 'engine'; e.weight = 100 });
+    await sites.promise;
+    engines.push(...sites.engines);
+
+    engines.map(Entry.wrap);
+
+    engines.forEach(e => {e.source = 'engine'; e.weight = 100; e.opensearch = e.url.includes('{searchTerms}') });
 
     this.engines = engines;
   }

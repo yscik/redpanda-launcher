@@ -6,6 +6,8 @@
 
 import Vue from 'vue'
 
+import sites from './sites'
+
 const ah = 'icons/';
 const typeImages = {
  history: ah+'history-16.svg' ,
@@ -26,7 +28,7 @@ export default Vue.component("icon", {
     url: function()
     {
       return this.type && typeImages[this.type] ||
-          this.site && `${this.site.origin}/favicon.ico`;
+          this.site && (sites.icons[this.site.origin] && sites.icons[this.site.origin].favicon) || `${this.site.origin}/favicon.ico`;
     }
   }
 })
