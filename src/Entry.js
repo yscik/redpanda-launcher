@@ -1,28 +1,25 @@
 export default class Entry
 {
-  constructor(data)
+
+  static open(entry)
   {
-
-    ({url: this.url, weight: this.weight, title: this.title, source: this.source} = data);
-    try {
-      this.urlo = new URL(data.url);
-    }
-    catch(e)
-    {
-      this.urlo = {invalid: true}
-    }
-
-    this.selected = false;
-  }
-
-  open()
-  {
-    browser.tabs.update({url: this.url})
+    browser.tabs.update({url: entry.url})
   }
 
   static wrap(entry)
   {
-      return entry instanceof Entry ? entry : new Entry(entry);
+    if(!entry.urlo)
+    try {
+      entry.urlo = new URL(entry.url);
+    }
+    catch(e)
+    {
+      entry.urlo = {invalid: true}
+    }
+
+    entry.selected = false;
+
+    return entry;
   }
 
 }

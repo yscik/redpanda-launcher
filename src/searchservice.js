@@ -8,6 +8,7 @@ export default class SearchService
   constructor()
   {
     this.data = new Datasource();
+    this.state = null;
 
     this.data.loadLongtermEntries();
     this.s = {
@@ -24,10 +25,11 @@ export default class SearchService
   {
     return this._term;
   }
+
   set term(value)
   {
     this._term = value;
-    value ? this.search() : this.clear();
+    this.state && this.state.term ? this.search(this.state.term) : this.clear();
   }
 
   clear()
@@ -36,12 +38,20 @@ export default class SearchService
     this.state = new State(this);
   }
 
-  async search()
+  async search(term)
   {
-    const result = await this.data.search(this.term);
+    const data = await this.data.search(term);
 
-    this.state.index = 0;
-    this.s.result.set([...result.engines, ...result.history]);
+    const result = [...data.history];
+    if(this.state.engine) {
+      result.unshift(this.state.engine.entry);
+    }
+    else {
+      result.unshift(...data.engines);
+      this.state.index = 0;
+    }
+
+    this.s.result.set(result);
     this.select(0);
 
   }
@@ -59,9 +69,9 @@ export default class SearchService
     else this.select($event.shiftKey ? -1 : 1)
   }
 
-  act()
+  enter()
   {
-    this.open(this.state.entry)
+    this.state.enter();
   }
 
   open(entry)

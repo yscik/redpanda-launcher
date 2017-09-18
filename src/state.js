@@ -1,11 +1,16 @@
 
+import Entry from './Entry';
+
 export default class State
 {
   constructor(searchservice)
   {
     this.entry = null;
     this.service = searchservice;
-    this.term = null;
+  }
+
+  get term() {
+    return (this.engine ? this.engine.prefix : '') + this.service.term;
   }
 
   get entry()
@@ -20,8 +25,11 @@ export default class State
 
     if(entry) entry.selected = true;
 
-    this.canTab = entry && entry.source === 'engine';
-    this.engine = null;
+    if(!(this.engine && entry == this.engine.entry))
+    {
+      this.canTab = entry && entry.source === 'engine';
+      this.engine = null;
+    }
 
   }
 
@@ -29,12 +37,25 @@ export default class State
   {
     if(this.canTab)
     {
-      this.engine = this.entry;
-      this.term = "";
+      this.engine = {entry: this.entry, prefix: this.entry.urlo.origin};
+      this.service.term = "";
 
       this.canTab = false;
     }
 
+  }
+
+  enter()
+  {
+    if(this.engine) {
+
+      const url = this.engine.entry.url.replace(/(%s|{searchTerms})/, this.service.term);
+      browser.tabs.update({url})
+
+    }
+    else {
+      Entry.open(this.entry)
+    }
   }
 
 }

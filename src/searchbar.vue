@@ -1,8 +1,8 @@
 <template lang="pug">
   .searchbar
     .search-engine(v-if="service.state.engine")
-      icon.favicon(:site='service.state.engine.urlo')
-      span  {{service.state.engine.title}}
+      icon.favicon(:site='service.state.engine.entry.urlo')
+      span  {{service.state.engine.entry.title}}
     input.input.search-input(type="text" v-model="service.term" ref="input" tabindex="0" placeholder="Search your feelings")
     .tab-info(v-show="service.state.canTab")
       span.key TAB

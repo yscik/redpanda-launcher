@@ -1,9 +1,7 @@
 
-import _ from 'underscore';
-
 const startTime = new Date(Date.now() - 1000*60*60*24*60);
 
-import ResultList from './ResultList';
+// import ResultList from './ResultList';
 import Entry from './Entry';
 import sites from './sites'
 
@@ -78,6 +76,7 @@ export default class Datasource
   {
     let tabs = await browser.sessions.getRecentlyClosed();
     tabs = tabs.map(t => t.tab || t);
+    tabs.length = Math.min(tabs.length, 15);
     tabs.forEach(t => {t.source = 'session' });
     return this.session = tabs.map(Entry.wrap);
 
@@ -87,13 +86,16 @@ export default class Datasource
   {
     let sites = await browser.topSites.get();
     sites.forEach(t => {t.source = 'topsite' });
+    sites.length = Math.min(sites.length, 15);
     return this.topSites = sites.map(Entry.wrap);
 
   }
 
   filter(collection, term)
   {
-    return (collection||[]).filter(s => (s.title && s.title.includes(term)) || (s.url && s.url.includes(term)))
+    return (collection||[]).filter(s => (s.title && s.title.includes(term))
+        || (s.urlo && s.urlo.origin &&
+            s.urlo.origin.includes(term)))
   }
 
   async loadSearchEngines()
