@@ -1,13 +1,13 @@
 <template lang="pug">
-  .search(@keydown.up="service.select(-1)",
+  .root(@keydown.up="service.select(-1)",
           @keydown.down="service.select(1)",
           @keydown.tab.prevent="service.tab($event)",
-          @keydown.enter="service.act()")
-    .panel
-      //.logo
+          @keydown.enter="service.enter()")
+    .head: .content
       searchbar(:service='service')
-      results.result(v-if="service.term", :entries='service.result')
-      .start-page(v-if='!service.term')
+    .results: .content
+      results.result(v-if="service.state.term", :entries='service.result')
+      .start-page(v-if='!service.state.term')
         .group
           h3
             icon(type='session')
@@ -41,10 +41,8 @@ export default {
 </script>
 <style lang="sass">
 @import './style.sass'
-.search
+@import './layout.sass'
 
-  .result
-    padding-top: .3rem
 .panel
   position: relative
 
