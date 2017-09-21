@@ -1,5 +1,6 @@
 
 import Entry from './Entry';
+import isUrl from './isUrl';
 
 export default class State
 {
@@ -18,6 +19,9 @@ export default class State
     return this._entry;
   }
 
+  get isUrl() {
+    return isUrl(this.service.term)
+  }
   set entry(entry)
   {
     if(this._entry) this._entry.selected = false;
