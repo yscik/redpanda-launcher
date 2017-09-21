@@ -21,8 +21,6 @@ export default new class Sites {
     }
 
     this.engines = engines;
-    console.log('[Opensearch]', engines);
-    console.log('[Icons]', storage);
     this.icons = storage;
 
     return this

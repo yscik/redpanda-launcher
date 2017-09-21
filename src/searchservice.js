@@ -43,35 +43,25 @@ export default class SearchService
     const data = await this.data.search(term);
 
     const result = [...data.history];
-    if(this.state.engine) {
-      result.unshift(this.state.engine.entry);
-    }
-    else {
-      result.unshift(...data.engines);
-      this.state.index = 0;
-    }
+    this.state.init(data);
 
     this.s.result.set(result);
-    this.select(0);
 
   }
 
-  select(direction)
+  select(direction, $event)
   {
-    this.state.index = Math.min(Math.max(0, (this.state.index||0) + direction), this.result.length);
+    if(direction instanceof Object)
+    {
+      $event = direction;
+      direction = $event.shiftKey ? -1 : 1;
+    }
+
+    this.state.index = Math.min(Math.max(-1, this.state.index + direction), this.result.length);
 
     this.state.entry = this.result[this.state.index];
-  }
 
-  tab($event)
-  {
-    if(this.state.canTab) this.state.tab();
-    else this.select($event.shiftKey ? -1 : 1)
-  }
-
-  enter()
-  {
-    this.state.enter();
+    $event.preventDefault();
   }
 
   open(entry)

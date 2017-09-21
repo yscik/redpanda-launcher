@@ -8,10 +8,13 @@ export default class State
   {
     this.entry = null;
     this.service = searchservice;
+    this.init();
+
+    this.defaultEngine = {entry: {url: 'https://google.com/search?q=%s'}}
   }
 
   get term() {
-    return (this.engine ? this.engine.prefix : '') + this.service.term;
+    return (this.searching ? this.engine.urlo.host + ' ' : '') + this.service.term;
   }
 
   get entry()
@@ -19,9 +22,31 @@ export default class State
     return this._entry;
   }
 
+  get engine()
+  {
+    return this._engine;
+  }
+
+  set engine(value)
+  {
+    if(!this.searching) this._engine = value;
+  }
+
   get isUrl() {
     return isUrl(this.service.term)
   }
+
+  init({engine, autocomplete} = {})
+  {
+    if(this._entry) this._entry.selected = false;
+
+    this.index = -1;
+    // this.searching = false;
+    this.engine = engine;
+    this.autocomplete = autocomplete;
+
+  }
+
   set entry(entry)
   {
     if(this._entry) this._entry.selected = false;
@@ -29,37 +54,59 @@ export default class State
 
     if(entry) entry.selected = true;
 
-    if(!(this.engine && entry == this.engine.entry))
-    {
-      this.canTab = entry && entry.source === 'engine';
-      this.engine = null;
-    }
-
   }
 
-  tab()
+  get label()
   {
-    if(this.canTab)
+    return this.searching ? this.engine.desc || this.engine.title : 'Search your feelings'
+  }
+
+  tab($event)
+  {
+    if(this.engine && !this.searching)
     {
-      this.engine = {entry: this.entry, prefix: this.entry.urlo.origin};
+      this.searching = this.service.term;
       this.service.term = "";
 
-      this.canTab = false;
     }
+
+    else this.service.select($event)
 
   }
 
   enter()
   {
-    if(this.engine) {
-
-      const url = this.engine.entry.url.replace(/(%s|{searchTerms})/, this.service.term);
-      browser.tabs.update({url})
-
-    }
-    else {
+    if(this.entry) {
       Entry.open(this.entry)
     }
+    else if(this.autocomplete)
+    {
+      Entry.open(this.autocomplete)
+    }
+    else if(this.searching) {
+      Entry.search(this.engine, this.service.term)
+    }
+    else {
+      if (this.isUrl) Entry.open({url: this.formatUrl(this.service.term)});
+      else {
+        Entry.search(this.defaultEngine.entry, this.service.term)
+      }
+    }
   }
+
+  backspace()
+  {
+    if(this.service.term.length == 0 && this.searching) {
+      this.service.term = this.searching;
+      this.searching = false;
+    }
+  }
+
+  formatUrl(term) {
+    if(term.match(/^.+:\/\//)) return term;
+
+    else return 'http://'+term;
+  }
+
 
 }

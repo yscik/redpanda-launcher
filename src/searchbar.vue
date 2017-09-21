@@ -1,15 +1,21 @@
 <template lang="pug">
   .searchbar
-    .search-engine(v-if="service.state.engine")
-      icon.favicon(:site='service.state.engine.entry.urlo')
-      span  {{service.state.engine.entry.title}}
-    input.input.search-input(type="text" v-model="service.term" ref="input" tabindex="0" placeholder="Search your feelings")
-    .tab-info(v-show="service.state.canTab")
+    .prefix-icon(:class="{search: service.state.searching}")
+      icon.search-engine.favicon(:site='service.state.engine.urlo' v-if="service.state.searching")
+      icon.search-icon(type='engine')
+    input-complete.input.search-input(type="text" v-model="service.term", :complete-to='service.state.autocomplete && service.state.autocomplete.domain' ref="input" tabindex="0",
+      :placeholder='service.state.label')
+    .tab-info(v-if="service.state.engine && !service.state.searching")
       span.key TAB
       |  to search
+      .suggested-engine
+        icon.search-engine.favicon(:site='service.state.engine.urlo')
+        span.name {{service.state.engine.title}}
 
 </template>
 <script>
+
+  import './input-complete.vue'
 
   export default {
     props: ['service'],
@@ -21,42 +27,56 @@
 
 </script>
 <style lang="sass" scoped>
-  .searchbar
-    position: relative
-  .search-input
-    font-size: 1.5rem
-    padding: .3em .5em
-    display: block
-    width: 100%
+.searchbar
+  position: relative
+.search-input
+  font-size: 1.4rem
+  padding: .3em .5em
+  display: block
+  width: 100%
 
-  .search-engine
-    position: absolute
-    top: 1px
-    bottom: 1px
-    padding: 1em
-    left:  1px
-    width: 10rem
-    overflow: hidden
-    white-space: nowrap
-    text-overflow: ellipsis
+.prefix-icon
+  position: absolute
+  top: 4px
+  bottom: 4px
+  padding: 1em
+  left:  1px
+  width: 2.7rem
+  overflow: hidden
+  white-space: nowrap
+  text-overflow: ellipsis
+  border-right: 1px solid #ccc
+  font-weight: 600
+  color: #fff
+  //border-radius: 2px 0 0 2px
+  .icon
+    margin-top: -4px
+  .search-icon
+    opacity: .5
+  &.search
+    .search-icon
+      display: none
+  + .search-input
+    padding-left: 3.2rem
 
-    font-weight: 600
-    background: #0a84ff
-    color: #fff
-    border-radius: 2px 0 0 2px
-    box-shadow: 2px 0 0 -1px hsla(210,65%,9%,.02), 2px 0 2px -1px hsla(210,65%,9%,.1)
 
-    + .search-input
-      padding-left: 11rem
+.tab-info
+  position: absolute
+  right: .3em
+  top: 0
+  bottom: 0
+  margin: auto
+  height: 2.3em
+  color: #999
 
-  .tab-info
-    position: absolute
-    right: 1em
-    top: 1em
-    color: #999
-  .tab-info
-    position: absolute
-    right: 1em
-    top: 1em
-    color: #999
+
+.suggested-engine
+
+  display: inline-block
+  margin-left: .5em
+  padding: .5em
+  border-radius: 2px
+  color: #333
+  box-shadow: 0 0 5px -1px rgba(#000, .2)
+  font-weight: bold
 </style>

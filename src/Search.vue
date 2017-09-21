@@ -1,8 +1,9 @@
 <template lang="pug">
-  .root(@keydown.up="service.select(-1)",
-          @keydown.down="service.select(1)",
-          @keydown.tab.prevent="service.tab($event)",
-          @keydown.enter="service.enter()")
+  .root(@keydown.up="service.select(-1, $event)",
+          @keydown.down="service.select(1, $event)",
+          @keydown.tab.prevent="service.state.tab($event)",
+          @keydown.enter="service.state.enter($event)",
+          @keydown.delete="service.state.backspace($event)")
     .head: .content
       searchbar(:service='service')
     .results: .content

@@ -5,6 +5,8 @@ const startTime = new Date(Date.now() - 1000*60*60*24*60);
 import Entry from './Entry';
 import sites from './sites'
 
+const weightSort = (a,b) => b.weight - a.weight;
+
 export default class Datasource
 {
 
@@ -19,12 +21,15 @@ export default class Datasource
   {
     let history = this.searchHistory(term);
 
-    let session = this.filter(this.session, term);
-    let engines = this.filter(this.engines, term);
+    let session = this.filter(term, this.session);
+    let engine = this.engine(term, this.engines);
 
     history = await history;
 
-    return {history, session, engines};
+    this.processHistory(history);
+    let autocomplete = this.autocomplete(term, history);
+
+    return {history, session, engine, autocomplete};
   }
 
 
@@ -39,30 +44,40 @@ export default class Datasource
 
   async searchHistory(term) {
 
-    let entries = await browser.history.search({text: term, maxResults: 100, startTime: startTime});
+    let entries = await browser.history.search({text: term, maxResults: 300, startTime: startTime});
 
     entries.forEach(e => {e.source = 'history'; e.weight = e.visitCount});
     entries = entries.map(Entry.wrap);
-    this.processHistory(entries);
+
     return entries;
 
   }
 
-  processHistory(entries)
+  autocomplete(term, entries)
   {
-    const hosts = entries.reduce(aggregateHosts, {});
+    const hosts = Object.values(entries.reduce(aggregateHosts, {}));
 
     function aggregateHosts(hosts, entry) {
       let host = entry.urlo.host;
-      if (!hosts[host]) hosts[host] = {url: entry.urlo.origin, weight: 0, source: 'host'};
+      if (!hosts[host]) hosts[host] = {url: entry.urlo.origin, domain: entry.urlo.hostname.replace(/^www\./, ''), weight: 0, source: 'host'};
       hosts[host].weight += entry.weight;
 
       return hosts;
     }
 
-    entries.push(...Object.values(hosts));
+    hosts.sort(weightSort);
 
-    entries.sort((a,b) => b.weight - a.weight);
+    return hosts.find(h => h.domain.startsWith(term));
+  }
+
+  engine(term, engines)
+  {
+    return engines.find(e => e.urlo.host.startsWith(term))
+  }
+
+  processHistory(entries)
+  {
+    entries.sort(weightSort);
 
     entries.length = Math.min(entries.length, 30);
   }
@@ -91,7 +106,7 @@ export default class Datasource
 
   }
 
-  filter(collection, term)
+  filter(term, collection)
   {
     return (collection||[]).filter(s => (s.title && s.title.includes(term))
         || (s.urlo && s.urlo.origin &&
