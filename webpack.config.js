@@ -45,14 +45,22 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg|gif)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        test: /\.(svg)$/,
+        loader: 'url-loader'
       }
     ]
   },
+  resolveLoader: {
+    alias: {
+      file: "file-loader?name=[name].[ext]"
+  }},
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.runtime.esm.js'
