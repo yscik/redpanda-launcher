@@ -8,14 +8,13 @@ import Vue from 'vue'
 
 import sites from './sites'
 
-const ah = 'icons/';
 const typeImages = {
- history: ah+'history-16.svg' ,
- bookmark: ah+'bookmarks-16-Outline.svg' ,
- session: ah+'tab-16.svg' ,
- topsite: ah+'topsites-16.svg' ,
- engine: ah+'search-16.svg' ,
- host: ah+'highlights-16.svg' ,
+ history: require('../icons/history-16.svg'),
+ bookmark: require('../icons/bookmark-16-Outline.svg'),
+ session: require('../icons/tab-16.svg'),
+ topsite: require('../icons/topsites-16.svg'),
+ engine: require('../icons/search-16.svg'),
+ host: require('../icons/highlights-16.svg'),
 };
 
 export default Vue.component("icon", {
