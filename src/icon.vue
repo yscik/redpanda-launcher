@@ -37,13 +37,13 @@ export default Vue.component("icon", {
   .icon
     display: inline-block
     margin:
-      right: 10px
-    vertical-align: baseline
+      right: 6px
     border: none
     /*background: #fff*/
     /*border-radius: 2px*/
     /*padding: 2px*/
     font-size: 0
+    vertical-align: text-top
     &.error
       img
         opacity: 0
