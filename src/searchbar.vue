@@ -66,8 +66,8 @@
 
 .tab-info
   position: absolute
-  right: .3em
-  top: 0
+  right: .2em
+  top: -.4em
   bottom: 0
   margin: auto
   height: 2.3em
@@ -78,7 +78,7 @@
 
   display: inline-block
   margin-left: .5em
-  padding: .5em
+  padding: .7em
   border-radius: 2px
   color: #333
   box-shadow: 0 0 5px -1px rgba(#000, .2)

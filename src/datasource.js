@@ -17,7 +17,7 @@ export default class Datasource
     this.engines = [];
   }
 
-  async search(term)
+  async search(term, options)
   {
     let history = this.searchHistory(term);
 
@@ -27,7 +27,7 @@ export default class Datasource
     history = await history;
 
     this.processHistory(history);
-    let autocomplete = this.autocomplete(term, history);
+    let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
     return {history, session, engine, autocomplete};
   }
@@ -67,12 +67,13 @@ export default class Datasource
 
     hosts.sort(weightSort);
 
+    console.log(hosts.map(h => h.domain));
     return hosts.find(h => h.domain.startsWith(term));
   }
 
   engine(term, engines)
   {
-    return engines.find(e => e.urlo.host.startsWith(term))
+    return engines.find(e => e.domain.startsWith(term))
   }
 
   processHistory(entries)
@@ -125,7 +126,7 @@ export default class Datasource
 
     engines.map(Entry.wrap);
 
-    engines.forEach(e => {e.source = 'engine'; e.weight = 100; e.opensearch = e.url.includes('{searchTerms}') });
+    engines.forEach(e => {e.source = 'engine'; e.weight = 100; e.opensearch = e.url.includes('{searchTerms}'); e.domain = e.urlo.hostname.replace(/^www\./, '') });
 
     this.engines = engines;
   }

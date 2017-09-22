@@ -22,7 +22,7 @@ export default Vue.component('input-complete',
     suggest: function(suggestion)
     {
       this.displayvalue = this.value;
-      if(!suggestion || (this.oldval && this.value.length < this.oldval.length) || !suggestion.startsWith(this.value)) return;
+      if(!suggestion || !suggestion.startsWith(this.value)) return;
       let realvalue = this.value;
 
       this.$refs.input.value = this.displayvalue = suggestion;
@@ -31,13 +31,12 @@ export default Vue.component('input-complete',
   },
 
   watch: {
-    value: function(value, oldVal) {
-      this.oldval = oldVal;
+    value: function(value) {
       if(this.completeTo && value.length < this.completeTo.length) this.suggest(this.completeTo)
     },
     completeTo: function(suggestion)
     {
-      if(suggestion) this.suggest(suggestion);
+      this.suggest(suggestion);
     }
   }
 

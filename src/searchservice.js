@@ -28,8 +28,9 @@ export default class SearchService
 
   set term(value)
   {
+    let options = {autocomplete: value && (!this._term || value.length > this._term.length)};
     this._term = value;
-    this.state && this.state.term ? this.search(this.state.term) : this.clear();
+    this.state && this.state.term ? this.search(this.state.term, options) : this.clear();
   }
 
   clear()
@@ -38,11 +39,12 @@ export default class SearchService
     this.state = new State(this);
   }
 
-  async search(term)
+  async search(term, options)
   {
-    const data = await this.data.search(term);
+    const data = await this.data.search(term, options);
 
     const result = [...data.history];
+
     this.state.init(data);
 
     this.s.result.set(result);
