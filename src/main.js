@@ -8,9 +8,9 @@ import 'file!../icons/redpanda-256.png';
 import Vue from 'vue'
 import Search from './Search.vue'
 import './icon.vue'
-import './focus'
 
-if(window.focused)
+window.focus();
+
 new Vue({
   el: '#app',
   render: h => h(Search)
