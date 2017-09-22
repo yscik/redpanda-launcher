@@ -33,18 +33,23 @@
 .entry
   padding: .4em
   text-decoration: none
-  border-radius: 3px
+  border-radius: 2px
   position: relative
   display: flex
   cursor: pointer
   border: 2px solid transparent
   color: #333
   &:hover
-    background-color: #fafafa
-    color: #0060df
-  &.selected
     background-color: #fff
     color: #0060df
+    .url
+      color: #45a1ff
+  &.selected
+    background-color: #45a1ff
+    color: #fff
+
+    .url
+      color: #eee
 .text
   flex: 1
   /*display: flex*/

@@ -1,6 +1,6 @@
 
 import Entry from './Entry';
-import isUrl from './isUrl';
+import {isUrl, protocol} from './isUrl';
 
 export default class State
 {
@@ -33,7 +33,7 @@ export default class State
   }
 
   get isUrl() {
-    return isUrl(this.service.term)
+    return this.autocomplete || this.service.term && isUrl(this.service.term);
   }
 
   init({engine, autocomplete} = {})
@@ -87,7 +87,7 @@ export default class State
       Entry.search(this.engine, this.service.term)
     }
     else {
-      if (this.isUrl) Entry.open({url: this.formatUrl(this.service.term)});
+      if (isUrl(this.service.term)) Entry.open({url: this.formatUrl(this.service.term)});
       else {
         Entry.search(this.defaultEngine.entry, this.service.term)
       }
@@ -103,7 +103,7 @@ export default class State
   }
 
   formatUrl(term) {
-    if(term.match(/^.+:\/\//)) return term;
+    if(protocol.test(term)) return term;
 
     else return 'http://'+term;
   }

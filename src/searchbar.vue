@@ -1,8 +1,9 @@
 <template lang="pug">
   .searchbar
-    .prefix-icon(:class="{search: service.state.searching}")
+    .prefix-icon(:class="{search: service.state.searching, link: service.state.isUrl}")
       icon.search-engine.favicon(:site='service.state.engine.urlo' v-if="service.state.searching")
       icon.search-icon(type='engine')
+      icon.link-icon(type='link')
     input-complete.input.search-input(type="text" v-model="service.term", :complete-to='service.state.autocomplete && service.state.autocomplete.domain' ref="input" tabindex="0",
       :placeholder='service.state.label')
     .tab-info(v-if="service.state.engine && !service.state.searching")
@@ -53,8 +54,11 @@
     margin-top: -4px
   .search-icon
     opacity: .5
-  &.search
+  &.search, &.link
     .search-icon
+      display: none
+  &:not(.link)
+    .link-icon
       display: none
   + .search-input
     padding-left: 3.2rem

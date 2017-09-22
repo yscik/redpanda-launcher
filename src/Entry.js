@@ -4,9 +4,8 @@ export default class Entry
   static open(entry)
   {
     // browser.tabs.getCurrent().then(tab => browser.tabs.remove(tab.id));
-    browser.tabs.update({url: entry.url});
 
-    // browser.tabs.update({url: entry.url})
+    browser.tabs.update({url: entry.url})
   }
 
 
