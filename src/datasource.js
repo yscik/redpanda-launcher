@@ -69,7 +69,6 @@ export default class Datasource
 
     hosts.sort(weightSort);
 
-    console.log(hosts.map(h => h.domain));
     return hosts.find(h => h.domain.startsWith(term));
   }
 
@@ -123,13 +122,17 @@ export default class Datasource
         b.url && b.url.includes('%s')
     );
 
+    engines.forEach(e => {e.type = 'bookmark'});
+
     await sites.promise;
+    sites.engines.forEach(e => {e.type = 'opensearch'});
     engines.push(...sites.engines);
 
     engines.map(Entry.wrap);
 
-    engines.forEach(e => {e.source = 'engine'; e.weight = 100; e.opensearch = e.url.includes('{searchTerms}'); e.domain = e.urlo.hostname.replace(/^www\./, '') });
+    engines.forEach(e => {e.source = 'engine'; e.weight = 100; e.domain = e.urlo.hostname.replace(/^www\./, '') });
 
+    engines.reverse();
     this.engines = engines;
   }
 }

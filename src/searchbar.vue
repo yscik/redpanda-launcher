@@ -1,26 +1,35 @@
 <template lang="pug">
   .searchbar
-    .prefix-icon(:class="{search: service.state.searching, link: service.state.isUrl}")
-      icon.search-engine.favicon(:site='service.state.engine.urlo' v-if="service.state.searching")
+    .prefix-icon(:class="{search: state.searching, link: state.isUrl}")
+      icon.search-engine.favicon(:site='state.engine.urlo' v-if="state.searching")
       icon.search-icon(type='engine')
       icon.link-icon(type='link')
-    input-complete.input.search-input(type="text" v-model="service.term", :complete-to='service.state.autocomplete && service.state.autocomplete.domain' ref="input" tabindex="0",
-      :placeholder='service.state.label')
-    .tab-info(v-if="service.state.engine && !service.state.searching")
+    input.input.search-input(type="text" v-model="state.term", :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
+      :placeholder='state.label')
+    .tab-info(v-if="state.engine && !state.searching")
       span.key TAB
       |  to search
       .suggested-engine
-        icon.search-engine.favicon(:site='service.state.engine.urlo')
-        span.name {{service.state.engine.title}}
+        icon.search-engine.favicon(:site='state.engine.urlo')
+        span.name {{state.engine.title}}
 
 </template>
 <script>
 
   import './input-complete.vue'
+  import SearchService from './searchservice'
 
   export default {
-    props: ['service'],
-    mounted: function()
+    data: () => {
+      return {
+        state: SearchService.state
+      }
+    },
+    created()
+    {
+      this.service = SearchService;
+    },
+    mounted()
     {
       this.$refs.input.focus()
     }
@@ -28,6 +37,8 @@
 
 </script>
 <style lang="sass" scoped>
+@import colors
+
 .searchbar
   position: relative
 .search-input
@@ -66,8 +77,9 @@
 
 .tab-info
   position: absolute
-  right: .2em
-  top: -.4em
+  right: 0
+  top:  0
+  padding: .6em
   bottom: 0
   margin: auto
   height: 2.3em
@@ -75,12 +87,8 @@
 
 
 .suggested-engine
-
   display: inline-block
-  margin-left: .5em
-  padding: .7em
-  border-radius: 2px
+  /*margin-left: .5em*/
   color: #333
-  box-shadow: 0 0 5px -1px rgba(#000, .2)
   font-weight: bold
 </style>

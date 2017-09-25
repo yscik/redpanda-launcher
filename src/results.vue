@@ -3,7 +3,7 @@
     a.entry(v-for="(entry, index) in entries", :key="index",
     :href="entry.url",
     @click="open(entry)",
-    :class="{selected: entry.selected}")
+    :class="{selected: index === selected}")
       .icons
         icon.favicon(:site='entry.urlo')
       .text
@@ -21,7 +21,7 @@
   import Entry from './Entry';
 
   export default {
-    props: ['entries'],
+    props: ['entries', 'selected'],
 //    components: {entry},
     methods: {
       open: Entry.open

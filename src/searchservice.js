@@ -1,73 +1,148 @@
-
 import Datasource from './datasource';
-import State from './state';
-import ResultList from './ResultList';
+import {isUrl, protocol} from './isUrl';
+import Entry from './Entry';
+const defaultEngine = {url: 'https://google.com/search?q=%s'};
 
-export default class SearchService
+function formatUrl(term) {
+  if (protocol.test(term)) return term;
+
+  else return 'http://' + term;
+}
+
+class SearchService
 {
   constructor()
   {
     this.data = new Datasource();
-    this.state = null;
 
-    this.data.loadLongtermEntries();
-    this.s = {
-      result: new ResultList()
+    let self = this;
+    this.state = {
+      result: null,
+      get term() {
+        return this._term;
+      },
+      set term(value) {
+        self.setTerm(value);
+        this._term = value;
+      },
+
+      get label() {
+        return this.searching ? this.engine.desc || this.engine.title : 'Search your feelings'
+      },
+      searching: false,
+      engine: null,
+      autocomplete: null,
+      session: null,
+      topSites: null,
+      home: true
     };
 
-    this.result = this.s.result.data;
+    this.init();
+  }
 
-    this.term = '';
+  async init()
+  {
+    this.update({});
+    this.state.home = true;
+    await this.data.loadLongtermEntries();
+    this.state.session = Object.freeze([...this.data.session]);
+    this.state.topSites = Object.freeze([...this.data.topSites]);
+  }
+
+  update({engine, autocomplete, result} = {}) {
+
+    this.state.index = -1;
+    this.entry = null;
+    if(!this.state.searching) this.state.engine = engine;
+    this.state.autocomplete = autocomplete;
+    this.state.selected = null;
+    this.state.result = Object.freeze(result);
+    this.state.home = false;
 
   }
 
-  get term()
+  setTerm(term)
   {
-    return this._term;
+    term = (this.state.searching ? this.state.engine.urlo.host + ' ' : '') + term;
+
+    let options = {autocomplete: term && (!this.state.term || term.length > this.state.term.length)};
+    term ? this.search(term, options) : this.clear();
   }
 
-  set term(value)
-  {
-    let options = {autocomplete: value && (!this._term || value.length > this._term.length)};
-    this._term = value;
-    this.state && this.state.term ? this.search(this.state.term, options) : this.clear();
+  clear() {
+    this.init();
   }
 
-  clear()
-  {
-    this.s.result.set([]);
-    this.state = new State(this);
+  get engine() {
+    return this.state.engine;
   }
 
-  async search(term, options)
-  {
+  set engine(value) {
+    if (!this.state.searching) this.state.engine = value;
+  }
+
+  get isUrl() {
+    return this.state.autocomplete || this.state.term && isUrl(this.state.term);
+  }
+
+  tab($event) {
+    if (this.state.engine && !this.state.searching) {
+      this.state.searching = this.state.term;
+      this.state.term = "";
+    }
+
+    else this.select($event)
+
+  }
+
+  enter() {
+    if (this.entry) {
+      Entry.open(this.entry)
+    }
+    else if (this.state.autocomplete) {
+      Entry.open(this.state.autocomplete)
+    }
+    else if (this.state.searching) {
+      Entry.search(this.state.engine, this.state.term)
+    }
+    else {
+      if (isUrl(this.state.term)) Entry.open({url: formatUrl(this.state.term)});
+      else {
+        Entry.search(defaultEngine, this.state.term)
+      }
+    }
+  }
+
+  backspace() {
+    if (this.state.term.length == 0 && this.state.searching) {
+      this.state.term = this.state.searching;
+      this.state.searching = false;
+    }
+  }
+
+
+  async search(term, options) {
+
     const data = await this.data.search(term, options);
 
-    const result = [...data.history];
+    data.result = [...data.history];
 
-    this.state.init(data);
-
-    this.s.result.set(result);
+    this.update(data);
 
   }
 
-  select(direction, $event)
-  {
-    if(direction instanceof Object)
-    {
+  select(direction, $event) {
+    if (direction instanceof Object) {
       $event = direction;
       direction = $event.shiftKey ? -1 : 1;
     }
 
-    this.state.index = Math.min(Math.max(-1, this.state.index + direction), this.result.length);
+    this.state.index = Math.min(Math.max(-1, this.state.index + direction), this.state.result.length);
 
-    this.state.entry = this.result[this.state.index];
+    this.entry = this.state.result[this.state.index];
 
     $event.preventDefault();
   }
-
-  open(entry)
-  {
-    location.href = entry.url
-  }
 }
+
+export default (window.service = new SearchService);
