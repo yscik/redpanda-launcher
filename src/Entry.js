@@ -11,7 +11,7 @@ export default class Entry
 
   static search(entry, term)
   {
-    const url = entry.url.replace(/(%s|{searchTerms})/, term);
+    const url = entry.url.replace(/(%s|{searchTerms})/, encodeURIComponent(term));
 
     Entry.open({url})
   }
