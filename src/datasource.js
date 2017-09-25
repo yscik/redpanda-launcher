@@ -19,6 +19,8 @@ export default class Datasource
 
   async search(term, options)
   {
+    term = term.toLowerCase();
+
     let history = this.searchHistory(term);
 
     let session = this.filter(term, this.session);
