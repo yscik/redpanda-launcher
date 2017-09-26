@@ -30,6 +30,8 @@
 
 </script>
 <style lang="sass">
+@import colors
+
 .entry
   padding: .4em
   text-decoration: none
@@ -38,18 +40,18 @@
   display: flex
   cursor: pointer
   border: 2px solid transparent
-  color: #333
+  color: $text
   &:hover
     background-color: #fff
-    color: #0060df
+    color: $Blue60
     .url
-      color: #45a1ff
+      color: $Blue40
   &.selected
-    background-color: #45a1ff
-    color: #fff
+    background-color: $Blue40
+    color: $darktext
 
     .url
-      color: #eee
+      color: $darktext2
 .text
   flex: 1
   /*display: flex*/
@@ -57,7 +59,7 @@
 .title
   font-weight: bold
 .url
-  color: #737373
+  color: $Grey50
   font-size: .9em
 
 .source-icon

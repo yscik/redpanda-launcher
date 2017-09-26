@@ -1,21 +1,5 @@
 
-*
-  box-sizing: border-box
-body
-  background: #F2F2F2
-  color: #0c0c0d
-  margin: 0
-  padding: 0
-  font: message-box
-  //&:before
-    position: fixed
-    width: 100%
-    height: 100%
-    content: ""
-    background: url('../icons/walking.svg')
-    background-size: cover
-    background-attachment: fixed
-    opacity: .1
+@import colors
 
 .input
   margin-left: 0
@@ -28,16 +12,42 @@ body
   color: inherit
   unicode-bidi: plaintext
   &:focus
-    border-color: #0a84ff
-    //box-shadow: 0 0 0 1px #0a84ff
+    border-color: $Blue50
+    //box-shadow: 0 0 0 1px $Blue50
 
   &::-moz-selection
-    background-color: #45a1ff
+    background-color: $Blue40
     color: #fff
 
 .key
-  color: #0060DF
-  border: 1px solid #0060DF
+  color: $Blue60
+  border: 1px solid $Blue60
   font-weight: 600
   border-radius: 2px
   padding: 3px 5px
+
+h1
+  font-weight: normal
+  font-size: 24px
+  color: $text2
+
+h2
+  color: $Grey60
+h3
+  font-weight: bold
+  font-size: 15px
+  color: $text2
+  border-bottom: 1px solid #ddd
+  text-transform: uppercase
+
+.row
+  display: flex
+
+.flex-1
+  flex: 1
+
+.ellipsis
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+  word-break: keep-all
