@@ -1,6 +1,6 @@
 <template lang="pug">
-  .icon(:class="state")
-    img(:src="url", @error="state.error = true")
+  .icon.svg
+    span(v-html="svg")
 </template>
 <script>
 
@@ -16,19 +16,18 @@ const typeImages = {
  engine: require('../icons/search-16.svg'),
  link: require('../icons/link-16.svg'),
  host: require('../icons/highlights-16.svg'),
+ close: require('../icons/stop-16.svg'),
+ delete: require('../icons/delete-16.svg')
 };
 
 export default Vue.component("icon", {
   props: {
-    site: {default: null},
-    type: {type: String, default: null}
+    type: {type: String}
   },
-  data: () => ({state: {error: false}}),
   computed: {
-    url: function()
+    svg: function()
     {
-      return this.type && typeImages[this.type] ||
-          this.site && (sites.icons[this.site.origin] && sites.icons[this.site.origin].favicon) || `${this.site.origin}/favicon.ico`;
+      return typeImages && typeImages[this.type]
     }
   }
 })
@@ -37,19 +36,5 @@ export default Vue.component("icon", {
 <style lang="sass">
   .icon
     display: inline-block
-    margin:
-      right: 6px
-    border: none
-    /*background: #fff*/
-    /*border-radius: 2px*/
-    /*padding: 2px*/
-    font-size: 0
-    vertical-align: text-top
-    &.error
-      img
-        opacity: 0
-    img
-      width: 16px
-      height: 16px
 
 </style>

@@ -1,7 +1,7 @@
 <template lang="pug">
   .searchbar
     .prefix-icon(:class="{search: state.searching, link: state.isUrl}")
-      icon.search-engine.favicon(:site='state.engine.urlo' v-if="state.searching")
+      favicon.search-engine(:site='state.engine.urlo' v-if="state.searching")
       icon.search-icon(type='engine')
       icon.link-icon(type='link')
     input.input.search-input(type="text" v-model="state.term", :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
@@ -10,7 +10,7 @@
       span.key TAB
       |  to search
       .suggested-engine
-        icon.search-engine.favicon(:site='state.engine.urlo')
+        favicon.search-engine(:site='state.engine.urlo')
         span.name {{state.engine.title}}
 
 </template>
@@ -36,7 +36,7 @@
   }
 
 </script>
-<style lang="sass" scoped>
+<style lang="sass">
 @import colors
 
 .searchbar
@@ -68,12 +68,15 @@
   &.search, &.link
     .search-icon
       display: none
+    border-right: 1px solid $Blue40
   &:not(.link)
     .link-icon
       display: none
   + .search-input
     padding-left: 3.2rem
 
+.link-icon svg *
+  fill: $Blue50
 
 .tab-info
   position: absolute

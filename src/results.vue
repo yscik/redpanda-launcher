@@ -5,7 +5,7 @@
     @click="open(entry)",
     :class="{selected: index === selected}")
       .icons
-        icon.favicon(:site='entry.urlo')
+        favicon(:site='entry.urlo')
       .text
         .title {{entry.title}}
         .url
