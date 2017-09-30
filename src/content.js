@@ -16,7 +16,9 @@ async function find_searchengine()
 
   // if(await already_stored()) return;
 
-  await Promise.all([check_opensearch(), set_favicon()]);
+  await check_opensearch();
+
+  set_favicon();
 
   browser.storage.local.set({[key]: result});
 
@@ -28,14 +30,12 @@ async function already_stored()
   return !!current[key] //&& current[key].parsed > TIME_BETWEEN_PARSES;
 }
 
-async function set_favicon()
+function set_favicon()
 {
-  const tab = await browser.tabs.getCurrent();
-
-  // const faviconNode = document.querySelector("link[rel='shortcut icon'], link[rel='icon']");
-  if(tab.favIconUrl) {
-    console.log("Favicon: ", tab.favIconUrl);
-    result.favicon = tab.favIconUrl;
+  const faviconNode = document.querySelector("link[rel='shortcut icon'], link[rel='icon']");
+  if(faviconNode) {
+    console.log("Favicon: ", faviconNode.href);
+    result.favicon = faviconNode.href;
 
   }
 }
