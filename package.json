@@ -1,9 +1,9 @@
 {
   "name": "red-panda",
   "description": "A Firefox launcher",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "author": "Peter Kiss <peter@yscik.com>",
-  "private": true,
+  "license": "MPL-2.0",
   "scripts": {
     "dev": "npx webpack -w",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules; cd dist; web-ext build"
