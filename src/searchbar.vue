@@ -4,7 +4,7 @@
       favicon.search-engine(:site='state.engine.urlo' v-if="state.searching")
       icon.search-icon(type='engine')
       icon.link-icon(type='link')
-    input.input.search-input(type="text" v-model="state.term", :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
+    input-complete.input.search-input(type="text" v-model="state.term", :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
       :placeholder='state.label')
     .tab-info(v-if="state.engine && !state.searching")
       span.key TAB
@@ -91,7 +91,7 @@
 
 .suggested-engine
   display: inline-block
-  /*margin-left: .5em*/
+  margin-left: .5em
   color: #333
   font-weight: bold
 </style>

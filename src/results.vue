@@ -1,6 +1,6 @@
 <template lang="pug">
   .entries
-    a.entry(v-for="(entry, index) in entries", :key="index",
+    a.entry(v-for="(entry, index) in entries", :key="entry.url",
     :href="entry.url",
     @click="open(entry)",
     :class="{selected: index === selected}")
@@ -41,6 +41,7 @@
   cursor: pointer
   border: 2px solid transparent
   color: $text
+
   &:hover
     background-color: #fff
     color: $Blue60
@@ -61,7 +62,6 @@
 .url
   color: $Grey50
   font-size: .9em
-
 .source-icon
   opacity: .6
   img

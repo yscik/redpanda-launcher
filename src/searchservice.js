@@ -34,7 +34,8 @@ class SearchService
       autocomplete: null,
       session: null,
       topSites: null,
-      home: true
+      home: true,
+      isUrl: false
     };
 
     this.init();
@@ -53,24 +54,31 @@ class SearchService
 
     this.state.index = -1;
     this.entry = null;
-    if(!this.state.searching) this.state.engine = engine;
-    this.state.autocomplete = autocomplete;
+    if(!this.state.searching) {
+      this.state.engine = engine;
+      this.state.autocomplete = autocomplete;
+    }
     this.state.selected = null;
     this.state.result = Object.freeze(result);
     this.state.home = false;
+    this.state.isUrl = (this.state.autocomplete || this.state.term && isUrl(this.state.term));
 
   }
 
   setTerm(term)
   {
-    term = (this.state.searching ? this.state.engine.urlo.host + ' ' : '') + term;
+    let searchexpr = (this.state.searching ? this.state.engine.urlo.host + ' ' : '') + term;
 
-    let options = {autocomplete: term && (!this.state.term || term.length > this.state.term.length)};
-    term ? this.search(term, options) : this.clear();
+    let options = {
+      autocomplete: !this.state.searching && term && (!this.state.term || term.length > this.state.term.length),
+      term: term};
+    searchexpr ? this.search(searchexpr, options) : this.clear();
   }
 
   clear() {
-    this.init();
+    this.update({});
+    this.state.home = true;
+
   }
 
   get engine() {
@@ -81,14 +89,12 @@ class SearchService
     if (!this.state.searching) this.state.engine = value;
   }
 
-  get isUrl() {
-    return this.state.autocomplete || this.state.term && isUrl(this.state.term);
-  }
-
   tab($event) {
     if (this.state.engine && !this.state.searching) {
       this.state.searching = this.state.term;
+      this.state.autocomplete = null;
       this.state.term = "";
+      this.state.isUrl = false;
     }
 
     else this.select($event)
@@ -115,8 +121,9 @@ class SearchService
 
   backspace() {
     if (this.state.term.length == 0 && this.state.searching) {
-      this.state.term = this.state.searching;
+      let lastTerm = this.state.searching;
       this.state.searching = false;
+      this.state.term = lastTerm;
     }
   }
 
@@ -127,7 +134,7 @@ class SearchService
 
     data.result = [...data.history];
 
-    this.update(data);
+    if(options.term == this.state.term) this.update(data);
 
   }
 

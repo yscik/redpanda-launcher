@@ -16,20 +16,24 @@ export default class Entry
     Entry.open({url})
   }
 
-  static wrap(entry)
+  static process(entries)
   {
-    if(!entry.urlo)
-    try {
-      entry.urlo = new URL(entry.url);
-    }
-    catch(e)
+    return entries.reduce((result,entry) =>
     {
-      entry.urlo = {invalid: true}
-    }
+      if (!entry.urlo)
+        try {
+          entry.url = entry.url.replace(/^\/\//, 'https://');
+          entry.urlo = new URL(entry.url);
+          result.push(entry);
+          entry.selected = false;
+        }
+        catch (e) {
+          // Invalid entry, discarded
+        }
 
-    entry.selected = false;
 
-    return entry;
+      return result;
+    }, [])
   }
 
 }

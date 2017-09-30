@@ -1,7 +1,6 @@
 
 const startTime = new Date(Date.now() - 1000*60*60*24*60);
 
-// import ResultList from './ResultList';
 import Entry from './Entry';
 import sites from './sites'
 
@@ -24,12 +23,13 @@ export default class Datasource
     let history = this.searchHistory(term);
 
     let session = this.filter(term, this.session);
-    let engine = this.engine(term, this.engines);
 
     history = await history;
 
     this.processHistory(history);
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
+
+    let engine = this.engine(autocomplete||term, this.engines);
 
     return {history, session, engine, autocomplete};
   }
@@ -49,7 +49,7 @@ export default class Datasource
     let entries = await browser.history.search({text: term, maxResults: 300, startTime: startTime});
 
     entries.forEach(e => {e.source = 'history'; e.weight = e.visitCount});
-    entries = entries.map(Entry.wrap);
+    entries = Entry.process(entries);
 
     return entries;
 
@@ -72,9 +72,10 @@ export default class Datasource
     return hosts.find(h => h.domain.startsWith(term));
   }
 
-  engine(term, engines)
+  engine(url, engines)
   {
-    return engines.find(e => e.domain.startsWith(term))
+    const matcher = url instanceof Object ? e => e.domain == url.domain : e => e.domain.startsWith(url);
+    return engines.find(matcher)
   }
 
   processHistory(entries)
@@ -93,9 +94,9 @@ export default class Datasource
   {
     let tabs = await browser.sessions.getRecentlyClosed();
     tabs = tabs.map(t => t.tab || t);
-    tabs.length = Math.min(tabs.length, 15);
+    tabs.length = Math.min(tabs.length, 20);
     tabs.forEach(t => {t.source = 'session' });
-    return this.session = tabs.map(Entry.wrap);
+    return this.session = Entry.process(tabs);
 
   }
 
@@ -103,8 +104,8 @@ export default class Datasource
   {
     let sites = await browser.topSites.get();
     sites.forEach(t => {t.source = 'topsite' });
-    sites.length = Math.min(sites.length, 15);
-    return this.topSites = sites.map(Entry.wrap);
+    sites.length = Math.min(sites.length, 20);
+    return this.topSites = Entry.process(sites);
 
   }
 
@@ -118,7 +119,7 @@ export default class Datasource
   async loadSearchEngines()
   {
     const all = await browser.bookmarks.search({});
-    const engines = all.filter(b =>
+    let engines = all.filter(b =>
         b.url && b.url.includes('%s')
     );
 
@@ -128,9 +129,9 @@ export default class Datasource
     sites.engines.forEach(e => {e.type = 'opensearch'});
     engines.push(...sites.engines);
 
-    engines.map(Entry.wrap);
+    engines = Entry.process(engines);
 
-    engines.forEach(e => {e.source = 'engine'; e.weight = 100; e.domain = e.urlo.hostname.replace(/^www\./, '') });
+    engines.forEach(e => {e.source = 'engine'; e.weight = 100; e.urlo.hostname && (e.domain = e.urlo.hostname.replace(/^www\./, '')) });
 
     engines.reverse();
     this.engines = engines;
