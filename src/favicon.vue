@@ -7,7 +7,6 @@
 import Vue from 'vue'
 
 import FaviconService from './Favicons'
-import sites from './sites'
 
 export default Vue.component("favicon", {
   props: {
@@ -24,7 +23,6 @@ export default Vue.component("favicon", {
     {
 //    this.url = site && (sites.icons[site.origin] && sites.icons[site.origin].favicon) || `${site.origin}/favicon.ico`
       this.url = await FaviconService.get(site);
-//    console.log(site, this.site, this.url);
     }
   }
 })

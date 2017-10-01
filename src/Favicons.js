@@ -1,5 +1,5 @@
 
-import sites from './sites'
+import Storage from './Storage'
 
 const defaultIcon = require('!!url-loader!../icons/globe.png');
 
@@ -16,7 +16,7 @@ export default new class FaviconService
   async get(site)
   {
     if(!site.protocol.startsWith('http')) return defaultIcon;
-    const url = site && (sites.icons[site.origin] && sites.icons[site.origin].favicon) || `${site.origin}/favicon.ico`;
+    const url = site && (Storage.icons[site.origin] && Storage.icons[site.origin].favicon) || `${site.origin}/favicon.ico`;
 
     if(!this.icons[url]) this.icons[url] = this.fetch(url);
     return await this.icons[url];

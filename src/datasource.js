@@ -2,7 +2,8 @@
 const startTime = new Date(Date.now() - 1000*60*60*24*60);
 
 import Entry from './Entry';
-import sites from './sites'
+import Storage from './Storage'
+import Engines from './Engines'
 
 const weightSort = (a,b) => b.weight - a.weight;
 
@@ -37,9 +38,10 @@ export default class Datasource
 
   loadLongtermEntries()
   {
+
     return Promise.all([
+      this.loadBookmarksAndSearchEngines(),
       this.loadSession(),
-      this.loadSearchEngines(),
       this.loadTopsites()
     ])
   }
@@ -74,7 +76,7 @@ export default class Datasource
 
   engine(url, engines)
   {
-    const matcher = url instanceof Object ? e => e.domain == url.domain : e => e.domain.startsWith(url);
+    const matcher = url instanceof Object ? e => e.active && e.domain == url.domain : e => e.active && e.domain.startsWith(url);
     return engines.find(matcher)
   }
 
@@ -100,6 +102,12 @@ export default class Datasource
 
   }
 
+  processBookmarks(bookmarks)
+  {
+    return bookmarks;
+
+  }
+
   async loadTopsites()
   {
     let sites = await browser.topSites.get();
@@ -116,24 +124,12 @@ export default class Datasource
             s.urlo.origin.includes(term)))
   }
 
-  async loadSearchEngines()
+  async loadBookmarksAndSearchEngines()
   {
-    const all = await browser.bookmarks.search({});
-    let engines = all.filter(b =>
-        b.url && b.url.includes('%s')
-    );
-
-    engines.forEach(e => {e.type = 'bookmark'});
-
-    await sites.promise;
-    sites.engines.forEach(e => {e.type = 'opensearch'});
-    engines.push(...sites.engines);
-
-    engines = Entry.process(engines);
-
-    engines.forEach(e => {e.source = 'engine'; e.weight = 100; e.urlo.hostname && (e.domain = e.urlo.hostname.replace(/^www\./, '')) });
-
-    engines.reverse();
-    this.engines = engines;
+    await Storage.promise;
+    const bookmarks = await browser.bookmarks.search({});
+    this.bookmarks = this.processBookmarks(bookmarks);
+    Engines.addBookmarks(bookmarks);
+    this.engines = Engines.engines;
   }
 }

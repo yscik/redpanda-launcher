@@ -1,0 +1,73 @@
+$width: 40rem
+$margin: .5rem
+.settings
+  left: auto
+  width: $width
+  right: -$width
+  top: $margin
+  bottom: $margin
+  background: #fff
+  z-index: 2
+  border: 1px solid rgba(#0f1126, .1)
+  box-shadow: 0 0 20px -15px rgba(#0f1126, .8)
+  border-radius: 3px
+
+  display: flex
+  flex-direction: column
+
+  &.open
+    right: $margin
+    & + .main
+  //right: $width
+  .toggle
+    position: absolute
+    left: -3rem - $margin
+    top: 1.8rem - $margin
+    transition: left .3s
+    z-index: 3
+    padding: .4rem
+    background: #fff
+    border-radius: 3px
+    line-height: 0
+    .i
+      transition: transform .3s
+      width: 1.5rem
+      height: 1.5rem
+
+      /*background: url(../icons/preferences-16-macos.svg) no-repeat center center*/
+      /*background-size: 60%*/
+      path
+        fill: $Grey90
+      border-radius: 3px
+    &:hover
+      .i
+        path
+          fill: $Blue60
+      cursor: pointer
+      background: $Grey10
+  &.open .toggle
+    left: $width - 3rem
+    .i
+      transform: rotate(240deg)
+
+.settings, .main
+  transition: right .3s
+
+.settings-content
+  margin: .5rem 0
+  padding: 0 2rem
+  flex: 1
+  overflow-y: scroll
+
+.settings-header
+  .title
+    color: #CD330E
+    font-weight: bold
+    padding: 1.2rem 1.5rem
+      bottom: calc(1.6rem + 1px)
+    margin: .5rem
+    border-bottom: 1px solid $border
+    -moz-user-select: none
+    .favicon
+      //margin-left: -1.5rem
+      //margin-right: .2rem

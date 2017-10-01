@@ -1,0 +1,21 @@
+.control
+  display: block
+  padding: .4em 0
+  border-bottom: 1px dotted $border
+  &.ident-1
+    margin-left: 2rem
+  .control-label,
+  .control-input
+    display: inline-block
+    vertical-align: middle
+  .control-label + .control-input
+    margin-left: .5em
+
+  transition: opacity .3s
+  &.disabled
+    opacity: .4
+    pointer-events: none
+    -moz-user-select: none
+@for $i from 1 through 10
+  .w#{$i}
+    width: #{$i}rem

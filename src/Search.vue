@@ -4,7 +4,7 @@
         @keydown.tab.prevent="service.tab($event)",
         @keydown.enter="service.enter($event)",
         @keydown.delete="service.backspace($event)")
-  .suggestions: .content
+  //.suggestions: .content
     .logo(v-if="!state.term")
     results.result(v-if="!state.home", :entries='state.suggestions')
   .head: .content

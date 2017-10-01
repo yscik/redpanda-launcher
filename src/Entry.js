@@ -16,21 +16,22 @@ export default class Entry
     Entry.open({url})
   }
 
-  static process(entries)
+  static process(entries, {copy = false, props = null, setup = null} = {})
   {
-    return entries.reduce((result,entry) =>
+    return entries.reduce((result,entrydata) =>
     {
-      if (!entry.urlo)
-        try {
-          entry.url = entry.url.replace(/^\/\//, 'https://');
-          entry.urlo = new URL(entry.url);
-          result.push(entry);
-          entry.selected = false;
-        }
-        catch (e) {
-          // Invalid entry, discarded
-        }
+      let entry = copy ? Object.assign({}, entrydata, props) : props ? Object.assign(entrydata, props) : entrydata;
 
+      try {
+        entry.url = entry.url.replace(/^\/\//, 'https://');
+        entry.urlo = new URL(entry.url);
+        result.push(entry);
+        entry.selected = false;
+        if(setup) setup(entry);
+      }
+      catch (e) {
+        // Invalid entry, discarded
+      }
 
       return result;
     }, [])

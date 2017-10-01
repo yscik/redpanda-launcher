@@ -69,3 +69,34 @@ h3
   text-overflow: ellipsis
   white-space: nowrap
   word-break: keep-all
+
+.message
+  position: fixed
+  right: 2rem
+  bottom: 1rem
+  width: 30rem
+  min-height: 3rem
+  padding: .5rem
+  background: $Grey20
+  border-radius: 2px
+  display: flex
+  align-items: center
+  justify-content: space-between
+  * + *
+    margin-left: .5em
+  transition: bottom .5s
+  &:not(.active)
+    bottom: -3rem
+.button
+  display: inline-block
+  padding: .3em .5em
+  border-radius: 2px
+  background: $Blue60
+  color: $Grey10
+  font-weight: 600
+  text-transform: uppercase
+  cursor: pointer
+  &:hover
+    background: $Blue70
+  &:focus, &:active
+    background: $Blue80

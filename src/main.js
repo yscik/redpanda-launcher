@@ -2,11 +2,10 @@
 import 'file!./content';
 import 'file!../index.html';
 import 'file!../manifest.json';
-import 'file!../icons/redpanda-48.png';
-import 'file!../icons/redpanda-256.png';
+import '../icons/fav-1.png';
 
 import Vue from 'vue'
-import Search from './Search.vue'
+import App from './app.vue'
 import './icon.vue'
 import './favicon.vue'
 
@@ -14,6 +13,6 @@ window.focus();
 
 new Vue({
   el: '#app',
-  render: h => h(Search)
+  render: h => h(App)
 });
 

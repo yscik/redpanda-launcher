@@ -5,8 +5,6 @@
 
 import Vue from 'vue'
 
-import sites from './sites'
-
 const typeImages = {
  history: require('../icons/history-16.svg'),
  bookmark: require('../icons/bookmark-16-Outline.svg'),
@@ -33,7 +31,19 @@ export default Vue.component("icon", {
 
 </script>
 <style lang="sass">
-  .icon
-    display: inline-block
+@import colors
+
+.icon
+  display: inline-block
+
+  &.action, .action &
+    cursor: pointer
+    &:hover
+      svg *
+        fill: $Blue50
+    &:active, &:focus
+      svg *
+        fill: $Blue60
+
 
 </style>
