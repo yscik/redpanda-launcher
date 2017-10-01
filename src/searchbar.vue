@@ -49,20 +49,22 @@
 
 .prefix-icon
   position: absolute
-  top: 4px
-  bottom: 4px
+  top: 0
+  bottom: 0
   padding: 1em
-  left:  1px
+  left:  0
   width: 2.7rem
-  overflow: hidden
-  white-space: nowrap
-  text-overflow: ellipsis
+  line-height: 1rem
   border-right: 1px solid #ccc
   font-weight: 600
   color: #fff
-  //border-radius: 2px 0 0 2px
   .icon
-    margin-top: -4px
+    position: relative
+    top: -.1rem
+    left: -.15rem
+  .icon svg
+    width: 1rem
+    height: 1rem
   .search-icon
     opacity: .5
   &.search, &.link
@@ -75,8 +77,9 @@
   + .search-input
     padding-left: 3.2rem
 
-.link-icon svg *
-  fill: $Blue50
+.link-icon
+  svg *
+    fill: $Blue50
 
 .tab-info
   position: absolute

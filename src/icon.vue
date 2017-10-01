@@ -1,6 +1,5 @@
 <template lang="pug">
-  .icon.svg
-    span(v-html="svg")
+  .icon.svg(v-html="svg", :class="type")
 </template>
 <script>
 
