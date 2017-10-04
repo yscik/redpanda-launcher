@@ -1,6 +1,5 @@
 <template lang="pug">
-  .favicon.icon(:class="state")
-    img(:src="url")
+  img.favicon.icon(:class="state", :src="url")
 </template>
 <script>
 

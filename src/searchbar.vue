@@ -8,10 +8,9 @@
       :placeholder='state.label')
     .tab-info(v-if="state.engine && !state.searching")
       span.key TAB
-      |  to search
-      .suggested-engine
-        favicon.search-engine(:site='state.engine.urlo')
-        span.name {{state.engine.title}}
+      span to search
+      favicon.search-engine(:site='state.engine.urlo')
+      span.name {{state.engine.title}}
 
 </template>
 <script>
@@ -41,30 +40,35 @@
 
 .searchbar
   position: relative
-.search-input
-  font-size: 1.4rem
-  padding: .3em .5em
-  display: block
-  width: 100%
+  display: flex
+  height: 3rem
+  justify-content: space-between
+  > *
+    position: relative
+    z-index: 1
 
-.prefix-icon
+  /*border: 1px solid red*/
+.search-input
   position: absolute
   top: 0
-  bottom: 0
+  left: 0
+  font-size: 1.5rem
+  padding: .5rem
+  display: block
+  width: 100%
+  z-index: 0
+
+.prefix-icon
   padding: 1em
-  left:  0
-  width: 2.7rem
-  line-height: 1rem
+  width: 2.9rem
+  margin: .3rem 0
   border-right: 1px solid #ccc
   font-weight: 600
   color: #fff
+  display: flex
+  align-items: center
   .icon
-    position: relative
-    top: -.1rem
-    left: -.15rem
-  .icon svg
-    width: 1rem
-    height: 1rem
+    line-height: 0
   .search-icon
     opacity: .5
   &.search, &.link
@@ -75,26 +79,23 @@
     .link-icon
       display: none
   + .search-input
-    padding-left: 3.2rem
+    padding-left: 3.4rem
 
 .link-icon
   svg *
-    fill: $Blue50
+    fill: $Blue70
 
 .tab-info
-  position: absolute
-  right: 0
-  top:  0
-  padding: .6em
-  bottom: 0
-  margin: auto
-  height: 2.3em
+  display: flex
+  align-items: center
   color: #999
-
-
-.suggested-engine
-  display: inline-block
-  margin-left: .5em
-  color: #333
-  font-weight: bold
+  margin-right: .5em
+  > *
+    margin-right: .3em
+  .icon
+    position: relative
+    top: -1px
+  .name
+    color: $text
+    font-weight: bold
 </style>
