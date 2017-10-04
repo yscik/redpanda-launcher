@@ -1,5 +1,5 @@
 $width: 40rem
-$margin: .5rem
+$margin: 0
 .settings
   left: auto
   width: $width
@@ -8,9 +8,10 @@ $margin: .5rem
   bottom: $margin
   background: #fff
   z-index: 2
-  border: 1px solid rgba(#0f1126, .1)
   box-shadow: 0 0 20px -15px rgba(#0f1126, .8)
-  border-radius: 3px
+  //border: 1px solid rgba(#0f1126, .1)
+  //border-radius: 3px
+  border-left: 1px solid $border
 
   display: flex
   flex-direction: column
@@ -18,7 +19,7 @@ $margin: .5rem
   &.open
     right: $margin
     & + .main
-  //right: $width
+      right: $width
   .toggle
     position: absolute
     left: -3rem - $margin
@@ -63,8 +64,7 @@ $margin: .5rem
   .title
     color: #CD330E
     font-weight: bold
-    padding: 1.2rem 1.5rem
-      bottom: calc(1.6rem + 1px)
+    padding: 1.85rem 1.5rem
     margin: .5rem
     border-bottom: 1px solid $border
     -moz-user-select: none
