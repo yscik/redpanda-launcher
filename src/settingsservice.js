@@ -2,7 +2,7 @@ import Storage from './Storage'
 import Engines from './Engines'
 
 
-export default new class Settings {
+export default window.settings = new class Settings {
   constructor() {
 
     this.settings = null;
@@ -18,6 +18,7 @@ export default new class Settings {
 
     this.engines = Engines.engines;
     this.settings = Storage.settings = Object.assign(Settings.schema(), Storage.settings);
+    this.defaultEngine = this.engines.find(e => e.url == this.settings.search.defaultEngine);
   }
 
   async save() {
@@ -37,6 +38,19 @@ export default new class Settings {
     this.lastAction = action;
   }
 
+  set_default_engine(engine)
+  {
+    let previous = this.defaultEngine;
+    this.settings.search.defaultEngine = engine.url;
+    this.defaultEngine = engine;
+
+    this.commit({message: `${engine.title} is now the default search engine.`,
+      undo: () =>  {
+        this.settings.search.defaultEngine = previous.url;
+        this.defaultEngine = previous;
+    }});
+  }
+
   remove_engine(engine)
   {
     engine.active = false;
@@ -48,7 +62,7 @@ export default new class Settings {
   {
     return {
       search: {
-        defaultEngine: Engines.engines[Engines.engines.length-1],
+        defaultEngine: Engines.engines[Engines.engines.length-1].url,
         opensearch: {
           autoadd: true,
           visits: 4,

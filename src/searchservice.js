@@ -1,7 +1,7 @@
 import Datasource from './datasource';
 import {isUrl, protocol} from './isUrl';
 import Entry from './Entry';
-const defaultEngine = {url: 'https://google.com/search?q=%s'};
+import Settings from './settingsservice';
 
 function formatUrl(term) {
   if (protocol.test(term)) return term;
@@ -46,6 +46,7 @@ class SearchService
     this.update({});
     this.state.home = true;
     await this.data.loadLongtermEntries();
+    // this.state.bookmarks = Object.freeze([...this.data.bookmarks]);
     this.state.session = Object.freeze([...this.data.session]);
     this.state.topSites = Object.freeze([...this.data.topSites]);
   }
@@ -114,7 +115,7 @@ class SearchService
     else {
       if (isUrl(this.state.term)) Entry.open({url: formatUrl(this.state.term)});
       else {
-        Entry.search(defaultEngine, this.state.term)
+        Entry.search(Settings.defaultEngine, this.state.term)
       }
     }
   }

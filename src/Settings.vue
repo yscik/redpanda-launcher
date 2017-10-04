@@ -7,14 +7,13 @@
       h2.title
         img.favicon.icon(src="fav-1.png")
         span Red Panda Launcher
-    .settings-message.message(:class="{active: s.lastAction.message}")
-      span {{s.lastAction.message}}
-      .button.undo(@click="s.lastAction.undo()" v-show="s.lastAction.undo") Undo
-    .settings-content(v-if="s.settings")
+    .settings-content(v-if="s")
       h3 Search engines
       .control
         .control-label Default:
-        .control-input: strong {{s.settings.search.defaultEngine.title}}
+        .control-input
+          favicon(:site='s.defaultEngine.urlo')
+          strong {{s.defaultEngine.title}}
       label.control
         .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.autoadd")
         .control-label Auto-add OpenSearch search engines
@@ -35,8 +34,13 @@
               .title {{entry.title}}
               .url {{entry.url}}
             .actions
+              .setdefault.action(@click='s.set_default_engine(entry)')
+                .button Set As Default
               .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
                 icon(type="close")
+      .settings-message.message(:class="{active: s.lastAction.message}")
+        span {{s.lastAction.message}}
+        .button.undo(@click="s.lastAction.undo()" v-show="s.lastAction.undo") Undo
 
 </template>
 <script>
@@ -46,8 +50,8 @@ import SettingsService from './settingsservice'
 export default {
 data: () => {
   return {
-    open: true,
-    s: SettingsService
+    open: false,
+    s: null
   }
 },
 created(){
@@ -62,6 +66,7 @@ computed: {
 methods: {
   toggle(state)
   {
+    if(!this.s) this.s = SettingsService;
     this.open = typeof(state) == "undefined" ? !this.open : state;
   }
 }
@@ -92,14 +97,23 @@ methods: {
         border: 0
   .actions
     align-self: center
-    margin-left: .5rem
+    margin-left: -9rem
+    display: flex
+    align-items: center
     .action
+      margin-left: .5em
       padding: .1em .3em
       .icon
         margin: 0
       .icon.close svg
         width: 10px
         height: 10px
+  .setdefault
+    .button:not(:hover):not(:active):not(:focus)
+      background: $Grey40
+  .row:not(:hover) .setdefault
+    opacity: 0
+
   .type
     opacity: .5
   .group-label

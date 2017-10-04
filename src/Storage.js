@@ -16,7 +16,7 @@ export default new class Storage {
 
     this.settings = storage._settings && JSON.parse(storage._settings) || {};
 
-    let engines = storage._engines && JSON.parse(storage._engines) || Engines.default;
+    let engines = Engines.default;
 
     this.engines = Engines.addStorage(storage, engines);
     this.icons = storage;
@@ -30,7 +30,6 @@ export default new class Storage {
     let data = {'_settings': JSON.stringify(this.settings),
       '_engines': JSON.stringify(this.engines)};
 
-    console.log(data);
     return browser.storage.local.set(data)
   }
 
