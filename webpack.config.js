@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -19,13 +20,9 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           loaders: {
-            // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
-            // the "scss" and "sass" values for the lang attribute to the right configs here.
-            // other preprocessors should work out of the box, no loader config like this necessary.
-            'scss': 'vue-style-loader!css-loader!sass-loader',
-            'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
-            // 'js': 'babel-loader'
-          }
+            sass: ExtractTextPlugin.extract('css-loader!sass-loader?indentedSyntax'),
+          },
+          extractCSS: true
           // other vue-loader options go here
         }
       },
@@ -39,11 +36,11 @@ module.exports = {
         loader: ["raw-loader", "pug-html-loader"],
         exclude: /node_modules/
       },
-      {
-        test: /\.sass/,
-        loader: ['style-loader', 'css-loader', 'sass-loader'],
-        exclude: /node_modules/
-      },
+      // {
+      //   test: /\.sass/,
+      //   use:  ExtractTextPlugin.extract({use: ['css-loader', 'sass-loader'], fallback: 'style-loader'}),
+      //   exclude: /node_modules/
+      // },
       {
         test: /\.(png|jpg|gif)$/,
         loader: 'file-loader',
@@ -79,8 +76,11 @@ module.exports = {
     hints: false
   },
 
-  devtool: 'source-map'
-}
+  devtool: 'source-map',
+  plugins: [
+      new ExtractTextPlugin("style.css")
+  ]
+};
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map'
@@ -98,8 +98,8 @@ if (process.env.NODE_ENV === 'production') {
         warnings: false
       }}
     }),
-    // new webpack.LoaderOptionsPlugin({
-    //   minimize: true
-    // })
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    })
   ])
 }
