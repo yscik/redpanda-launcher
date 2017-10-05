@@ -48,7 +48,7 @@ export default class Datasource
 
   async searchHistory(term) {
 
-    let entries = await browser.history.search({text: term, maxResults: 300, startTime: startTime});
+    let entries = await browser.history.search({text: term, maxResults: 100, startTime: startTime});
 
     entries.forEach(e => {e.source = 'history'; e.weight = e.visitCount});
     entries = Entry.process(entries);
