@@ -84,7 +84,7 @@ export default class Datasource
   {
     entries.sort(weightSort);
 
-    entries.length = Math.min(entries.length, 30);
+    entries.length = Math.min(entries.length, 15);
   }
 
   async searchTabs()
@@ -96,7 +96,7 @@ export default class Datasource
   {
     let tabs = await browser.sessions.getRecentlyClosed();
     tabs = tabs.map(t => t.tab || t);
-    tabs.length = Math.min(tabs.length, 20);
+    tabs.length = Math.min(tabs.length, 15);
     tabs.forEach(t => {t.source = 'session' });
     return this.session = Entry.process(tabs);
 
@@ -112,7 +112,7 @@ export default class Datasource
   {
     let sites = await browser.topSites.get();
     sites.forEach(t => {t.source = 'topsite' });
-    sites.length = Math.min(sites.length, 20);
+    sites.length = Math.min(sites.length, 15);
     return this.topSites = Entry.process(sites);
 
   }
