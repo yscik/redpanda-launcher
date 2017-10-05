@@ -33,6 +33,7 @@ export default Vue.component('input-complete',
   watch: {
     value: function(value) {
       if(this.completeTo && value.length < this.completeTo.length) this.suggest(this.completeTo)
+      else this.displayvalue = value;
     },
     completeTo: function(suggestion)
     {

@@ -18,14 +18,16 @@ class SearchService
     let self = this;
     this.state = {
       result: null,
-      get term() {
-        return this._term;
+      get term()
+      {
+        return this._term
       },
-      set term(value) {
-        self.setTerm(value);
-        this._term = value;
+      set term(value)
+      {
+        let entry = value instanceof Object && value.url;
+        !entry && self.setTerm(value);
+        this._term = entry || value;
       },
-
       get label() {
         return this.searching ? this.engine.desc || this.engine.title : 'Search your feelings'
       },
@@ -68,6 +70,7 @@ class SearchService
 
   setTerm(term)
   {
+    this.searchTerm = term;
     let searchexpr = (this.state.searching ? this.state.engine.urlo.host + ' ' : '') + term;
 
     let options = {
@@ -148,6 +151,8 @@ class SearchService
     this.state.index = Math.min(Math.max(-1, this.state.index + direction), this.state.result.length);
 
     this.entry = this.state.result[this.state.index];
+    this.state.term = this.entry || this.searchTerm;
+    console.log(this.state.term );
 
     $event.preventDefault();
   }
