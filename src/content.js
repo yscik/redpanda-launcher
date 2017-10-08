@@ -50,11 +50,15 @@ async function check_opensearch()
     const xml = parser.parseFromString(body, "application/xml");
     const x = (s) => { let el = xml.querySelector(s); return el ? el.textContent : ""};
 
+    const url = xml.querySelector('Url[type="text/html"]');
+    const params = Array.from(url.querySelectorAll('Param'));
+    
     result.opensearch = {
       title: x("ShortName"),
       desc: x("Description"),
       icon: x("Image"),
-      url: xml.querySelector('Url[type="text/html"]').getAttribute('template')
+      url: [url.getAttribute('template'),
+        params.length ? '?'+params.map(p => [p.getAttribute('name'), p.getAttribute('value')].join('=')).join('&') : ''].join('')
     }
 
     console.log("Opensearch: ", result.opensearch.title, result.opensearch.url);
