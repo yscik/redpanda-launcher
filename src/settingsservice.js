@@ -1,6 +1,7 @@
 import Storage from './Storage'
 import Engines from './Engines'
 
+const e = document.createElement.bind(document);
 
 export default window.settings = new class Settings {
   constructor() {
@@ -34,6 +35,20 @@ export default window.settings = new class Settings {
       let undo = action.undo;
       action.undo = () => {undo(); clear()}
     }
+
+    action.active = true;
+    if(action.html) {
+      let node = action.node = e('span');
+      action.html.forEach(item => {
+        if(item instanceof Array) {
+          let el = e(item[0]);
+          el.innerText = item[1];
+          node.appendChild(el)
+        }
+        else node.appendChild(document.createTextNode(item))
+      })
+    }
+
     setTimeout(clear, 5000);
     this.lastAction = action;
   }
@@ -44,7 +59,7 @@ export default window.settings = new class Settings {
     this.settings.search.defaultEngine = engine.url;
     this.defaultEngine = engine;
 
-    this.commit({message: `${engine.title} is now the default search engine.`,
+    this.commit({html: [['b', engine.title], ' is now the default search engine.'],
       undo: () =>  {
         this.settings.search.defaultEngine = previous.url;
         this.defaultEngine = previous;
@@ -55,7 +70,8 @@ export default window.settings = new class Settings {
   {
     engine.active = false;
 
-    this.commit({message: `${engine.title} removed.`, undo: () => engine.active = true});
+    this.commit({html: ['Search engine ', ['b', engine.title], ' removed.'],
+      undo: () => engine.active = true});
   }
 
   static schema()

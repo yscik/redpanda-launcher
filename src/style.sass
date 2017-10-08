@@ -73,7 +73,7 @@ h3
   width: 30rem
   min-height: 3rem
   padding: .5rem
-  background: $Grey20
+  background: $Grey10
   border-radius: 2px
   display: flex
   align-items: center
@@ -83,6 +83,9 @@ h3
   transition: bottom .5s
   &:not(.active)
     bottom: -3rem
+
+  .message-text:empty, .message-node:empty
+    display: none
 .button
   display: inline-block
   padding: .3em .5em

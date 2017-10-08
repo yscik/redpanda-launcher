@@ -9,7 +9,7 @@
         span Red Panda Launcher
     .settings-content(v-if="s")
       h3 Search engines
-      .control
+      .control(v-if="s.defaultEngine")
         .control-label Default:
         .control-input
           favicon(:site='s.defaultEngine.urlo')
@@ -38,8 +38,9 @@
                 .button Set As Default
               .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
                 icon(type="close")
-      .settings-message.message(:class="{active: s.lastAction.message}")
-        span {{s.lastAction.message}}
+      .settings-message.message(:class="{active: s.lastAction.active}")
+        span.message-text {{s.lastAction.message}}
+        span.message-node(ref="messageNode")
         .button.undo(@click="s.lastAction.undo()" v-show="s.lastAction.undo") Undo
 
 </template>
@@ -48,28 +49,38 @@
 import SettingsService from './settingsservice'
 
 export default {
-data: () => {
-  return {
-    open: false,
-    s: null
+  data: () => {
+    return {
+      open: false,
+      s: null
+    }
+  },
+  created(){
+    this.label = {bookmark: 'From bookmarks', opensearch: 'OpenSearch'}
+  },
+  computed: {
+    engines()
+    {
+      return this.s.engines.reduce((m,e) => { m[e.type].push(e); return m;}, {opensearch: [], bookmark: []})
+    }
+  },
+  methods: {
+    toggle(state)
+    {
+      if(!this.s) this.s = SettingsService;
+      this.open = typeof(state) == "undefined" ? !this.open : state;
+    }
+  },
+  watch: {
+      's.lastAction'(action) {
+        let node = this.$refs.messageNode;
+        if(!node) return;
+        while(node.firstChild) node.removeChild(node.firstChild);
+        if(action.node) {
+          node.appendChild(action.node);
+        }
+      },
   }
-},
-created(){
-  this.label = {bookmark: 'From bookmarks', opensearch: 'OpenSearch'}
-},
-computed: {
-  engines()
-  {
-    return this.s.engines.reduce((m,e) => { m[e.type].push(e); return m;}, {opensearch: [], bookmark: []})
-  }
-},
-methods: {
-  toggle(state)
-  {
-    if(!this.s) this.s = SettingsService;
-    this.open = typeof(state) == "undefined" ? !this.open : state;
-  }
-}
 }
 
 </script>
