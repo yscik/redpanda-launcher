@@ -1,5 +1,5 @@
 
-import 'file!./content';
+import 'file-loader?name=redpanda.content.js!./content';
 import 'file!../index.html';
 import 'file!../manifest.json';
 import '../icons/fav-1.png';
