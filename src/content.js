@@ -11,9 +11,9 @@ catch(err) {
 async function parse_site()
 {
   key = new URL(location.href).origin;
-  const result = (await browser.storage.local.get(key)) || {parsed: Date.now(), count: 0, counting: true, reparse: false};
+  result = (await browser.storage.local.get(key))[key] || {parsed: Date.now(), count: 0, counting: true, reparse: false};
   if(!result.counting && !result.reparse) return;
-  result.count++;
+  result.count = 1 + (result.count||0);
 
   await check_opensearch();
 
