@@ -15,7 +15,7 @@ export default new class FaviconService
 
   async get(site)
   {
-    if(!site.protocol.startsWith('http')) return defaultIcon;
+    if(!site || !site.protocol || !site.protocol.startsWith('http')) return defaultIcon;
     const url = site && (Storage.icons[site.origin] && Storage.icons[site.origin].favicon) || `${site.origin}/favicon.ico`;
 
     if(!this.icons[url]) this.icons[url] = this.fetch(url);

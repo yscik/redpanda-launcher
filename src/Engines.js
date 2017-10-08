@@ -8,6 +8,12 @@ export default new class Engines
   {
     this.engines = [];
     this.defaults = builtinEngines;
+
+  }
+
+  updateDefault()
+  {
+    return this.default = this.engines.find(e => e.url == (settings.search.defaultEngine || this.defaults[0].url));
   }
 
   addStorage(sites, engines)
@@ -16,10 +22,11 @@ export default new class Engines
     {
       let site = sites[url];
 
+      if(url.startsWith('_')) continue;
       if(site.opensearch && !engines.find(e => e.url.endsWith(site.opensearch.url))
-      && site.count >= settings.search.opensearch.visits) {
+      && (site.count||0) >= settings.search.opensearch.visits) {
         console.log('Adding engine', site.opensearch.url);
-        let engine = Object.assign({active: true, type: 'opensearch'}, site.opensearch);
+        let engine = Object.assign({active: true, type: 'opensearch', keyword: null}, site.opensearch);
         engines.unshift(engine);
       }
     }
@@ -34,6 +41,7 @@ export default new class Engines
 
     this.engines.unshift(...engines);
 
+    this.updateDefault();
     return engines;
   }
 
@@ -42,9 +50,10 @@ export default new class Engines
 
     let engines = entries.filter(b =>
         b.url && b.url.includes('%s')
+        && !this.engines.find(e => e.url.endsWith(b.url))
     );
 
-    this.add(engines, {type: 'bookmark', active: true});
+    this.add(engines, {type: 'bookmark', active: true, keyword: null});
 
   }
 }

@@ -2,6 +2,7 @@ import Datasource from './datasource';
 import {isUrl, protocol} from './isUrl';
 import Entry from './Entry';
 import settings from './settings';
+import Engines from './Engines';
 
 function formatUrl(term) {
   if (protocol.test(term)) return term;
@@ -25,8 +26,9 @@ class SearchService
       set term(value)
       {
         let entry = value instanceof Object && value.url;
-        !entry && self.setTerm(value);
-        this._term = entry || value;
+        if(!entry)
+          self.setTerm(value);
+        else this._term = entry;
       },
       get label() {
         return this.searching ? this.engine.desc || this.engine.title : 'Search your feelings'
@@ -70,13 +72,20 @@ class SearchService
 
   setTerm(term)
   {
+    if(this.state.engine) {
+      let [,keyword] = /^(\w+)\s/.exec(term)||[];
+      if(keyword && this.state.engine.keyword == keyword) return this.setEngine();
+    }
     this.searchTerm = term;
+
     let searchexpr = (this.state.searching ? this.state.engine.urlo.host + ' ' : '') + term;
 
     let options = {
       autocomplete: !this.state.searching && term && (!this.state.term || term.length > this.state.term.length),
       term: term};
     searchexpr ? this.search(searchexpr, options) : this.clear();
+
+    this.state._term = term;
   }
 
   clear() {
@@ -94,15 +103,18 @@ class SearchService
   }
 
   tab($event) {
-    if (this.state.engine && !this.state.searching) {
-      this.state.searching = this.state.term;
-      this.state.autocomplete = null;
-      this.state.term = "";
-      this.state.isUrl = false;
-    }
+    if (this.state.engine && !this.state.searching) this.setEngine();
 
     else this.select($event)
 
+  }
+
+  setEngine()
+  {
+    this.state.searching = this.state.term;
+    this.state.autocomplete = null;
+    this.state.term = "";
+    this.state.isUrl = false;
   }
 
   enter() {
@@ -118,7 +130,7 @@ class SearchService
     else {
       if (isUrl(this.state.term)) Entry.open({url: formatUrl(this.state.term)});
       else {
-        Entry.search(settings.defaultEngine, this.state.term)
+        Entry.search(Engines.default, this.state.term)
       }
     }
   }

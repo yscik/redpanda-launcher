@@ -21,13 +21,14 @@ export default window.settingseditor = new class SettingsEditor {
 
     this.engines = Engines.engines;
     this.settings = settings;
-    this.changing = {original: clone(settings)};
-    this.defaultEngine = this.engines.find(e => e.url == this.settings.search.defaultEngine) || Engines.defaults[0].url;
+    this.data = {settings, engines: this.engines};
+    this.changing = {original: clone(this.data)};
+    this.defaultEngine = Engines.updateDefault();
   }
 
   async save() {
     console.log('Saving', clone(this.settings));
-    return Storage.save();
+    return Storage.save(this.data);
   }
 
   async commit(action)
@@ -55,13 +56,14 @@ export default window.settingseditor = new class SettingsEditor {
     }
 
     if(action.fresh) setTimeout(decay, 1000);
-    // setTimeout(clear, 5000);
+    setTimeout(clear, 5000);
     this.lastAction = action;
   }
 
   change(value, oldvalue)
   {
     if(!oldvalue) return;
+    console.log('Change', value);
 
     if(this.changing.internal) {
       this.changing.internal = false;
@@ -69,21 +71,18 @@ export default window.settingseditor = new class SettingsEditor {
     }
 
     if(this.changing.timeout) clearTimeout(this.changing.timeout);
-    console.log('Settings changed', this.changing.timeout, this.changing.original.search.opensearch.visits);
 
     const save_changes = () =>
     {
-      console.log('Commiting settings');
       let original = this.changing.original;
-      this.changing.original = clone(this.settings);
-      console.log('Current', clone(this.settings).search.opensearch.visits, 'Original', original.search.opensearch.visits);
+      this.changing.original = clone(this.data);
 
       this.commit({message: 'Settings updated.', fresh: true, icon: 'success',
         undo: () =>
         {
           this.changing.internal = true;
-          Object.assign(this.settings, original);
-          this.changing.original = clone(this.settings);
+          Object.assign(this.data.settings, original.settings);
+          this.changing.original = clone(this.data);
           console.log('Undoing');
         }
       });
@@ -98,14 +97,14 @@ export default window.settingseditor = new class SettingsEditor {
   {
     let previous = this.defaultEngine;
     this.settings.search.defaultEngine = engine.url;
-    this.defaultEngine = engine;
+    this.defaultEngine = Engines.updateDefault();
 
     this.changing.internal = true;
-    this.commit({html: [['b', engine.title], ' is now the default search engine.'],
+    this.commit({html: [['b', engine.title], ' set as default search engine.'], favicon: engine.urlo,
       undo: () =>  {
         this.changing.internal = true;
         this.settings.search.defaultEngine = previous.url;
-        this.defaultEngine = previous;
+        this.defaultEngine = Engines.updateDefault();
     }});
   }
 

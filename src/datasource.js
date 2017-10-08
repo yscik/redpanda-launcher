@@ -30,7 +30,7 @@ export default class Datasource
     this.processHistory(history);
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
-    let engine = this.engine(autocomplete||term, this.engines);
+    let engine = this.engine(term, autocomplete);
 
     return {history, session, engine, autocomplete};
   }
@@ -74,10 +74,11 @@ export default class Datasource
     return hosts.find(h => h.domain.startsWith(term));
   }
 
-  engine(url, engines)
+  engine(term, autocomplete)
   {
-    const matcher = url instanceof Object ? e => e.active && e.domain == url.domain : e => e.active && e.domain.startsWith(url);
-    return engines.find(matcher)
+    let url = autocomplete ? autocomplete.domain : term;
+
+    return this.engines.find(e => e.active && e.keyword == term.trim()) || this.engines.find(e => e.active && e.domain.startsWith(url))
   }
 
   processHistory(entries)

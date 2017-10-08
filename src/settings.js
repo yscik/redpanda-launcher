@@ -3,7 +3,7 @@ const builtinEngines = [
   {title: 'Google', url: 'https://google.com/search?q=%s'},
   {title: 'Bing', url: 'https://bing.com/search?q=%s'},
   {title: 'Yahoo', url: 'https://yahoo.com/search?p=%s'},
-  {title: 'Wikipedia (en)', url: 'https://en.wikipedia.org/w/index.php?title=Special:Search&search=%s'},
+  {title: 'Wikipedia (en)', url: 'https://en.wikipedia.org/w/index.php?title=Special:Search&search=%s', keyword: 'w'},
   {title: 'Amazon.com', url: 'https://www.amazon.com/s?field-keywords=%s'},
   {title: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=%s'},
   {title: 'Twitter', url: 'https://twitter.com/search?q=%s'},

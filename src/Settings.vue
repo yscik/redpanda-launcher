@@ -24,25 +24,31 @@
           input.inline.w4(type='number' v-model.number="s.settings.search.opensearch.visits", :disabled="!s.settings.search.opensearch.autoadd")
           |  visit
           span(v-show="s.settings.search.opensearch.visits > 1") s
-
+      .headers
+        span.flex-1
+        span.keyword-header Keyword
       .engines
         .group(v-for="(group, type) in engines")
           h3.group-label {{label[type]}}
           .row(v-for="(entry, index) in group", :key="entry.url", :class="{active: entry.active}")
+            .setdefault.action(@click='s.set_default_engine(entry)')
+              .button Set As Default
             .icons
               favicon(:site='entry.urlo')
             .text.ellipsis
               .title {{entry.title}}
               .url {{entry.url}}
             .actions
-              .setdefault.action(@click='s.set_default_engine(entry)')
-                .button Set As Default
+              .keyword
+                input.engine-keyword(v-model='entry.keyword', @input='s.change_keyword(entry)')
               .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
                 icon(type="close")
+              .spacing
+
       .settings-message.message(:class="{active: s.lastAction.active, fresh: s.lastAction.fresh}")
         .message-body
           icon.message-icon(:type="s.lastAction.icon" v-if="s.lastAction.icon")
-          favicon.message-favicon(:type="s.lastAction.favicon" v-if="s.lastAction.favicon")
+          favicon.message-favicon(:site="s.lastAction.favicon" v-if="s.lastAction.favicon")
           span.message-text {{s.lastAction.message}}
           span.message-node(ref="messageNode")
         .button.undo(@click="s.lastAction.undo()" v-show="s.lastAction.undo") Undo
@@ -65,7 +71,7 @@ export default {
   computed: {
     engines()
     {
-      return this.s.engines.reduce((m,e) => { m[e.type].push(e); return m;}, {opensearch: [], bookmark: [], builtin: []})
+      return this.s && this.s.engines.reduce((m,e) => { m[e.type].push(e); return m;}, {opensearch: [], bookmark: [], builtin: []})
     }
   },
   methods: {
@@ -84,7 +90,7 @@ export default {
           node.appendChild(action.node);
         }
       },
-      's.settings': {
+      's.data': {
         handler(value, oldvalue) {
           SettingsEditor.change(value, oldvalue)
         },
@@ -107,6 +113,7 @@ export default {
     overflow-y: auto
     padding: .3rem
     .row
+      position: relative
       padding: .4em
       max-height: 4rem
       transition: max-height .5s, padding .5s
@@ -119,11 +126,10 @@ export default {
         border: 0
   .actions
     align-self: center
-    margin-left: -9rem
+    margin-left: 1rem
     display: flex
     align-items: center
     .action
-      margin-left: .5em
       padding: .2em .5em
       &.remove:hover
         background: $Grey20
@@ -132,15 +138,44 @@ export default {
       .icon.close svg
         width: 10px
         height: 10px
+    .action.remove + .spacing
+      display: none
+    .spacing, .action.remove
+      width: 1.7rem
+      margin-left: .5em
+
+
   .setdefault
-    .button:not(:hover):not(:active):not(:focus)
-      background: $Grey40
-  .setdefault:not(:hover)
-    opacity: 0
+    position: absolute
+    left: 0
+    top: 0
+    bottom: 0
+    display: flex
+    align-items: flex-end
+    padding: .1rem 2rem
+    .button
+      background: $Blue50
+      font-size: 0.8rem
+      padding: 0.2rem 0.4rem
+    &:not(:hover)
+      opacity: 0
 
   .type
     opacity: .5
   .group-label
     padding: .4em
     margin: 0
+
+  .engine-keyword
+    width: 3rem
+  .headers
+    padding: .5rem 0
+    display: flex
+    text-transform: uppercase
+    font-size: .8rem
+    font-weight: 600
+    color: $text2
+    .keyword-header
+      margin-right: 3.8rem
+
 </style>
