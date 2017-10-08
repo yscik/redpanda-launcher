@@ -21,9 +21,14 @@ $margin: 0
     & + .main
       right: $width
   .toggle
-    position: absolute
-    left: -3rem - $margin
+    position: fixed
+    right: 1rem
     top: 1.8rem - $margin
+    height: 3rem
+    width: 3rem
+    display: flex
+    align-items: center
+    justify-content: center
     transition: left .3s
     z-index: 3
     padding: .4rem
@@ -31,7 +36,7 @@ $margin: 0
     border-radius: 3px
     line-height: 0
     .i
-      transition: transform .3s
+      transition: transform .4s
       width: 1.5rem
       height: 1.5rem
 
@@ -43,13 +48,16 @@ $margin: 0
     &:hover
       .i
         path
-          fill: $Blue60
+          fill: $red-hover
       cursor: pointer
       background: $Grey10
   &.open .toggle
-    left: $width - 3rem
+    //left: $width - 4rem
     .i
       transform: rotate(240deg)
+    &:not(:hover)
+      path
+        fill: $red
 
 .settings, .main
   transition: right .3s
@@ -62,7 +70,7 @@ $margin: 0
 
 .settings-header
   .title
-    color: #CD330E
+    color: $red
     font-weight: bold
     padding: 1.85rem 1.5rem
     margin: .5rem
