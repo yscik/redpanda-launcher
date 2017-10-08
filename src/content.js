@@ -2,19 +2,18 @@
 let key, result;
 
 try {
-  find_searchengine();
+  parse_site();
 }
 catch(err) {
   console.error("[Red Panda Launcher]", err);
 }
 
-
-async function find_searchengine()
+async function parse_site()
 {
   key = new URL(location.href).origin;
-  result = {parsed: Date.now()};
-
-  // if(await already_stored()) return;
+  const result = (await browser.storage.local.get(key)) || {parsed: Date.now(), count: 0, counting: true, reparse: false};
+  if(!result.counting && !result.reparse) return;
+  result.count++;
 
   await check_opensearch();
 
@@ -24,14 +23,10 @@ async function find_searchengine()
 
 }
 
-async function already_stored()
-{
-  const current = await browser.storage.local.get(key);
-  return !!current[key] //&& current[key].parsed > TIME_BETWEEN_PARSES;
-}
-
 function set_favicon()
 {
+  if(result.favicon && !result.reparse) return;
+
   const faviconNode = document.querySelector("link[rel='shortcut icon'], link[rel='icon']");
   if(faviconNode) {
     console.log("Favicon: ", faviconNode.href);
@@ -42,6 +37,8 @@ function set_favicon()
 
 async function check_opensearch()
 {
+  if(result.opensearch && !result.reparse) return;
+
   const node = document.querySelector("link[rel='search'][type='application/opensearchdescription+xml']");
   if(!node) return;
   try {
@@ -59,7 +56,7 @@ async function check_opensearch()
       icon: x("Image"),
       url: [url.getAttribute('template'),
         params.length ? '?'+params.map(p => [p.getAttribute('name'), p.getAttribute('value')].join('=')).join('&') : ''].join('')
-    }
+    };
 
     console.log("Opensearch: ", result.opensearch.title, result.opensearch.url);
 
