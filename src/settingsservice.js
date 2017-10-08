@@ -33,7 +33,7 @@ export default window.settings = new class Settings {
 
     if(action.undo) {
       let undo = action.undo;
-      action.undo = () => {undo(); clear()}
+      action.undo = () => {undo(); clear(); this.save();}
     }
 
     action.active = true;
