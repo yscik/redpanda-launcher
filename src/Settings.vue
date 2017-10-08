@@ -16,13 +16,14 @@
           strong {{s.defaultEngine.title}}
       label.control
         .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.autoadd")
-        .control-label Auto-add OpenSearch search engines
+        .control-label Auto-discover search engines (OpenSearch)
       .control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
         .control-label
-          | When site has at least
+          | Add when site has at least
           |
-          input.inline.w4(type='number' v-model="s.settings.search.opensearch.visits", :disabled="!s.settings.search.opensearch.autoadd")
-          |  visits
+          input.inline.w4(type='number' v-model.number="s.settings.search.opensearch.visits", :disabled="!s.settings.search.opensearch.autoadd")
+          |  visit
+          span(v-show="s.settings.search.opensearch.visits > 1") s
 
       .engines
         .group(v-for="(group, type) in engines")
@@ -38,9 +39,12 @@
                 .button Set As Default
               .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
                 icon(type="close")
-      .settings-message.message(:class="{active: s.lastAction.active}")
-        span.message-text {{s.lastAction.message}}
-        span.message-node(ref="messageNode")
+      .settings-message.message(:class="{active: s.lastAction.active, fresh: s.lastAction.fresh}")
+        .message-body
+          icon.message-icon(:type="s.lastAction.icon" v-if="s.lastAction.icon")
+          favicon.message-favicon(:type="s.lastAction.favicon" v-if="s.lastAction.favicon")
+          span.message-text {{s.lastAction.message}}
+          span.message-node(ref="messageNode")
         .button.undo(@click="s.lastAction.undo()" v-show="s.lastAction.undo") Undo
 
 </template>
@@ -56,18 +60,18 @@ export default {
     }
   },
   created(){
-    this.label = {bookmark: 'From bookmarks', opensearch: 'OpenSearch'}
+    this.label = {bookmark: 'From bookmarks', opensearch: 'Discovered', builtin: 'Defaults'}
   },
   computed: {
     engines()
     {
-      return this.s.engines.reduce((m,e) => { m[e.type].push(e); return m;}, {opensearch: [], bookmark: []})
+      return this.s.engines.reduce((m,e) => { m[e.type].push(e); return m;}, {opensearch: [], bookmark: [], builtin: []})
     }
   },
   methods: {
     toggle(state)
     {
-      if(!this.s) this.s = SettingsService;
+      if(!this.s) this.s = SettingsEditor;
       this.open = typeof(state) == "undefined" ? !this.open : state;
     }
   },
@@ -80,6 +84,13 @@ export default {
           node.appendChild(action.node);
         }
       },
+      's.settings': {
+        handler(value, oldvalue) {
+          SettingsEditor.change(value, oldvalue)
+        },
+        deep: true,
+        immediate: true
+      }
   }
 }
 
@@ -113,7 +124,9 @@ export default {
     align-items: center
     .action
       margin-left: .5em
-      padding: .1em .3em
+      padding: .2em .5em
+      &.remove:hover
+        background: $Grey20
       .icon
         margin: 0
       .icon.close svg
@@ -122,7 +135,7 @@ export default {
   .setdefault
     .button:not(:hover):not(:active):not(:focus)
       background: $Grey40
-  .row:not(:hover) .setdefault
+  .setdefault:not(:hover)
     opacity: 0
 
   .type

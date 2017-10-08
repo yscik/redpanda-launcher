@@ -9,6 +9,20 @@
   vertical-align: baseline
   svg
     transform: translateZ(0)
+
+  &.action, .action &
+    cursor: pointer
+  &.action:hover, .action:hover &
+    svg *
+      fill: $Blue50
+  &.action:active, .action:active &,
+  &.action:focus, .action:focus &
+    svg *
+      fill: $Blue60
+
+.action
+  cursor: pointer
+
 .favicon
   width: 16px
   height: 16px
@@ -80,12 +94,43 @@ h3
   justify-content: space-between
   * + *
     margin-left: .5em
+  .message-body
+    display: flex
+    justify-content: flex-start
+    * + *
+      margin-left: .3em
   transition: bottom .5s
+  .icon path
+    color: $Grey50
+    transition: fill .5s
+  &.fresh
+    animation: .5s flash-message
+    .icon path
+      //transition: fill 0s
+      fill: $Blue50
   &:not(.active)
     bottom: -3rem
 
   .message-text:empty, .message-node:empty
     display: none
+
+@keyframes flash-icon
+  0%
+    fill: $text
+  30%
+    fill: $Blue50
+  100%
+    fill: $text
+
+@keyframes flash-message
+  0%
+    bottom: 1rem
+  30%
+    bottom: 2rem
+  //75%    bottom: .5rem
+  100%
+    bottom: 1rem
+
 .button
   display: inline-block
   padding: .3em .5em

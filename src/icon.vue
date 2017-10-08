@@ -14,7 +14,8 @@ const typeImages = {
  link: require('../icons/link-16.svg'),
  host: require('../icons/highlights-16.svg'),
  close: require('../icons/stop-16.svg'),
- delete: require('../icons/delete-16.svg')
+ delete: require('../icons/delete-16.svg'),
+ success: require('../icons/check-16.svg'),
 };
 
 export default Vue.component("icon", {
@@ -35,15 +36,5 @@ export default Vue.component("icon", {
 
 .icon
   display: inline-block
-
-  &.action, .action &
-    cursor: pointer
-    &:hover
-      svg *
-        fill: $Blue50
-    &:active, &:focus
-      svg *
-        fill: $Blue60
-
 
 </style>

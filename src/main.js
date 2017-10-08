@@ -8,6 +8,7 @@ import Vue from 'vue'
 import App from './app.vue'
 import './icon.vue'
 import './favicon.vue'
+import './settings'
 
 window.focus();
 
