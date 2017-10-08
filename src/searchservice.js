@@ -1,7 +1,7 @@
 import Datasource from './datasource';
 import {isUrl, protocol} from './isUrl';
 import Entry from './Entry';
-import Settings from './settingsservice';
+import settings from './settings';
 
 function formatUrl(term) {
   if (protocol.test(term)) return term;
@@ -118,7 +118,7 @@ class SearchService
     else {
       if (isUrl(this.state.term)) Entry.open({url: formatUrl(this.state.term)});
       else {
-        Entry.search(Settings.defaultEngine, this.state.term)
+        Entry.search(settings.defaultEngine, this.state.term)
       }
     }
   }

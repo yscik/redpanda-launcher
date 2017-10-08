@@ -1,5 +1,6 @@
 import Storage from './Storage'
 import Engines from './Engines'
+import settings from "./settings";
 
 const e = document.createElement.bind(document);
 
@@ -18,7 +19,7 @@ export default window.settings = new class Settings {
     await Storage.promise;
 
     this.engines = Engines.engines;
-    this.settings = Storage.settings = Object.assign(Settings.schema(), Storage.settings);
+    this.settings = settings;
     this.defaultEngine = this.engines.find(e => e.url == this.settings.search.defaultEngine) || Engines.defaults[0].url;
   }
 
@@ -74,31 +75,7 @@ export default window.settings = new class Settings {
       undo: () => engine.active = true});
   }
 
-  static schema()
-  {
-    return {
-      search: {
-        defaultEngine: Engines.defaults[0].url,
-        opensearch: {
-          autoadd: true,
-          visits: 4,
-        }
-      },
-      data: {
-        history: {
-          days: 30,
-          autoextend: false
-        }
-      },
-      topSites: {
-        source: 'topSites'
-      },
-      autocomplete: {
-        url: true,
-        selected: true,
-      }
-    }
-  }
+
 
 
 }

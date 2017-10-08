@@ -46,7 +46,7 @@
 </template>
 <script>
 
-import SettingsService from './settingsservice'
+import SettingsEditor from './settingseditor'
 
 export default {
   data: () => {

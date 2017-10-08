@@ -1,7 +1,9 @@
 
 import Engines from './Engines';
+import settings from './settings';
 
-export default new class Storage {
+export default new class Storage
+{
 
   constructor()
   {
@@ -12,14 +14,16 @@ export default new class Storage {
 
   async load()
   {
-    const storage = await browser.storage.local.get() || {};
+    const sites = await browser.storage.local.get() || {};
+    browser.storage.local.set(sites);
 
-    this.settings = storage._settings && JSON.parse(storage._settings) || {};
+    let engines =
+        //sites._engines ? JSON.parse(sites._engines) :
+        Engines.defaults;
 
-    let engines = Engines.defaults;
+    this.engines = Engines.addStorage(sites, engines);
+    this.icons = sites;
 
-    this.engines = Engines.addStorage(storage, engines);
-    this.icons = storage;
 
     return this
   }
@@ -27,7 +31,7 @@ export default new class Storage {
   async save()
   {
 
-    let data = {'_settings': JSON.stringify(this.settings),
+    let data = {'_settings': JSON.stringify(settings),
       '_engines': JSON.stringify(this.engines)};
 
     return browser.storage.local.set(data)

@@ -1,16 +1,6 @@
 
-const builtinEngines = [
-  {title: 'Google', url: 'https://google.com/search?q=%s'},
-  {title: 'Bing', url: 'https://bing.com/search?q=%s'},
-  {title: 'Yahoo', url: 'https://yahoo.com/search?p=%s'},
-  {title: 'Wikipedia (en)', url: 'https://en.wikipedia.org/w/index.php?title=Special:Search&search=%s'},
-  {title: 'Amazon.com', url: 'https://www.amazon.com/s?field-keywords=%s'},
-  {title: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=%s'},
-  {title: 'Twitter', url: 'https://twitter.com/search?q=%s'},
-];
-builtinEngines.forEach(e => {e.active = true; e.type='opensearch'});
-
 import Entry from './Entry';
+import {default as settings, builtinEngines} from "./settings";
 
 export default new class Engines
 {
@@ -25,13 +15,16 @@ export default new class Engines
     for(let url in sites)
     {
       let site = sites[url];
-      if(site.opensearch && !engines.find(e => e.url.endsWith(site.opensearch.url))) {
-        let engine = Object.assign({active: true}, site.opensearch);
+
+      if(site.opensearch && !engines.find(e => e.url.endsWith(site.opensearch.url))
+      && site.count >= settings.search.opensearch.visits) {
+        console.log('Adding engine', site.opensearch.url);
+        let engine = Object.assign({active: true, type: 'opensearch'}, site.opensearch);
         engines.unshift(engine);
       }
     }
 
-    return this.add(engines, {type: 'opensearch'});
+    return this.add(engines);
 
   }
 
@@ -39,7 +32,7 @@ export default new class Engines
   {
     engines = Entry.process(engines, {copy: true, props, setup: e => e.domain = e.urlo.hostname.replace(/^www\./, '')});
 
-    this.engines.push(...engines);
+    this.engines.unshift(...engines);
 
     return engines;
   }
@@ -50,7 +43,6 @@ export default new class Engines
     let engines = entries.filter(b =>
         b.url && b.url.includes('%s')
     );
-    engines.reverse();
 
     this.add(engines, {type: 'bookmark', active: true});
 
