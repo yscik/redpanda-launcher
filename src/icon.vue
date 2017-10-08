@@ -16,6 +16,7 @@ const typeImages = {
  close: require('../icons/stop-16.svg'),
  delete: require('../icons/delete-16.svg'),
  success: require('../icons/check-16.svg'),
+ add: require('../icons/new-16.svg'),
 };
 
 export default Vue.component("icon", {

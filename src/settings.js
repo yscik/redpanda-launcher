@@ -1,4 +1,15 @@
 
+function deepCopy(target, source)
+{
+  for(let key in source)
+  {
+    if(source[key] instanceof Object) {
+      if (!target[key]) target[key] = source[key];
+      else deepCopy(target[key], source[key]);
+    }
+    else target[key] = source[key];
+  }
+}
 const builtinEngines = [
   {title: 'Google', url: 'https://google.com/search?q=%s'},
   {title: 'Bing', url: 'https://bing.com/search?q=%s'},
@@ -16,7 +27,7 @@ async function load()
 
   if(storage._settings) try {
     storage = JSON.parse(storage._settings);
-    Object.assign(settings, storage);
+    deepCopy(settings, storage);
   }
   catch(err) {
     console.error('Error parsing stored settings', storage)
@@ -35,7 +46,8 @@ function defaults()
       opensearch: {
         autoadd: true,
         visits: 4,
-      }
+      },
+      transforms: []
     },
     data: {
       history: {

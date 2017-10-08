@@ -36,7 +36,6 @@
   border: 1px solid currentcolor
   border-radius: 3px
   border-color: hsla(210,54%,20%,.15) hsla(210,54%,20%,.17) hsla(210,54%,20%,.2)
-  box-shadow: 0 1px 0 hsla(210,65%,9%,.02) inset, 0 0 2px hsla(210,65%,9%,.1) inset, 0 1px 0 hsla(0,0%,100%,.2)
   color: inherit
   unicode-bidi: plaintext
   &:focus
@@ -87,11 +86,12 @@ h3
   width: 30rem
   min-height: 3rem
   padding: .5rem
-  background: $Grey10
+  background: #fff
   border-radius: 2px
   display: flex
   align-items: center
   justify-content: space-between
+  box-shadow: 0 0 4px -3px rgba($Blue90, .7)
   * + *
     margin-left: .5em
   .message-body
@@ -144,3 +144,7 @@ h3
     background: $Blue70
   &:focus, &:active
     background: $Blue80
+  .icon
+    margin: 0
+    path
+      fill: $Grey10

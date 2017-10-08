@@ -49,6 +49,7 @@
 
   /*border: 1px solid red*/
 .search-input
+  box-shadow: 0 1px 0 hsla(210,65%,9%,.02) inset, 0 0 2px hsla(210,65%,9%,.1) inset, 0 1px 0 hsla(0,0%,100%,.2)
   position: absolute
   top: 0
   left: 0

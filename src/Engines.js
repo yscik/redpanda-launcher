@@ -56,4 +56,18 @@ export default new class Engines
     this.add(engines, {type: 'bookmark', active: true, keyword: null});
 
   }
+
+  transform(term)
+  {
+    settings.search.transforms.forEach(trans => term.includes(trans.pattern) && (term += ' ' + trans.append));
+
+    return term;
+  }
+
+  prepare(term, engine)
+  {
+    term = this.transform(term);
+    const url = engine.url.replace(/(%s|{searchTerms})/, encodeURIComponent(term));
+    return url;
+  }
 }

@@ -16,35 +16,52 @@
           strong {{s.defaultEngine.title}}
       label.control
         .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.autoadd")
-        .control-label Auto-discover search engines (OpenSearch)
+        .control-label Add OpenSearch search engines defined by sites
       .control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
         .control-label
-          | Add when site has at least
+          | When site has at least
           |
           input.inline.w4(type='number' v-model.number="s.settings.search.opensearch.visits", :disabled="!s.settings.search.opensearch.autoadd")
           |  visit
           span(v-show="s.settings.search.opensearch.visits > 1") s
-      .headers
-        span.flex-1
-        span.keyword-header Keyword
+      label.control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
+        .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.manual")
+        .control-label Manually enable discovered search engines
       .engines
-        .group(v-for="(group, type) in engines")
-          h3.group-label {{label[type]}}
-          .row(v-for="(entry, index) in group", :key="entry.url", :class="{active: entry.active}")
-            .setdefault.action(@click='s.set_default_engine(entry)')
-              .button Set As Default
-            .icons
-              favicon(:site='entry.urlo')
-            .text.ellipsis
-              .title {{entry.title}}
-              .url {{entry.url}}
-            .actions
-              .keyword
-                input.engine-keyword(v-model='entry.keyword', @input='s.change_keyword(entry)')
-              .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
-                icon(type="close")
-              .spacing
-
+        .headers
+          span.flex-1
+          span.keyword-header Keyword
+        .box
+          .group(v-for="(group, type) in engines")
+            h3.group-label {{label[type]}}
+            .row(v-for="(entry, index) in group", :key="entry.url", :class="{active: entry.active}")
+              .icons
+                favicon(:site='entry.urlo')
+              .text.ellipsis
+                .title {{entry.title}}
+                .url {{entry.url}}
+              .actions
+                .setdefault.action(@click='s.set_default_engine(entry)')
+                  .button Set As Default
+                .keyword
+                  input.input.engine-keyword(v-model='entry.keyword', @input='s.change(entry, true)')
+                .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
+                  icon(type="close")
+                .spacing
+      .transforms
+        h3.title Search transformations
+          .button.add-transform(@click="s.settings.search.transforms.unshift({pattern: '', append: ''})")
+            icon(type='add') Add
+        //.help
+        .headers
+          span.transform-pattern Pattern
+          span.transform-append Extra content
+        .box
+          .row.transform(v-for="transform in s.settings.search.transforms")
+            input.transform-pattern.input(v-model="transform.pattern" type="text" placeholder='Pattern')
+            input.transform-append.input(v-model="transform.append" type="text" placeholder="Content to append")
+            .remove.action(@click='s.settings.search.transforms.remove(transform)')
+              icon(type="close")
       .settings-message.message(:class="{active: s.lastAction.active, fresh: s.lastAction.fresh}")
         .message-body
           icon.message-icon(:type="s.lastAction.icon" v-if="s.lastAction.icon")
@@ -90,7 +107,7 @@ export default {
           node.appendChild(action.node);
         }
       },
-      's.data': {
+      's.settings': {
         handler(value, oldvalue) {
           SettingsEditor.change(value, oldvalue)
         },
@@ -107,9 +124,9 @@ export default {
 @import form
 
 .settings-content
-  .engines
+  .box
     border: 1px solid $Grey40
-    height: 20rem
+    height: 25rem
     overflow-y: auto
     padding: .3rem
     .row
@@ -120,45 +137,39 @@ export default {
       overflow-y: hidden
       & + .row
         border-top: 1px solid $border
+  .engines
+    .row
       &:not(.active)
         max-height: 0
         padding: 0 .4em
         border: 0
   .actions
     align-self: center
-    margin-left: 1rem
+    margin-left: -9rem
     display: flex
     align-items: center
-    .action
-      padding: .2em .5em
-      &.remove:hover
-        background: $Grey20
-      .icon
-        margin: 0
-      .icon.close svg
-        width: 10px
-        height: 10px
     .action.remove + .spacing
       display: none
     .spacing, .action.remove
       width: 1.7rem
       margin-left: .5em
-
+  .action
+    padding: .2em .5em
+    &:hover
+      background: $Grey20
+    .icon
+      margin: 0
+    .icon.close svg
+      width: 10px
+      height: 10px
 
   .setdefault
-    position: absolute
-    left: 0
-    top: 0
-    bottom: 0
-    display: flex
-    align-items: flex-end
-    padding: .1rem 2rem
-    .button
-      background: $Blue50
-      font-size: 0.8rem
-      padding: 0.2rem 0.4rem
-    &:not(:hover)
-      opacity: 0
+    .button:not(:hover):not(:active):not(:focus)
+      background: $Grey40
+    &:hover
+      background: transparent
+  .row:not(:hover) .setdefault
+    opacity: 0
 
   .type
     opacity: .5
@@ -177,5 +188,33 @@ export default {
     color: $text2
     .keyword-header
       margin-right: 3.8rem
+  .transforms
+    position: relative
+    .box
+      /*border: none*/
+      background: $Grey10
+      height: auto
+      min-height: 5rem
+      max-height: 15rem
+    .add-transform
+      position: absolute
+      right: 0
+      top: 0
 
+    .headers
+      padding: 0 .5rem
+    .row
+      align-items: center
+    .action
+      margin-left: .5rem
+    input[type='text']
+      padding: .4em
+      border-radius: 0
+    .transform-pattern
+      margin-right: -1px
+      flex: 1
+    .transform-append
+      flex: 2
+    h3
+      margin-right: 3rem
 </style>

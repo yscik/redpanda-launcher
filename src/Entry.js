@@ -1,3 +1,5 @@
+import Engines from './Engines';
+
 export default class Entry
 {
 
@@ -11,9 +13,7 @@ export default class Entry
 
   static search(entry, term)
   {
-    const url = entry.url.replace(/(%s|{searchTerms})/, encodeURIComponent(term));
-
-    Entry.open({url})
+    Entry.open({url: Engines.prepare(term, entry)})
   }
 
   static process(entries, {copy = false, props = null, setup = null} = {})
