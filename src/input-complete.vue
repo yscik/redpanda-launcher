@@ -23,10 +23,10 @@ export default Vue.component('input-complete',
     suggest: function(suggestion)
     {
       this.displayvalue = this.value;
-      if(!suggestion || !suggestion.startsWith(this.value)) return;
+      if(!suggestion || !this.value || !suggestion.startsWith(this.value.toLowerCase())) return;
       let realvalue = this.value;
 
-      this.$refs.input.value = this.displayvalue = suggestion;
+      this.$refs.input.value = this.displayvalue = this.value + suggestion.substr(this.value.length);
       this.$refs.input.setSelectionRange(realvalue.length, suggestion.length, "backward");
     }
   },
