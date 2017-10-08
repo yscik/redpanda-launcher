@@ -17,7 +17,7 @@ export default new class Engines
   constructor()
   {
     this.engines = [];
-    this.default = builtinEngines;
+    this.defaults = builtinEngines;
   }
 
   addStorage(sites, engines)

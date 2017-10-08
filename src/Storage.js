@@ -16,7 +16,7 @@ export default new class Storage {
 
     this.settings = storage._settings && JSON.parse(storage._settings) || {};
 
-    let engines = Engines.default;
+    let engines = Engines.defaults;
 
     this.engines = Engines.addStorage(storage, engines);
     this.icons = storage;
