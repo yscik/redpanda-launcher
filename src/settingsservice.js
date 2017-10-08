@@ -19,7 +19,7 @@ export default window.settings = new class Settings {
 
     this.engines = Engines.engines;
     this.settings = Storage.settings = Object.assign(Settings.schema(), Storage.settings);
-    this.defaultEngine = this.engines.find(e => e.url == this.settings.search.defaultEngine);
+    this.defaultEngine = this.engines.find(e => e.url == this.settings.search.defaultEngine) || Engines.defaults[0].url;
   }
 
   async save() {
@@ -78,7 +78,7 @@ export default window.settings = new class Settings {
   {
     return {
       search: {
-        defaultEngine: Engines.engines[Engines.engines.length-1].url,
+        defaultEngine: Engines.defaults[0].url,
         opensearch: {
           autoadd: true,
           visits: 4,
