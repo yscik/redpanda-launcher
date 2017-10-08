@@ -41,6 +41,7 @@
   cursor: pointer
   border: 2px solid transparent
   color: $text
+  word-break: break-all
 
   &:hover
     background-color: #fff
@@ -62,6 +63,8 @@
 .url
   color: $Grey50
   font-size: .9em
+  max-height: 2rem
+  overflow: hidden
 .source-icon
   opacity: .6
   img
