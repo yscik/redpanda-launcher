@@ -105,6 +105,8 @@ export default {
       this.open = typeof(state) == "undefined" ? !this.open : state;
 
       if(this.open) setTimeout(() => this.open && this.$refs.engine_filter.focus(), 300);
+      else window.radio.$emit('focus-search-input');
+
     }
   },
   watch: {

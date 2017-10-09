@@ -27,10 +27,14 @@
     created()
     {
       this.service = SearchService;
+      window.radio.$on('focus-search-input', () => this.focus())
     },
-    mounted()
-    {
-      this.$refs.input.focus()
+    mounted() { this.focus() },
+    methods: {
+      focus()
+      {
+        this.$refs.input.focus()
+      }
     }
   }
 

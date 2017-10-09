@@ -12,6 +12,7 @@ import './favicon.vue'
 import './settings'
 
 window.focus();
+window.radio = new Vue();
 
 new Vue({
   el: '#app',
