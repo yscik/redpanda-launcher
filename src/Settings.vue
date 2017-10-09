@@ -30,6 +30,7 @@
       .engines
         .headers
           span.flex-1
+            input.input.engine-filter(v-model="engine_filter" ref="engine_filter" placeholder="Filter search engines")
           span.keyword-header Keyword
         .box
           .group(v-for="(group, type) in engines")
@@ -79,7 +80,8 @@ export default {
   data: () => {
     return {
       open: false,
-      s: null
+      s: null,
+      engine_filter: ''
     }
   },
   created(){
@@ -88,7 +90,12 @@ export default {
   computed: {
     engines()
     {
-      return this.s && this.s.engines.reduce((m,e) => { m[e.type].push(e); return m;}, {opensearch: [], bookmark: [], builtin: []})
+      return this.s && this.s.engines.reduce((m,e) => {
+        (e.title.includes(this.engine_filter) || e.url.includes(this.engine_filter)) &&
+          m[e.type].push(e);
+        return m;
+      },
+      {opensearch: [], bookmark: [], builtin: []})
     }
   },
   methods: {
@@ -96,6 +103,8 @@ export default {
     {
       if(!this.s) this.s = new SettingsEditor();
       this.open = typeof(state) == "undefined" ? !this.open : state;
+
+      if(this.open) setTimeout(() => this.open && this.$refs.engine_filter.focus(), 300);
     }
   },
   watch: {
