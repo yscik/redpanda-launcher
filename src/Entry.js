@@ -7,7 +7,16 @@ export default class Entry
   {
     // browser.tabs.getCurrent().then(tab => browser.tabs.remove(tab.id));
 
-    browser.tabs.update({url: entry.url})
+    switch(entry.type)
+    {
+      case 'tab':
+        browser.tabs.update(entry.id, {active: true});
+        break;
+      default:
+        browser.tabs.update({url: entry.url})
+    }
+
+
   }
 
 
@@ -21,10 +30,12 @@ export default class Entry
     return entries.reduce((result,entrydata) =>
     {
       let entry = copy ? Object.assign({}, entrydata, props) : props ? Object.assign(entrydata, props) : entrydata;
-
       try {
+        if(entry.url.startsWith('moz-extension://')) return result;
+
         entry.url = entry.url.replace(/^\/\//, 'https://');
         entry.urlo = new URL(entry.url);
+        entry.domain = entry.urlo.hostname.replace(/^www\./, '');
         result.push(entry);
         entry.selected = false;
         if(setup) setup(entry);

@@ -8,7 +8,8 @@ import Vue from 'vue'
 const typeImages = {
  history: require('../icons/history-16.svg'),
  bookmark: require('../icons/bookmark-16-Outline.svg'),
- session: require('../icons/tab-16.svg'),
+ session: require('../icons/history-16.svg'),
+ tab: require('../icons/tab-16.svg'),
  topsite: require('../icons/topsites-16.svg'),
  engine: require('../icons/search-16.svg'),
  link: require('../icons/link-16.svg'),
