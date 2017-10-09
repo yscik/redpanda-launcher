@@ -1,18 +1,21 @@
-# Red Panda
+# ![icon] Red Panda Launcher
 
-> A Firefox launcher
+Advanced search functions on a new home screen for Firefox.
 
-## Build Setup
+## Features
 
-``` bash
-# install dependencies
-npm install
+### Tab to search
 
-# serve with hot reload at localhost:8080
-npm run dev
+Press TAB after a few characters to search in the matching site if it has an OpenSearch provider defined.
 
-# build for production with minification
-npm run build
-```
+### TLD matching
+Recognize urls by .tld, so search terms containing '.' won't try to open a webpage.
 
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+### Search transformations
+Add extra search options for specific terms, like excluding a domain. 
+
+### Start page
+
+Access recently closed tabs on the new tab page. 
+
+[icon]: https://github.com/yscik/redpanda-launcher/raw/master/icons/fav-1.png
