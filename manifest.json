@@ -12,7 +12,7 @@
   "description": "",
 
   "icons": {
-    "48": "redpanda-48.png",
+    "48": "redpanda-256.png",
     "96": "redpanda-256.png"
   },
   "permissions": [
