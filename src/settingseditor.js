@@ -5,19 +5,10 @@ import settings from "./settings";
 const e = document.createElement.bind(document);
 const clone = v => JSON.parse(JSON.stringify(v));
 
-export default window.settingseditor = new class SettingsEditor {
+export default class SettingsEditor {
   constructor() {
 
-    this.settings = null;
-    this.engines = null;
-
-    this.load();
-
     this.lastAction = {};
-  }
-
-  async load() {
-    await Storage.promise;
 
     this.engines = Engines.engines;
     this.settings = settings;

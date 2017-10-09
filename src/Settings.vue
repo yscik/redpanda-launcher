@@ -94,7 +94,7 @@ export default {
   methods: {
     toggle(state)
     {
-      if(!this.s) this.s = SettingsEditor;
+      if(!this.s) this.s = new SettingsEditor();
       this.open = typeof(state) == "undefined" ? !this.open : state;
     }
   },
@@ -109,7 +109,7 @@ export default {
       },
       's.settings': {
         handler(value, oldvalue) {
-          SettingsEditor.change(value, oldvalue)
+          this.s && this.s.change(value, oldvalue)
         },
         deep: true,
         immediate: true
@@ -182,12 +182,15 @@ export default {
   .headers
     padding: .5rem 0
     display: flex
+    align-items: flex-end
     text-transform: uppercase
     font-size: .8rem
     font-weight: 600
     color: $text2
     .keyword-header
       margin-right: 3.8rem
+    .engine-filter
+      width: 60%
   .transforms
     position: relative
     .box
