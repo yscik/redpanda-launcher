@@ -38,5 +38,21 @@ export default Vue.component("icon", {
 
 .icon
   display: inline-block
+  margin:
+    right: 6px
+  font-size: 1em
+  vertical-align: middle
+  svg
+    transform: translateZ(0)
+
+  &.action, .action &
+    cursor: pointer
+  &.action:hover, .action:hover &
+    svg *
+      fill: $Blue50
+  &.action:active, .action:active &,
+  &.action:focus, .action:focus &
+    svg *
+      fill: $Blue60
 
 </style>
