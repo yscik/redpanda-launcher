@@ -104,6 +104,7 @@ export default {
       if(!this.s) this.s = new SettingsEditor();
       this.open = typeof(state) == "undefined" ? !this.open : state;
 
+      this.engine_filter = '';
       if(this.open) setTimeout(() => this.open && this.$refs.engine_filter.focus(), 300);
       else window.radio.$emit('focus-search-input');
 
