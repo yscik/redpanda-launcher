@@ -148,7 +148,6 @@ class SearchService
 
     const data = await this.data.search(term, options);
 
-    data.result = [...data.history];
 
     if(options.term == this.state.term) this.update(data);
 

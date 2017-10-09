@@ -20,6 +20,7 @@ export default class Datasource
   async search(term, options)
   {
     term = term.toLowerCase();
+    this._current = term;
 
     let history = this.searchHistory(term);
 
@@ -27,12 +28,18 @@ export default class Datasource
 
     history = await history;
 
+    if(!history || !this.active(term)) return;
     this.processHistory(history);
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
     let engine = this.engine(term, autocomplete);
 
-    return {history, session, engine, autocomplete};
+    return {result: history, engine, autocomplete};
+  }
+
+  active(term)
+  {
+    return term == this._current;
   }
 
 
@@ -49,9 +56,9 @@ export default class Datasource
   async searchHistory(term) {
 
     let entries = await browser.history.search({text: term, maxResults: 100, startTime: startTime});
+    if(!this.active(term)) return;
 
-    entries.forEach(e => {e.source = 'history'; e.weight = e.visitCount});
-    entries = Entry.process(entries);
+    entries = Entry.process(entries, {setup: e => {e.source = 'history'; e.weight = e.visitCount}});
 
     return entries;
 
