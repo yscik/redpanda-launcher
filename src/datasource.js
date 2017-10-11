@@ -13,6 +13,8 @@ import Engines from './Engines'
 const weightSort = (a,b) => b.weight - a.weight;
 const visitSort = (a,b) => b.visitCount - a.visitCount;
 
+const QUERY_LIMIT = 3;
+
 export default class Datasource
 {
 
@@ -21,12 +23,23 @@ export default class Datasource
     this.session = [];
     this.topSites = [];
     this.engines = [];
+    this.queries = {pending: 0, latest: null};
   }
 
   async search(term, options)
   {
     term = term.toLowerCase();
-    this._current = term;
+    this.queries.latest = {term, options};
+
+    if(this.queries.pending >= QUERY_LIMIT)
+    {
+      console.log('Delaying', term);
+      await (new Promise((resolve, reject) => this.queries.latest.run = resolve));
+    }
+    this.queries.pending++;
+    let t = performance.now();
+
+    console.log('Querying', term);
 
     let history = this.searchHistory(term);
     let tabs = this.searchTabs(term);
@@ -36,13 +49,33 @@ export default class Datasource
 
     [history, tabs] = await Promise.all([history, tabs]);
 
-    if(!history || !this.active(term)) return;
+    await this.continueOrSkipToLatest(term);
 
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
     let engine = this.engine(term, autocomplete);
 
-    return this.compile({history, tabs, session, bookmarks, engine, autocomplete});
+    let result = this.compile({history, tabs, session, bookmarks, engine, autocomplete});
+    this.finish();
+    console.log('Time', term, performance.now() - t);
+
+    return result;
+  }
+
+  async continueOrSkipToLatest(term)
+  {
+    if(term == this.queries.latest.term) return true;
+    else {
+      console.log('Aborting', term);
+      this.finish();
+      await new Promise(function() {});
+    }
+  }
+
+  finish()
+  {
+    this.queries.pending--;
+    this.queries.latest.run && this.queries.latest.run();
   }
 
   compile(data, term)
@@ -73,8 +106,7 @@ export default class Datasource
   async searchHistory(term) {
 
     let entries = await browser.history.search({text: term, maxResults: 100, startTime: startTime});
-    if(!this.active(term)) return;
-
+    await this.continueOrSkipToLatest(term);
 
     entries = Entry.process(entries, {setup: e => {e.weight = e.visitCount}});
     entries.sort(weightSort);
