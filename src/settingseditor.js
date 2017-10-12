@@ -91,7 +91,7 @@ export default class SettingsEditor {
     this.defaultEngine = Engines.updateDefault();
 
     this.changing.internal = true;
-    this.commit({html: [['b', engine.title], ' set as default search engine.'], favicon: engine.urlo,
+    this.commit({html: [['b', engine.title], ' set as default search engine.'], favicon: engine,
       undo: () =>  {
         this.changing.internal = true;
         this.settings.search.defaultEngine = previous.url;

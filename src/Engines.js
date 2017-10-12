@@ -37,7 +37,7 @@ export default new class Engines
 
   add(engines, props)
   {
-    engines = Entry.process(engines, {copy: true, props, setup: e => e.domain = e.urlo.hostname.replace(/^www\./, '')});
+    engines = Entry.process(engines, {copy: true, props});
 
     this.engines.unshift(...engines);
 

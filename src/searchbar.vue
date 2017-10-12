@@ -1,7 +1,7 @@
 <template lang="pug">
   .searchbar
     .prefix-icon(:class="{search: state.searching, link: state.isUrl}")
-      favicon.search-engine(:site='state.engine.urlo' v-if="state.searching")
+      favicon.search-engine(:site='state.engine' v-if="state.searching")
       icon.search-icon(type='engine')
       icon.link-icon(type='link')
     input-complete.input.search-input(type="text" v-model="state.term", :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
@@ -9,7 +9,7 @@
     .tab-info(v-if="state.engine && !state.searching")
       span.key TAB
       span to search
-      favicon.search-engine(:site='state.engine.urlo')
+      favicon.search-engine(:site='state.engine')
       span.name {{state.engine.title}}
 
 </template>

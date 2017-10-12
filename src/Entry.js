@@ -34,8 +34,11 @@ export default class Entry
         if(entry.url.startsWith('moz-extension://')) return result;
 
         entry.url = entry.url.replace(/^\/\//, 'https://');
-        entry.urlo = new URL(entry.url);
-        entry.domain = entry.urlo.hostname.replace(/^www\./, '');
+        let urlo = new URL(entry.url);
+        entry.domain = urlo.hostname.replace(/^www\./, '');
+        entry.origin = urlo.origin;
+        entry.protocol = urlo.protocol;
+
         result.push(entry);
         entry.selected = false;
         if(setup) setup(entry);

@@ -1,11 +1,11 @@
 <template lang="pug">
   .entries
-    a.entry(v-for="(entry, index) in entries", :key="entry.url",
+    a.entry(v-for="(entry, index) in entries",
     :href="entry.url",
     @click.prevent="open(entry)",
     :class="{selected: index === selected}")
       .icons
-        favicon(:site='entry.urlo')
+        favicon(:site='entry')
       .text
         .title {{entry.title}}
         .url

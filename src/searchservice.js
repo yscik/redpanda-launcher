@@ -80,7 +80,7 @@ class SearchService
     }
     this.searchTerm = term;
 
-    let searchexpr = (this.state.searching ? this.state.engine.urlo.host + ' ' : '') + term;
+    let searchexpr = (this.state.searching ? this.state.engine.host + ' ' : '') + term;
 
     let options = {
       autocomplete: !this.state.searching && term && (!this.state.term || term.length > this.state.term.length),

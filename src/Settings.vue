@@ -37,7 +37,7 @@
             h3.group-label {{label[type]}}
             .row(v-for="(entry, index) in group", :key="entry.url", :class="{active: entry.active}")
               .icons
-                favicon(:site='entry.urlo')
+                favicon(:site='entry')
               .text.ellipsis
                 .title {{entry.title}}
                 .url {{entry.url}}
