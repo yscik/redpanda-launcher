@@ -52,7 +52,9 @@ class SearchService
 
   async init()
   {
-    this.data = new Datasource();
+    // this.data = new Datasource();
+
+    this.data = (await browser.runtime.getBackgroundPage()).dataSource;
 
     this.update({});
     this.state.home = true;
@@ -156,9 +158,9 @@ class SearchService
 
   async search(term, options) {
 
-    this.port.postMessage({term, options})
-    // const data = await this.data.search(term, options);
-    // this.update(data);
+    // this.port.postMessage({search: {term, options}})
+    const data = await this.data.search(term, options);
+    this.update(data);
 
   }
 

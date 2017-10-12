@@ -1,20 +1,18 @@
 
 import Datasource from "./datasource";
 
-console.log("Running background page");
-
 let data = new Datasource();
-data.loadLongtermEntries().then(()=> console.log(data.bookmarks));
-
+data.loadLongtermEntries();
+window.dataSource = data;
 
 browser.runtime.onConnect.addListener(function(port)
 {
-  port.onMessage.addListener(async function(message)
+  port.onMessage.addListener(async function({command, search})
   {
-    let result = await data.search(message.term, message.options);
-
-    console.log(JSON.stringify(result));
-    port.postMessage(result);
-    console.log('Sent result');
+    if(command == 'load') data.loadLongtermEntries();
+    if(search) {
+      let result = await data.search(search.term, search.options);
+      port.postMessage(result);
+    }
   })
 });
