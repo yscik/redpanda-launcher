@@ -21,7 +21,6 @@ export default class Datasource
   {
     this.session = [];
     this.topSites = [];
-    this.engines = [];
     this.queries = {pending: 0, latest: null, lastFinished: null};
   }
 
@@ -52,9 +51,7 @@ export default class Datasource
 
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
-    let engine = this.engine(term, autocomplete);
-
-    let result = this.compile({history, tabs, session, bookmarks, engine, autocomplete});
+    let result = this.compile({history, tabs, session, bookmarks, autocomplete, term});
     console.log('Time', term, performance.now() - t);
     this.finish(term);
 
@@ -128,12 +125,6 @@ export default class Datasource
     return hosts.find(h => h.domain.startsWith(term));
   }
 
-  engine(term, autocomplete)
-  {
-    let url = autocomplete ? autocomplete.domain : term;
-
-    return this.engines.find(e => e.active && e.keyword == term.trim()) || this.engines.find(e => e.active && e.domain.startsWith(url))
-  }
 
   // async searchTabs(term)
   // {

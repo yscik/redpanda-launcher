@@ -67,12 +67,13 @@ class SearchService
     this.state.topSites = Object.freeze([...this.data.topSites]);
   }
 
-  update({engine, autocomplete, result} = {}) {
+  update({term, autocomplete, result} = {}) {
 
     this.state.index = -1;
     this.entry = null;
     if(!this.state.searching) {
-      this.state.engine = engine;
+
+      this.state.engine = this.getEngine(term, autocomplete);
       this.state.autocomplete = autocomplete;
     }
     this.state.selected = null;
@@ -80,6 +81,14 @@ class SearchService
     this.state.home = false;
     this.state.isUrl = (this.state.autocomplete || this.state.term && isUrl(this.state.term));
 
+  }
+
+
+  getEngine(term, autocomplete)
+  {
+    let url = autocomplete ? autocomplete.domain : term;
+
+    return Engines.engines.find(e => e.active && e.keyword == term.trim()) || Engines.engines.find(e => e.active && e.domain.startsWith(url))
   }
 
   setTerm(term)
