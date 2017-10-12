@@ -24,7 +24,7 @@ class SearchService
       },
       set term(value)
       {
-        let entry = value instanceof Object && value.url;
+        let entry = value.url;
         if(!entry)
           self.setTerm(value);
         else this._term = entry;
@@ -32,6 +32,7 @@ class SearchService
       get label() {
         return this.searching ? this.engine.desc || this.engine.title : 'Search your feelings'
       },
+      index: 0,
       searching: false,
       engine: null,
       autocomplete: null,
@@ -171,7 +172,6 @@ class SearchService
 
     this.entry = this.state.result[this.state.index];
     this.state.term = this.entry || this.searchTerm;
-    console.log(this.state.term );
 
     $event.preventDefault();
   }
