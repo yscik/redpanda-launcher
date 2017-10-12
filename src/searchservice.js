@@ -13,7 +13,7 @@ class SearchService
 {
   constructor()
   {
-    this.data = new Datasource();
+
 
     let self = this;
     this.state = {
@@ -42,10 +42,17 @@ class SearchService
     };
 
     this.init();
+
+    this.port = browser.runtime.connect();
+    this.port.onMessage.addListener((result) => {
+      this.update(result)});
+
   }
 
   async init()
   {
+    this.data = new Datasource();
+
     this.update({});
     this.state.home = true;
     await this.data.loadLongtermEntries();
@@ -148,10 +155,9 @@ class SearchService
 
   async search(term, options) {
 
-    const data = await this.data.search(term, options);
-
-
-    if(options.term == this.state.term) this.update(data);
+    this.port.postMessage({term, options})
+    // const data = await this.data.search(term, options);
+    // this.update(data);
 
   }
 

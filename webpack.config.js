@@ -6,7 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   entry: {
     app: './src/main.js',
-    // content: './src/content/content.js'
+    'redpanda.background': './src/background.js'
   },
   output: {
     path: path.resolve(__dirname, './dist'),

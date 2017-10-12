@@ -135,14 +135,14 @@ export default class Datasource
     return this.engines.find(e => e.active && e.keyword == term.trim()) || this.engines.find(e => e.active && e.domain.startsWith(url))
   }
 
-  async searchTabs(term)
-  {
-    let tabs = (await browser.tabs.query({})).filter(t => t.url.toLowerCase().includes(term) || t.title.toLowerCase().includes(term))
-
-    tabs = Entry.process(tabs, {props: {weight: 50, type: 'tab', source: 'tab'}});
-
-    return tabs;
-  }
+  // async searchTabs(term)
+  // {
+  //   let tabs = this.tabs.filter(t => t.url.toLowerCase().includes(term) || t.title.toLowerCase().includes(term))
+  //
+  //   tabs = Entry.process(tabs, {props: {weight: 50, type: 'tab', source: 'tab'}});
+  //
+  //   return tabs;
+  // }
 
   static filter(term, collection)
   {
@@ -157,7 +157,8 @@ export default class Datasource
     return Promise.all([
       this.loadBookmarks(),
       this.loadSession(),
-      this.loadTopsites()
+      this.loadTopsites(),
+      this.loadTabs()
     ])
   }
 
@@ -175,6 +176,13 @@ export default class Datasource
     let sites = await browser.topSites.get();
     sites.length = Math.min(sites.length, 15);
     return this.topSites = Entry.process(sites, {props: {source: 'topsite'}});
+
+  }
+
+  async loadTabs()
+  {
+    let tabs = await browser.tabs.query({});
+    return this.tabs = Entry.process(tabs, {props: {source: 'tab', type: 'tab', weight: 50}});
 
   }
 

@@ -37,7 +37,7 @@
     }
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["redpanda.background.js"]
   },
   "commands": {
     "open-launcher": {
