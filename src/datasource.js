@@ -7,8 +7,6 @@ const days = ms => ms / days.ratio;
 const startTime = new Date(days.now - days.ms(60));
 
 import Entry from './Entry';
-import Storage from './Storage'
-import Engines from './Engines'
 
 const weightSort = (a,b) => b.weight - a.weight;
 const visitSort = (a,b) => b.visitCount - a.visitCount;
@@ -44,8 +42,8 @@ export default class Datasource
     let history = this.searchHistory(term);
     let tabs = this.searchTabs(term);
 
-    let session = this.filter(term, this.session);
-    let bookmarks = this.filter(term, this.bookmarks);
+    let session = Datasource.filter(term, this.session);
+    let bookmarks = Datasource.filter(term, this.bookmarks);
 
     [history, tabs] = await Promise.all([history, tabs]);
 
@@ -90,17 +88,6 @@ export default class Datasource
   active(term)
   {
     return term == this._current;
-  }
-
-
-  loadLongtermEntries()
-  {
-
-    return Promise.all([
-      this.loadBookmarksAndSearchEngines(),
-      this.loadSession(),
-      this.loadTopsites()
-    ])
   }
 
   async searchHistory(term) {
@@ -156,6 +143,23 @@ export default class Datasource
     return tabs;
   }
 
+  static filter(term, collection)
+  {
+    return (collection||[]).filter(s => (s.title && s.title.includes(term))
+        || (s.urlo && s.urlo.origin &&
+            s.urlo.origin.includes(term)))
+  }
+
+  loadLongtermEntries()
+  {
+
+    return Promise.all([
+      this.loadBookmarks(),
+      this.loadSession(),
+      this.loadTopsites()
+    ])
+  }
+
   async loadSession()
   {
     let tabs = await browser.sessions.getRecentlyClosed({maxResults: 15});
@@ -173,20 +177,10 @@ export default class Datasource
 
   }
 
-  filter(term, collection)
+  async loadBookmarks()
   {
-    return (collection||[]).filter(s => (s.title && s.title.includes(term))
-        || (s.urlo && s.urlo.origin &&
-            s.urlo.origin.includes(term)))
-  }
-
-  async loadBookmarksAndSearchEngines()
-  {
-    await Storage.promise;
     const bookmarks = (await browser.bookmarks.search({})).filter(b => b.type == 'bookmark');
-    Engines.addBookmarks(bookmarks);
     this.bookmarks = Entry.process(bookmarks, {props: {source: 'bookmark'}, setup: b => b.weight = age(b)});
-    this.engines = Engines.engines;
 
     function age(b)
     {

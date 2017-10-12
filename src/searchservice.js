@@ -1,7 +1,6 @@
 import Datasource from './datasource';
 import {isUrl, protocol} from './isUrl';
 import Entry from './Entry';
-import settings from './settings';
 import Engines from './Engines';
 
 function formatUrl(term) {
@@ -50,6 +49,9 @@ class SearchService
     this.update({});
     this.state.home = true;
     await this.data.loadLongtermEntries();
+    Engines.addBookmarks(this.data.bookmarks);
+    this.data.engines = Engines.engines;
+
     // this.state.bookmarks = Object.freeze([...this.data.bookmarks]);
     this.state.session = Object.freeze([...this.data.session]);
     this.state.topSites = Object.freeze([...this.data.topSites]);
