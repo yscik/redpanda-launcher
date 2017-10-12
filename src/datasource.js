@@ -11,7 +11,8 @@ import Entry from './Entry';
 const weightSort = (a,b) => b.weight - a.weight;
 const visitSort = (a,b) => b.visitCount - a.visitCount;
 
-const QUERY_LIMIT = 3;
+const QUERY_LIMIT = 2;
+const ABORT_TRESHOLD = 3;
 
 export default class Datasource
 {
@@ -21,7 +22,7 @@ export default class Datasource
     this.session = [];
     this.topSites = [];
     this.engines = [];
-    this.queries = {pending: 0, latest: null};
+    this.queries = {pending: 0, latest: null, lastFinished: null};
   }
 
   async search(term, options)
@@ -40,7 +41,7 @@ export default class Datasource
     console.log('Querying', term);
 
     let history = this.searchHistory(term);
-    let tabs = this.searchTabs(term);
+    let tabs = Datasource.filter(term, this.tabs);
 
     let session = Datasource.filter(term, this.session);
     let bookmarks = Datasource.filter(term, this.bookmarks);
@@ -54,15 +55,19 @@ export default class Datasource
     let engine = this.engine(term, autocomplete);
 
     let result = this.compile({history, tabs, session, bookmarks, engine, autocomplete});
-    this.finish();
     console.log('Time', term, performance.now() - t);
+    this.finish(term);
 
     return result;
   }
 
   async continueOrSkipToLatest(term)
   {
-    if(term == this.queries.latest.term) return true;
+    console.log([this.queries.lastFinished, term, this.queries.latest.term].join(':'), );
+    if(term == this.queries.latest.term
+      || !this.queries.lastFinished
+      || (term.length - this.queries.lastFinished.length >= ABORT_TRESHOLD && this.queries.latest.term.startsWith(term)))
+        return true;
     else {
       console.log('Aborting', term);
       this.finish();
@@ -70,9 +75,10 @@ export default class Datasource
     }
   }
 
-  finish()
+  finish(term)
   {
     this.queries.pending--;
+    if(term) this.queries.lastFinished = term;
     this.queries.latest.run && this.queries.latest.run();
   }
 
@@ -83,11 +89,6 @@ export default class Datasource
     data.result.sort(weightSort);
     data.result.length = Math.min(data.result.length, 15);
     return data;
-  }
-
-  active(term)
-  {
-    return term == this._current;
   }
 
   async searchHistory(term) {
