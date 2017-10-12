@@ -127,12 +127,12 @@ class SearchService
       Entry.open(this.state.autocomplete)
     }
     else if (this.state.searching) {
-      Entry.search(this.state.engine, this.state.term)
+      Entry.open({url: Engines.prepare(this.state.term, this.state.engine)})
     }
     else {
       if (isUrl(this.state.term)) Entry.open({url: formatUrl(this.state.term)});
       else {
-        Entry.search(Engines.default, this.state.term)
+        Entry.open({url: Engines.prepare(this.state.term, Engines.default)})
       }
     }
   }
