@@ -116,8 +116,8 @@ export default class Datasource
     const hosts = Object.values(entries.reduce(aggregateHosts, {}));
 
     function aggregateHosts(hosts, entry) {
-      let host = entry.urlo.host;
-      if (!hosts[host]) hosts[host] = {url: entry.urlo.origin, domain: entry.domain, weight: 0, source: 'host'};
+      let host = entry.origin;
+      if (!hosts[host]) hosts[host] = {url: entry.origin, domain: entry.domain, weight: 0, source: 'host'};
       hosts[host].weight += entry.weight;
 
       return hosts;
@@ -147,8 +147,8 @@ export default class Datasource
   static filter(term, collection)
   {
     return (collection||[]).filter(s => (s.title && s.title.includes(term))
-        || (s.urlo && s.urlo.origin &&
-            s.urlo.origin.includes(term)))
+        || (s.origin &&
+            s.origin.includes(term)))
   }
 
   loadLongtermEntries()
