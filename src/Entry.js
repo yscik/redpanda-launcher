@@ -1,7 +1,7 @@
 export default class Entry
 {
 
-  static open(entry)
+  static open(entry, $event)
   {
     // browser.tabs.getCurrent().then(tab => browser.tabs.remove(tab.id));
 
@@ -11,7 +11,7 @@ export default class Entry
         browser.tabs.update(entry.id, {active: true});
         break;
       default:
-        browser.tabs.update({url: entry.url})
+        ($event && $event.ctrlKey ? browser.tabs.create : browser.tabs.update)({url: entry.url})
     }
 
 

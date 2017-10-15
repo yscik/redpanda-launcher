@@ -138,9 +138,9 @@ class SearchService
     this.state.isUrl = false;
   }
 
-  enter() {
+  enter($event) {
     if (this.entry) {
-      Entry.open(this.entry)
+      Entry.open(this.entry, $event)
     }
     else if (this.state.autocomplete) {
       Entry.open(this.state.autocomplete)

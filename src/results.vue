@@ -2,7 +2,7 @@
   .entries
     a.entry(v-for="(entry, index) in entries",
     :href="entry.url",
-    @click.prevent="open(entry)",
+    @click.prevent="open(entry, $event)",
     :class="{selected: index === selected}")
       .icons
         favicon(:site='entry')
