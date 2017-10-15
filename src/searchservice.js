@@ -73,7 +73,7 @@ class SearchService
     this.entry = null;
     if(!this.state.searching) {
 
-      this.state.engine = this.getEngine(term, autocomplete);
+      this.state.engine = term && this.getEngine(term, autocomplete);
       this.state.autocomplete = autocomplete;
     }
     this.state.selected = null;
