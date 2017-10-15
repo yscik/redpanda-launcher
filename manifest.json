@@ -1,16 +1,13 @@
 {
-
   "manifest_version": 2,
   "name": "Red Panda Launcher",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "applications": {
     "gecko": {
       "id": "{0750ffc2-fd55-47be-9c69-b30854938391}"
     }
   },
-
   "description": "",
-
   "icons": {
     "48": "redpanda-256.png",
     "96": "redpanda-256.png"
@@ -26,25 +23,21 @@
     "tabs",
     "topSites"
   ],
-  "chrome_url_overrides":
-  {
+  "chrome_url_overrides": {
     "newtab": "index.html"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["redpanda.content.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "redpanda.content.js"
+      ]
     }
   ],
-  "commands": {
-    "open-launcher": {
-      "suggested_key": { "default": "Ctrl+Space" },
-      "description": "Open Launcher"
-    }
-  },
   "web_accessible_resources": [
     "*.png",
     "*.js"
   ]
-
 }
