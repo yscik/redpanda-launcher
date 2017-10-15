@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Red Panda Launcher",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "applications": {
     "gecko": {
       "id": "{0750ffc2-fd55-47be-9c69-b30854938391}"
