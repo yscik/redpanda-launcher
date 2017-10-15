@@ -42,19 +42,19 @@ class SearchService
       isUrl: false
     };
 
-    this.init();
+    this.init().catch((err) => {throw err});
 
-    this.port = browser.runtime.connect();
-    this.port.onMessage.addListener((result) => {
-      this.update(result)});
+    // this.port = browser.runtime.connect();
+    // this.port.onMessage.addListener((result) => {
+    //   this.update(result)});
 
   }
 
   async init()
   {
-    // this.data = new Datasource();
+    this.data = new Datasource();
 
-    this.data = (await browser.runtime.getBackgroundPage()).dataSource;
+    // this.data = (await browser.runtime.getBackgroundPage()).dataSource;
 
     this.update({});
     this.state.home = true;

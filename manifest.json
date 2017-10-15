@@ -36,9 +36,6 @@
       "js": ["redpanda.content.js"]
     }
   ],
-  "background": {
-    "scripts": ["redpanda.background.js"]
-  },
   "commands": {
     "open-launcher": {
       "suggested_key": { "default": "Ctrl+Space" },
