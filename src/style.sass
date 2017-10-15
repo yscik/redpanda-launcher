@@ -60,57 +60,6 @@ h3
   white-space: nowrap
   word-break: keep-all
 
-.message
-  position: fixed
-  right: 2rem
-  bottom: 1rem
-  width: 30rem
-  min-height: 3rem
-  padding: .5rem
-  background: #fff
-  border-radius: 2px
-  display: flex
-  align-items: center
-  justify-content: space-between
-  box-shadow: 0 0 4px -3px rgba($Blue90, .7)
-  * + *
-    margin-left: .5em
-  .message-body
-    display: flex
-    justify-content: flex-start
-    * + *
-      margin-left: .3em
-  transition: bottom .5s
-  .icon path
-    color: $Grey50
-    transition: fill .5s
-  &.fresh
-    animation: .5s flash-message
-    .icon path
-      //transition: fill 0s
-      fill: $Blue50
-  &:not(.active)
-    bottom: -3rem
-
-  .message-text:empty, .message-node:empty
-    display: none
-
-@keyframes flash-icon
-  0%
-    fill: $text
-  30%
-    fill: $Blue50
-  100%
-    fill: $text
-
-@keyframes flash-message
-  0%
-    bottom: 1rem
-  30%
-    bottom: 2rem
-  //75%    bottom: .5rem
-  100%
-    bottom: 1rem
 
 .button
   display: inline-block

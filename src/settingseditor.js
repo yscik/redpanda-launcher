@@ -54,7 +54,6 @@ export default class SettingsEditor {
   change(value, oldvalue)
   {
     if(!oldvalue) return;
-    console.log('Change', value);
 
     if(this.changing.internal) {
       this.changing.internal = false;
@@ -74,7 +73,6 @@ export default class SettingsEditor {
           this.changing.internal = true;
           Object.assign(this.data.settings, original.settings);
           this.changing.original = clone(this.data);
-          console.log('Undoing');
         }
       });
 

@@ -63,13 +63,7 @@
             input.transform-append.input(v-model="transform.append" type="text" placeholder="Content to append")
             .remove.action(@click='s.settings.search.transforms.remove(transform)')
               icon(type="close")
-      .settings-message.message(:class="{active: s.lastAction.active, fresh: s.lastAction.fresh}")
-        .message-body
-          icon.message-icon(:type="s.lastAction.icon" v-if="s.lastAction.icon")
-          favicon.message-favicon(:site="s.lastAction.favicon" v-if="s.lastAction.favicon")
-          span.message-text {{s.lastAction.message}}
-          span.message-node(ref="messageNode")
-        .button.undo(@click="s.lastAction.undo()" v-show="s.lastAction.undo") Undo
+      message.settings-message(:action="s.lastAction")
 
 </template>
 <script>
@@ -111,14 +105,6 @@ export default {
     }
   },
   watch: {
-      's.lastAction'(action) {
-        let node = this.$refs.messageNode;
-        if(!node) return;
-        while(node.firstChild) node.removeChild(node.firstChild);
-        if(action.node) {
-          node.appendChild(action.node);
-        }
-      },
       's.settings': {
         handler(value, oldvalue) {
           this.s && this.s.change(value, oldvalue)
