@@ -1,6 +1,6 @@
 import Storage from './Storage'
 import Engines from './Engines'
-import settings from "./settings";
+import {default as settings, save as storeSettings} from "./settings";
 
 const e = document.createElement.bind(document);
 const clone = v => JSON.parse(JSON.stringify(v));
@@ -18,8 +18,7 @@ export default class SettingsEditor {
   }
 
   async save() {
-    console.log('Saving', clone(this.settings));
-    return Storage.save(this.data);
+    return storeSettings(this.data);
   }
 
   async commit(action)
@@ -47,7 +46,7 @@ export default class SettingsEditor {
     }
 
     if(action.fresh) setTimeout(decay, 1000);
-    setTimeout(clear, 5000);
+    // setTimeout(clear, 5000);
     this.lastAction = action;
   }
 

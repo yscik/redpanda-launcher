@@ -14,7 +14,6 @@ export default new class Storage
   async load()
   {
     const sites = await browser.storage.local.get() || {};
-    browser.storage.local.set(sites);
 
     let engines =
         sites._engines ? JSON.parse(sites._engines) :
@@ -26,15 +25,5 @@ export default new class Storage
 
     return this
   }
-
-  async save({settings, engines})
-  {
-
-    let data = {'_settings': JSON.stringify(settings),
-      '_engines': JSON.stringify(engines)};
-
-    return browser.storage.local.set(data)
-  }
-
 
 };

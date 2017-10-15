@@ -1,4 +1,6 @@
 
+const key = '_settings';
+
 function deepCopy(target, source)
 {
   for(let key in source)
@@ -23,15 +25,40 @@ builtinEngines.forEach(e => {e.active = true; e.type='builtin'});
 
 async function load()
 {
-  let storage = await browser.storage.local.get('_settings');
+  async function fetch(type)
+  {
+    let data = (await browser.storage[type].get(key))[key];
+    if(data instanceof Object || data == null) return data;
+    else return JSON.parse(data);
+  }
 
-  if(storage._settings) try {
-    storage = JSON.parse(storage._settings);
-    deepCopy(settings, storage);
+  try {
+    let [local, sync] = await Promise.all(['local', 'sync'].map(type => fetch(type)));
+
+    let stored = sync;
+    if(!stored || !stored.sync) {
+      stored = local;
+      console.log("Using local settings", stored.sync)
+    }
+    else console.log("Using synced settings", stored.sync);
+    deepCopy(settings, stored || {});
   }
   catch(err) {
-    console.error('Error parsing stored settings', storage)
+    console.error('Error parsing stored settings');
+    deepCopy(settings, {});
   }
+}
+
+async function save({engines})
+{
+  if(!settings.sync) {
+    browser.storage.sync.set({[key]: {sync: false}});
+  }
+  let type = settings.sync ? 'sync' : 'local';
+  browser.storage[type].set({
+    [key]: JSON.stringify(settings),
+    '_engines': JSON.stringify(engines)
+  });
 }
 
 const settings = defaults();
@@ -41,6 +68,7 @@ window.settings = settings;
 function defaults()
 {
   return {
+    sync: false,
     search: {
       defaultEngine: builtinEngines[0].url,
       opensearch: {
@@ -65,4 +93,4 @@ function defaults()
   }
 }
 
-export {settings as default, builtinEngines};
+export {settings as default, builtinEngines, save};

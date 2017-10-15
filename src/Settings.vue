@@ -8,6 +8,9 @@
         img.favicon.icon(src="fav-1.png")
         span Red Panda Launcher
     .settings-content(v-if="s")
+      label.control
+        .control-input: input(type='checkbox' v-model="s.settings.sync")
+        .control-label Sync settings and search engines between devices
       h3 Search engines
       .control(v-if="s.defaultEngine")
         .control-label Default:
