@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "npx webpack -w",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules; cd dist; web-ext build",
-    "version": "node ./copy-version.js",
+    "version": "node ./copy-version.js && git add manifest.json",
     "sign": "cd dist; web-ext sign"
   },
   "dependencies": {
