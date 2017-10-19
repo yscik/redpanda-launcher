@@ -52,26 +52,14 @@
                 .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
                   icon(type="close")
                 .spacing
-      .transforms
-        h3.title Search transformations
-          .button.add-transform(@click="s.settings.search.transforms.unshift({pattern: '', append: ''})")
-            icon(type='add') Add
-        //.help
-        .headers
-          span.transform-pattern Pattern
-          span.transform-append Extra content
-        .box
-          .row.transform(v-for="transform in s.settings.search.transforms")
-            input.transform-pattern.input(v-model="transform.pattern" type="text" placeholder='Pattern')
-            input.transform-append.input(v-model="transform.append" type="text" placeholder="Content to append")
-            .remove.action(@click='s.settings.search.transforms.remove(transform)')
-              icon(type="close")
+      SearchTransformSettings(:settings="s.settings.search.transforms")
       message.settings-message(:action="s.lastAction")
 
 </template>
 <script>
 
 import SettingsEditor from './settingseditor'
+import SearchTransformSettings from './settings.transforms.vue'
 
 export default {
   data: () => {
@@ -81,8 +69,10 @@ export default {
       engine_filter: ''
     }
   },
+  components: {SearchTransformSettings},
   created(){
     this.label = {bookmark: 'From bookmarks', opensearch: 'Discovered', builtin: 'Defaults'}
+//    setTimeout(()=>this.toggle(), 500)
   },
   computed: {
     engines()
@@ -192,33 +182,4 @@ export default {
       margin-right: 3.8rem
     .engine-filter
       width: 60%
-  .transforms
-    position: relative
-    .box
-      /*border: none*/
-      background: $Grey10
-      height: auto
-      min-height: 5rem
-      max-height: 15rem
-    .add-transform
-      position: absolute
-      right: 0
-      top: 0
-
-    .headers
-      padding: 0 .5rem
-    .row
-      align-items: center
-    .action
-      margin-left: .5rem
-    input[type='text']
-      padding: .4em
-      border-radius: 0
-    .transform-pattern
-      margin-right: -1px
-      flex: 1
-    .transform-append
-      flex: 2
-    h3
-      margin-right: 3rem
 </style>
