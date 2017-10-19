@@ -42,7 +42,6 @@ export default class Datasource
     let history = this.searchHistory(term);
     let tabs = Datasource.filter(term, this.tabs);
 
-    let session = Datasource.filter(term, this.session);
     let bookmarks = Datasource.filter(term, this.bookmarks);
 
     [history, tabs] = await Promise.all([history, tabs]);
@@ -51,7 +50,7 @@ export default class Datasource
 
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
-    let result = this.compile({history, tabs, session, bookmarks, autocomplete, term});
+    let result = this.compile({history, tabs, bookmarks, autocomplete, term});
     console.log('Time', term, performance.now() - t);
     this.finish(term);
 
@@ -81,7 +80,7 @@ export default class Datasource
 
   compile(data, term)
   {
-    data.result = data.history.concat(data.session, data.bookmarks, data.tabs);
+    data.result = data.history.concat(data.bookmarks, data.tabs);
     data.result.forEach(this.weight.bind(this, term));
     data.result.sort(weightSort);
     data.result.length = Math.min(data.result.length, 15);
@@ -158,7 +157,7 @@ export default class Datasource
     let tabs = await browser.sessions.getRecentlyClosed({maxResults: 15});
     tabs = tabs.map(t => t.tab || t);
     tabs.length = Math.min(tabs.length, 15);
-    return this.session = Entry.process(tabs, {props: {source: 'session', weight: 30}} );
+    return this.session = Entry.process(tabs, {props: {source: 'session'}} );
 
   }
 
