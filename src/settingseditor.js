@@ -4,7 +4,7 @@ import {default as settings, save as storeSettings} from "./settings";
 
 const e = document.createElement.bind(document);
 const clone = v => JSON.parse(JSON.stringify(v));
-
+const stripEngine = ({url, keyword, title, type, active}) => ({url, keyword, title, type});
 export default class SettingsEditor {
   constructor() {
 
@@ -18,7 +18,7 @@ export default class SettingsEditor {
   }
 
   async save() {
-    return storeSettings(this.data);
+    return storeSettings({engines: this.data.engines.map(stripEngine)});
   }
 
   async commit(action)

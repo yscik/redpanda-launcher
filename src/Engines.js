@@ -1,8 +1,8 @@
 
 import Entry from './Entry';
-import {default as settings, builtinEngines} from "./settings";
+import {default as settings, builtinEngines, readEngines} from "./settings";
 
-export default new class Engines
+export default window.engines = new class Engines
 {
   constructor()
   {
@@ -16,22 +16,29 @@ export default new class Engines
     return this.default = this.engines.find(e => e.url == (settings.search.defaultEngine || this.defaults[0].url));
   }
 
-  addStorage(sites, engines)
+  addConfigured(storage)
   {
+    let engines = [...readEngines(storage)];
+    this.add(engines);
+  }
+
+  addDiscovered(sites)
+  {
+    let newEngines = [];
     for(let url in sites)
     {
       let site = sites[url];
 
       if(url.startsWith('_')) continue;
-      if(site.opensearch && !engines.find(e => e.url.endsWith(site.opensearch.url))
+      if(site.opensearch && !this.engines.find(e => e.url.endsWith(site.opensearch.url))
       && (site.count||0) >= settings.search.opensearch.visits) {
         console.log('Adding engine', site.opensearch.url);
         let engine = Object.assign({active: true, type: 'opensearch', keyword: null}, site.opensearch);
-        engines.unshift(engine);
+        newEngines.unshift(engine);
       }
     }
 
-    return this.add(engines);
+    return this.add(newEngines);
 
   }
 

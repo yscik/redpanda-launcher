@@ -1,6 +1,6 @@
 
 import Engines from './Engines';
-import settings from './settings';
+import {default as settings, readEngines} from './settings';
 
 const enginesKey = '_engines';
 
@@ -19,9 +19,11 @@ export default new class Storage
 
     this.icons = sites;
 
-    let engines = (!settings.sync ? sites[enginesKey] : (await browser.storage.sync.get(enginesKey))[enginesKey]);
+    await settings.promise;
+    let engines = !settings.sync ? sites : (await browser.storage.sync.get());
+    Engines.addConfigured(engines);
 
-    Engines.addStorage(sites, engines ? JSON.parse(engines) : Engines.defaults);
+    Engines.addDiscovered(sites);
 
     return this
   }

@@ -55,10 +55,26 @@ async function save({engines})
     browser.storage.sync.set({[key]: {sync: false}});
   }
   let type = settings.sync ? 'sync' : 'local';
-  browser.storage[type].set({
-    [key]: JSON.stringify(settings),
-    '_engines': JSON.stringify(engines)
-  });
+  let data = sliceEngines(engines);
+  data[key] = JSON.stringify(settings);
+  browser.storage[type].set(data);
+}
+
+function sliceEngines(items)
+{
+  let result = {};
+  items = items.slice();
+  let index = 1;
+  while(items.length)
+    result[`_engines_${index++}`] = JSON.stringify(items.splice(0, 10));
+
+  return result;
+}
+
+function *readEngines(all)
+{
+  let index = 1, e;
+  while(e = all[`_engines_${index++}`]) yield* (JSON.parse(e)||[]);
 }
 
 const settings = defaults();
@@ -93,4 +109,4 @@ function defaults()
   }
 }
 
-export {settings as default, builtinEngines, save};
+export {settings as default, builtinEngines, save, readEngines};
