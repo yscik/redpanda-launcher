@@ -2,6 +2,7 @@ import Datasource from './datasource';
 import {isUrl, protocol} from './isUrl';
 import Entry from './Entry';
 import Engines from './Engines';
+import Bookmarks from './Bookmarks';
 
 function formatUrl(term) {
   if (protocol.test(term)) return term;
@@ -13,8 +14,6 @@ class SearchService
 {
   constructor()
   {
-
-
     let self = this;
     this.state = {
       result: null,
@@ -42,7 +41,7 @@ class SearchService
       isUrl: false
     };
 
-    this.init().catch((err) => {throw err});
+    this.init();
 
     // this.port = browser.runtime.connect();
     // this.port.onMessage.addListener((result) => {
@@ -60,6 +59,7 @@ class SearchService
     this.state.home = true;
     await this.data.loadLongtermEntries();
     Engines.addBookmarks(this.data.bookmarks);
+    Bookmarks.init(this.data.raw.bookmarks);
     this.data.engines = Engines.engines;
 
     // this.state.bookmarks = Object.freeze([...this.data.bookmarks]);

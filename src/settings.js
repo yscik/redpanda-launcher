@@ -99,12 +99,19 @@ function defaults()
         autoextend: false
       }
     },
-    topSites: {
-      source: 'topSites'
-    },
     autocomplete: {
       url: true,
       selected: true,
+    },
+    home: {
+      bookmarks: {
+        enabled: false,
+        folder: null
+      },
+      recent: true,
+      topSites: {
+        source: 'topSites'
+      }
     }
   }
 }

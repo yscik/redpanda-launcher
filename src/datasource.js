@@ -22,6 +22,7 @@ export default class Datasource
     this.session = [];
     this.topSites = [];
     this.queries = {pending: 0, latest: null, lastFinished: null};
+    this.raw = {};
   }
 
   async search(term, options)
@@ -178,8 +179,9 @@ export default class Datasource
 
   async loadBookmarks()
   {
-    const bookmarks = (await browser.bookmarks.search({})).filter(b => b.type == 'bookmark');
-    this.bookmarks = Entry.process(bookmarks, {props: {source: 'bookmark'}, setup: b => b.weight = age(b)});
+    const bookmarks = (await browser.bookmarks.search({}));
+    this.raw.bookmarks = bookmarks;
+    this.bookmarks = Entry.process(bookmarks.filter(b => b.type == 'bookmark'), {props: {source: 'bookmark'}, setup: b => b.weight = age(b)});
 
     function age(b)
     {

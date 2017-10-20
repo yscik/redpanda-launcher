@@ -11,6 +11,7 @@
       label.control
         .control-input: input(type='checkbox' v-model="s.settings.sync")
         .control-label Sync settings and search engines between devices
+      HomePageSettings(:settings="s.settings.home")
       h3 Search engines
       .control(v-if="s.defaultEngine")
         .control-label Default:
@@ -60,6 +61,7 @@
 
 import SettingsEditor from './settingseditor'
 import SearchTransformSettings from './settings.transforms.vue'
+import HomePageSettings from './settings.home.vue'
 
 export default {
   data: () => {
@@ -69,7 +71,7 @@ export default {
       engine_filter: ''
     }
   },
-  components: {SearchTransformSettings},
+  components: {SearchTransformSettings, HomePageSettings},
   created(){
     this.label = {bookmark: 'From bookmarks', opensearch: 'Discovered', builtin: 'Defaults'}
 //    setTimeout(()=>this.toggle(), 500)
