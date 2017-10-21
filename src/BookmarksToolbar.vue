@@ -1,28 +1,24 @@
 <template lang="pug">
 .bookmarks-toolbar(:class="{icons: settings.icons}")
-  a.bookmark(v-for="(entry, index) in bookmarks.children",
-    :href="entry.url",
-    @click.prevent="open(entry, $event)")
-      favicon(:site='entry')
-      .title {{entry.title}}
+  template(v-for="entry in bookmarks.children")
+    Bookmark.bookmark(v-if='entry.type=="bookmark"', :entry='entry', :key='entry.index')
+    BookmarkFolder.bookmark(v-if='entry.type == "folder"', :entry='entry', :key='entry.index')
 </template>
 <script>
 
   import Bookmarks from './Bookmarks';
   import settings from './settings';
-  import Entry from './Entry';
+  import './Bookmark.vue';
+  import './BookmarkFolder.vue';
+
 
   export default {
     data: () => ({
       settings: settings.home.bookmarkstoolbar,
 
     }),
-    created() {
-      this.open = Entry.open
-    },
     computed: {
       bookmarks() {
-        console.log(Bookmarks.toolbar);
         return Bookmarks.folders && settings.home.bookmarkstoolbar.enabled && Bookmarks.toolbar
       }
     }
@@ -39,15 +35,14 @@
   overflow: visible
   white-space: nowrap
   display: flex
-  align-items: center
-  z-index: 2
+  z-index: 5
 
-  .bookmark
+  > .bookmark
     padding: .2em .3em
     margin: 0 .1em
     border-radius: 2px
-    display: inline-flex
-    align-items: center
+    display: inline-block
+    height: 24px
     .icon, .title
       display: inline-block
     .icon
@@ -58,7 +53,7 @@
     &:hover
       background: $Grey30
   &.icons
-    .bookmark
+    .bookmark > a
       position: relative
       .title
         position: absolute
