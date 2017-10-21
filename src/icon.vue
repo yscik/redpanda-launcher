@@ -5,20 +5,11 @@
 
 import Vue from 'vue'
 
-const typeImages = {
- history: require('../icons/history-16.svg'),
- bookmark: require('../icons/bookmark-16-Outline.svg'),
- session: require('../icons/history-16.svg'),
- tab: require('../icons/tab-16.svg'),
- topsite: require('../icons/topsites-16.svg'),
- engine: require('../icons/search-16.svg'),
- link: require('../icons/link-16.svg'),
- host: require('../icons/highlights-16.svg'),
- close: require('../icons/stop-16.svg'),
- delete: require('../icons/delete-16.svg'),
- success: require('../icons/check-16.svg'),
- add: require('../icons/new-16.svg'),
-};
+const typeImages = {};
+const iconFiles = require.context('../icons/', false, /\.svg$/);
+iconFiles.keys().forEach((iconFile) =>
+    typeImages[iconFile.replace(/.*\/(\w+)\.svg$/, '$1')]  = iconFiles(iconFile)
+);
 
 export default Vue.component("icon", {
   props: {
