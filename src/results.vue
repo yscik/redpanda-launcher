@@ -19,14 +19,15 @@
 
 //  import entry from './entry.vue';
   import Entry from './Entry';
+  import Vue from 'vue';
 
-  export default {
+  export default Vue.component("results", {
     props: ['entries', 'selected'],
 //    components: {entry},
     methods: {
       open: Entry.open
     }
-  }
+  })
 
 </script>
 <style lang="sass">
@@ -34,13 +35,11 @@
 
 .entry
   padding: .4em
-  text-decoration: none
   border-radius: 2px
   position: relative
   display: flex
   cursor: pointer
   border: 2px solid transparent
-  color: $text
   word-break: break-all
 
   &:hover

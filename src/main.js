@@ -13,6 +13,7 @@ import './icon.vue'
 import './favicon.vue'
 import './message.vue'
 import settings from './settings'
+import './results.vue';
 import './Storage';
 
 window.focus();
