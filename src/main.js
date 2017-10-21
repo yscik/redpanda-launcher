@@ -12,13 +12,17 @@ import App from './app.vue'
 import './icon.vue'
 import './favicon.vue'
 import './message.vue'
-import './settings'
+import settings from './settings'
+import './Storage';
 
 window.focus();
 window.radio = new Vue();
+(async () => {
+  window.background = await browser.runtime.getBackgroundPage()
+  await settings.promise
+  new Vue({
+    el: '#app',
+    render: h => h(App)
+  });
 
-new Vue({
-  el: '#app',
-  render: h => h(App)
-});
-
+})();

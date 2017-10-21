@@ -5,7 +5,7 @@
 
 import Vue from 'vue'
 
-import FaviconService from './Favicons'
+//import FaviconService from './Favicons'
 
 export default Vue.component("favicon", {
   props: {
@@ -15,13 +15,14 @@ export default Vue.component("favicon", {
 
   async created()
   {
-    this.url = await FaviconService.get(this.site);
+    this.service = background.Favicons;
+    this.url = await this.service.get(this.site);
   },
   watch: {
     async site(site)
     {
 //    this.url = site && (sites.icons[site.origin] && sites.icons[site.origin].favicon) || `${site.origin}/favicon.ico`
-      this.url = await FaviconService.get(site);
+      this.url = await this.service.get(site);
     }
   }
 })
