@@ -1,12 +1,12 @@
 <template lang='pug'>
 .home
-  h3.title Start page
   label.control
     .control-input: input(type='checkbox' v-model="settings.bookmarkstoolbar.enabled")
     .control-label Show bookmarks toolbar
   label.control.ident-1
     .control-input: input(type='checkbox' v-model="settings.bookmarkstoolbar.icons")
     .control-label Only show icons
+  h3.title Start page
   label.control
     .control-input: input(type='checkbox' v-model="settings.recent")
     .control-label Show recently closed tabs

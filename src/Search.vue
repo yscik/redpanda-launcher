@@ -31,8 +31,6 @@ export default {
     this.service = SearchService
   },
   components: {searchbar, Homepage},
-
-
 }
 
 </script>

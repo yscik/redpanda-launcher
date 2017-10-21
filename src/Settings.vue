@@ -1,42 +1,47 @@
 <template lang="pug">
   .settings(:class="{open: open}")
-    .toggle(@mousedown="toggle()")
-      svg.i(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16")
-        path(fill="context-fill" d="M15 7h-2.1a4.967 4.967 0 0 0-.732-1.753l1.49-1.49a1 1 0 0 0-1.414-1.414l-1.49 1.49A4.968 4.968 0 0 0 9 3.1V1a1 1 0 0 0-2 0v2.1a4.968 4.968 0 0 0-1.753.732l-1.49-1.49a1 1 0 0 0-1.414 1.415l1.49 1.49A4.967 4.967 0 0 0 3.1 7H1a1 1 0 0 0 0 2h2.1a4.968 4.968 0 0 0 .737 1.763c-.014.013-.032.017-.045.03l-1.45 1.45a1 1 0 1 0 1.414 1.414l1.45-1.45c.013-.013.018-.031.03-.045A4.968 4.968 0 0 0 7 12.9V15a1 1 0 0 0 2 0v-2.1a4.968 4.968 0 0 0 1.753-.732l1.49 1.49a1 1 0 0 0 1.414-1.414l-1.49-1.49A4.967 4.967 0 0 0 12.9 9H15a1 1 0 0 0 0-2zM5 8a3 3 0 1 1 3 3 3 3 0 0 1-3-3z")
     .settings-header
+      .toggle(@mousedown="toggle()")
+        svg.i(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16")
+          path(fill="context-fill" d="M15 7h-2.1a4.967 4.967 0 0 0-.732-1.753l1.49-1.49a1 1 0 0 0-1.414-1.414l-1.49 1.49A4.968 4.968 0 0 0 9 3.1V1a1 1 0 0 0-2 0v2.1a4.968 4.968 0 0 0-1.753.732l-1.49-1.49a1 1 0 0 0-1.414 1.415l1.49 1.49A4.967 4.967 0 0 0 3.1 7H1a1 1 0 0 0 0 2h2.1a4.968 4.968 0 0 0 .737 1.763c-.014.013-.032.017-.045.03l-1.45 1.45a1 1 0 1 0 1.414 1.414l1.45-1.45c.013-.013.018-.031.03-.045A4.968 4.968 0 0 0 7 12.9V15a1 1 0 0 0 2 0v-2.1a4.968 4.968 0 0 0 1.753-.732l1.49 1.49a1 1 0 0 0 1.414-1.414l-1.49-1.49A4.967 4.967 0 0 0 12.9 9H15a1 1 0 0 0 0-2zM5 8a3 3 0 1 1 3 3 3 3 0 0 1-3-3z")
       h2.title
         img.favicon.icon(src="fav-1.png")
         span Red Panda Launcher
+      .tabs
+        .tab(@click='tab = "general"', :class='{active: tab == "general"}') General
+        .tab(@click='tab = "engines"', :class='{active: tab == "engines"}') Search engines
+        .tab(@click='tab = "advanced"', :class='{active: tab == "advanced"}') Advanced
     .settings-content(v-if="s")
-      label.control
-        .control-input: input(type='checkbox' v-model="s.settings.sync")
-        .control-label Sync settings and search engines between devices
-      HomePageSettings(:settings="s.settings.home")
-      h3 Search engines
-      .control(v-if="s.defaultEngine")
-        .control-label Default:
-        .control-input
-          favicon(:site='s.defaultEngine.urlo')
-          strong {{s.defaultEngine.title}}
-      label.control
-        .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.autoadd")
-        .control-label Add OpenSearch search engines defined by sites
-      .control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
-        .control-label
-          | When site has at least
-          |
-          input.inline.w4(type='number' v-model.number="s.settings.search.opensearch.visits", :disabled="!s.settings.search.opensearch.autoadd")
-          |  visit
-          span(v-show="s.settings.search.opensearch.visits > 1") s
-      label.control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
-        .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.manual")
-        .control-label Manually enable discovered search engines
-      .engines
+      .tab-content(v-show='tab == "general"')
+        label.control
+          .control-input: input(type='checkbox' v-model="s.settings.sync")
+          .control-label Sync settings and search engines between devices
+        HomePageSettings(:settings="s.settings.home")
+      .tab-content.search-engines-tab(v-show='tab == "engines"' v-if="loadSearch")
+        .search-engines-settings
+          .control(v-if="s.defaultEngine")
+            .control-label Default:
+            .control-input
+              favicon(:site='s.defaultEngine.urlo')
+              strong {{s.defaultEngine.title}}
+          label.control
+            .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.autoadd")
+            .control-label Add OpenSearch search engines defined by sites
+          .control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
+            .control-label
+              | When site has at least
+              |
+              input.inline.w4(type='number' v-model.number="s.settings.search.opensearch.visits", :disabled="!s.settings.search.opensearch.autoadd")
+              |  visit
+              span(v-show="s.settings.search.opensearch.visits > 1") s
+          label.control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
+            .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.manual")
+            .control-label Manually enable discovered search engines
         .headers
           span.flex-1
             input.input.engine-filter(v-model="engine_filter" ref="engine_filter" placeholder="Filter search engines")
           span.keyword-header Keyword
-        .box
+        .search-engines-list
           .group(v-for="(group, type) in engines")
             h3.group-label {{label[type]}}
             .row(v-for="(entry, index) in group", :key="entry.url", :class="{active: entry.active}")
@@ -53,7 +58,8 @@
                 .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
                   icon(type="close")
                 .spacing
-      SearchTransformSettings(:settings="s.settings.search.transforms")
+      .tab-content(v-show='tab == "advanced"' v-if="loadSearch")
+        SearchTransformSettings(:settings="s.settings.search.transforms")
       message.settings-message(:action="s.lastAction")
 
 </template>
@@ -68,7 +74,9 @@ export default {
     return {
       open: false,
       s: null,
-      engine_filter: ''
+      engine_filter: '',
+      tab: 'general',
+      loadSearch: false
     }
   },
   components: {SearchTransformSettings, HomePageSettings},
@@ -93,13 +101,17 @@ export default {
       this.open = typeof(state) == "undefined" ? !this.open : state;
 
       this.$nextTick(() => {
-        if (!this.s) this.s = new SettingsEditor();
+        if (!this.s) this.init();
 
         this.engine_filter = '';
-        if (this.open) setTimeout(() => this.open && this.$refs.engine_filter.focus(), 300);
+        if (this.open) setTimeout(() => this.open && this.$refs.engine_filter && this.$refs.engine_filter.focus(), 300);
         else window.radio.$emit('focus-search-input');
       })
 
+    },
+    init() {
+      this.s = new SettingsEditor();
+      setTimeout(() => this.loadSearch = true, 500)
     }
   },
   watch: {
@@ -119,21 +131,54 @@ export default {
 @import settings.layout
 @import form
 
+.tabs
+  display: flex
+  .tab
+    flex: 1
+    font-weight: bold
+    cursor: pointer
+.settings-header
+  .tabs
+    padding-left: .5rem
+    padding-right: 1rem
+  .tab
+    margin: .1rem
+    padding: .4em
+    border-bottom: 2px solid $border
+    text-transform: uppercase
+    &:hover
+      color: $Blue40
+    &.active
+      color: $Blue60
+      border-bottom-color: $Blue40
 .settings-content
+  overflow: auto
+  display: flex
+  flex-direction: column
   .box
     border: 1px solid $Grey40
     height: 25rem
     overflow-y: auto
     padding: .3rem
-    .row
-      position: relative
-      padding: .4em
-      max-height: 4rem
-      transition: max-height .5s, padding .5s
-      overflow-y: hidden
-      & + .row
-        border-top: 1px solid $border
-  .engines
+  .row
+    position: relative
+    padding: .4em
+    max-height: 4rem
+    transition: max-height .5s, padding .5s
+    overflow-y: hidden
+    & + .row
+      border-top: 1px solid $border
+  .search-engines-tab
+    flex: 1
+    display: flex
+    flex-direction: column
+    min-height: 0
+    .search-engines-list
+      border-top: 1px solid $border
+      margin: 0 -2rem
+      padding: 0 2rem
+      flex: 1
+      overflow-y: auto
     .row
       &:not(.active)
         max-height: 0

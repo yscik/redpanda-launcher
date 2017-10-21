@@ -43,6 +43,7 @@
 @import colors
 
 .searchbar
+  flex: 1
   position: relative
   display: flex
   height: 3rem

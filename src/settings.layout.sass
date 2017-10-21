@@ -1,3 +1,5 @@
+@import colors
+
 $width: 50rem
 $margin: 0
 .settings
@@ -22,8 +24,9 @@ $margin: 0
       right: $width
   .toggle
     position: absolute
+    top: 50%
+    margin-top: -1.5rem
     right: 1rem + $width
-    top: 1.8rem - $margin
     height: 3rem
     width: 3rem
     display: flex
@@ -68,13 +71,18 @@ $margin: 0
   overflow-y: scroll
 
 .settings-header
+  position: relative
+  height: $headHeight
+  display: flex
+  flex-direction: column
+  margin: 0 1rem
   .title
+    display: flex
+    align-items: center
+    flex: 1
     color: $red
     font-weight: bold
-    padding: 1.85rem 1.5rem
-    margin: .5rem
-    border-bottom: 1px solid $border
+    margin: 1rem .5rem
+      right: 6rem
+    border-bottom: 1px solid rgba($red, .3)
     -moz-user-select: none
-    .favicon
-      //margin-left: -1.5rem
-      //margin-right: .2rem
