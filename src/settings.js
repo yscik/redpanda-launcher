@@ -106,7 +106,11 @@ function defaults()
     home: {
       bookmarks: {
         enabled: false,
-        folder: null
+        folder: null,
+      },
+      bookmarkstoolbar: {
+        enabled: false,
+        icons: false
       },
       recent: true,
       topSites: {

@@ -21,15 +21,14 @@ $margin: 0
     & + .main
       right: $width
   .toggle
-    position: fixed
-    right: 1rem
+    position: absolute
+    right: 1rem + $width
     top: 1.8rem - $margin
     height: 3rem
     width: 3rem
     display: flex
     align-items: center
     justify-content: center
-    transition: left .3s
     z-index: 3
     padding: .4rem
     background: #fff
@@ -52,14 +51,14 @@ $margin: 0
       cursor: pointer
       background: $Grey10
   &.open .toggle
-    //left: $width - 4rem
+    right: 1rem
     .i
       transform: rotate(240deg)
     &:not(:hover)
       path
         fill: $Blue60
 
-.settings, .main
+.settings, .main, .toggle
   transition: right .3s
 
 .settings-content

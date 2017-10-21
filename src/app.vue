@@ -1,16 +1,21 @@
 <template lang="pug">
 .app
-  Settings
-  Search
+  BookmarksToolbar(v-if='settings.home.bookmarkstoolbar.enabled')
+  .body
+    Settings
+    Search
 </template>
 <script>
 
 import Search from './Search.vue'
 import Settings from './Settings.vue'
+import settings from './settings'
+import BookmarksToolbar from './BookmarksToolbar.vue';
 
 export default {
   name: 'App',
-  components: { Search, Settings }
+  data: () => ({settings}),
+  components: { Search, Settings, BookmarksToolbar }
 }
 
 </script>
