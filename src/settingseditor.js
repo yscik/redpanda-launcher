@@ -1,10 +1,9 @@
-import Storage from './Storage'
 import Engines from './Engines'
 import {default as settings, save as storeSettings} from "./settings";
 
 const e = document.createElement.bind(document);
 const clone = v => JSON.parse(JSON.stringify(v));
-const stripEngine = ({url, keyword, title, type, active}) => ({url, keyword, title, type});
+const stripEngine = ({url, keyword, title, type, active}) => ({url, keyword, title, type, active});
 export default class SettingsEditor {
   constructor() {
 
@@ -46,7 +45,7 @@ export default class SettingsEditor {
     }
 
     if(action.fresh) setTimeout(decay, 1000);
-    // setTimeout(clear, 5000);
+    setTimeout(clear, 5000);
     this.lastAction = action;
   }
 

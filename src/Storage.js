@@ -19,7 +19,6 @@ export default new class Storage
 
     this.icons = sites;
 
-    await settings.promise;
     let engines = !settings.sync ? sites : (await browser.storage.sync.get());
     Engines.addConfigured(engines);
 
