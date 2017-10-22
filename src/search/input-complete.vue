@@ -13,7 +13,7 @@ export default Vue.component('input-complete',
   methods: {
     update: function(value)
     {
-      this.displayvalue = value;
+//      this.displayvalue = value;
       this.$emit('input', value)
     },
     focus: function()
