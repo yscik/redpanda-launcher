@@ -1,9 +1,9 @@
-import Datasource from './datasource';
 import {isUrl, protocol} from './isUrl';
 import Entry from './Entry';
 import Engines from './Engines';
 import Bookmarks from './Bookmarks';
-import SearchState from "./searchservice";
+import SearchState from "./search.service";
+import SearchBackend from "./search.backend";
 
 function formatUrl(term) {
   if (protocol.test(term)) return term;
