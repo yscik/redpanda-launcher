@@ -1,5 +1,5 @@
 
-import Favicons from "./Favicons";
+import Favicons from "./entry/Favicons";
 window.Favicons = Favicons;
 
 // import Datasource from "./datasource";

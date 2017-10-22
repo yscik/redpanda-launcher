@@ -18,8 +18,8 @@
 </template>
 <script>
 
-  import Bookmarks from './Bookmarks';
-  import settings from './settings';
+  import Bookmarks from './data/Bookmarks';
+  import settings from './data/settings';
   import SearchService from './searchservice'
 
   export default {

@@ -127,9 +127,9 @@ export default {
 
 </script>
 <style lang="sass">
-@import colors
-@import settings.layout
-@import form
+@import "../app/colors"
+@import "../app/form"
+@import "./settings.layout"
 
 .tabs
   display: flex

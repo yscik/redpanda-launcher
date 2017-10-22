@@ -27,7 +27,7 @@
 </script>
 
 <style lang="sass">
-@import colors
+@import "../app/colors"
 .bookmarks-toolbar
   padding: .3em .5rem
   background: $ChromeLight

@@ -1,7 +1,7 @@
 
-import Storage from './Storage'
+import Storage from '../data/Storage'
 
-const defaultIcon = require('!!url-loader!../icons/globe.png');
+const defaultIcon = require('!!url-loader!../../icons/globe.png');
 
 const fetch_options = {method: 'GET', cache: 'force-cache', credentials: 'omit', redirect: 'manual',
   headers: {Accept: 'image/*'}};

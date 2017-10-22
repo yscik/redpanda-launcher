@@ -1,5 +1,5 @@
-import Engines from './Engines'
-import {default as settings, save as storeSettings} from "./settings";
+import Engines from '../data/Engines'
+import {default as settings, save as storeSettings} from "../data/settings";
 
 const e = document.createElement.bind(document);
 const clone = v => JSON.parse(JSON.stringify(v));

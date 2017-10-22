@@ -17,7 +17,7 @@
 <script>
 
 import SearchService from './searchservice'
-import searchbar from './searchbar.vue';
+import searchbar from './search/searchbar.vue';
 import Homepage from './Homepage.vue';
 
 export default {
@@ -35,12 +35,12 @@ export default {
 
 </script>
 <style lang="sass">
-@import colors
+@import "app/colorss""
 .panel
   position: relative
 
 .logo
-  background: url('../icons/redpanda-256.png') no-repeat
+  background: url('../../icons/redpanda-256.png') no-repeat
   background-size: contain
   height: 12rem
   width: 12rem

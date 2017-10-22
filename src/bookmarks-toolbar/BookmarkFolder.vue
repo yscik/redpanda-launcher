@@ -38,7 +38,7 @@
 </script>
 
 <style lang="sass" scoped>
-@import colors
+@import "../app/colors"
 .folder
   position: relative
 

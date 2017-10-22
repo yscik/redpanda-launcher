@@ -18,7 +18,7 @@
 <script>
 
 //  import entry from './entry.vue';
-  import Entry from './Entry';
+  import Entry from './data/Entry';
   import Vue from 'vue';
 
   export default Vue.component("results", {
@@ -31,7 +31,7 @@
 
 </script>
 <style lang="sass">
-@import colors
+@import "../app/colors"
 
 .entry
   padding: .4em

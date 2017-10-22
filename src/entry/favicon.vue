@@ -28,7 +28,3 @@ export default Vue.component("favicon", {
 })
 
 </script>
-<style lang="sass">
-
-
-</style>

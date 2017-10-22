@@ -25,7 +25,7 @@ export default Vue.component("icon", {
 
 </script>
 <style lang="sass">
-@import colors
+@import "colors"
 
 .icon
   display: inline-block

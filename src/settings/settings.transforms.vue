@@ -30,7 +30,7 @@ export default {
 
 </script>
 <style lang="sass" scoped>
-@import colors
+@import "../app/colors"
 .transforms
   position: relative
   .box

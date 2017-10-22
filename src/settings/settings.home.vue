@@ -20,7 +20,7 @@
 
 </template>
 <script>
-import Bookmarks from './Bookmarks'
+import Bookmarks from '../data/Bookmarks'
 
 export default {
   props: {settings: {}},
@@ -30,7 +30,3 @@ export default {
 }
 
 </script>
-<style lang="sass" scoped>
-
-
-</style>

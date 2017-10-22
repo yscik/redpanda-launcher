@@ -6,7 +6,7 @@ const days = ms => ms / days.ratio;
 
 const startTime = new Date(days.now - days.ms(60));
 
-import Entry from './Entry';
+import Entry from '../data/Entry';
 
 const weightSort = (a,b) => b.weight - a.weight;
 const visitSort = (a,b) => b.visitCount - a.visitCount;

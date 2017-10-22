@@ -8,13 +8,13 @@ import '../icons/redpanda-256.png'
 
 import './helpers'
 import Vue from 'vue'
-import App from './app.vue'
-import './icon.vue'
-import './favicon.vue'
-import './message.vue'
-import settings from './settings'
-import './results.vue';
-import './Storage';
+import App from './app/app.vue'
+import './app/icon.vue'
+import './entry/favicon.vue'
+import './app/message.vue'
+import settings from './data/settings'
+import './entry/results.vue';
+import './data/Storage';
 
 window.focus();
 window.radio = new Vue();

@@ -16,7 +16,7 @@
 <script>
 
   import './input-complete.vue'
-  import SearchService from './searchservice'
+  import SearchService from './search.service'
 
   export default {
     data: () => {
@@ -40,7 +40,7 @@
 
 </script>
 <style lang="sass">
-@import colors
+@import "../app/colors"
 
 .searchbar
   flex: 1

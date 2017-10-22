@@ -1,5 +1,5 @@
 
-import Engines from './Engines';
+import Engines from './data/Engines';
 import {default as settings, readEngines} from './settings';
 
 const enginesKey = '_engines';

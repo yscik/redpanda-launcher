@@ -31,7 +31,7 @@ export default Vue.component('message',
 </script>
 
 <style lang="sass">
-@import colors
+@import "app/colorss""
 .message
   position: fixed
   right: 2rem

@@ -8,10 +8,10 @@
 <script>
 
 import Search from './Search.vue'
-import Settings from './Settings.vue'
-import settings from './settings'
-import BookmarksToolbar from './BookmarksToolbar.vue';
-import bookmarksToolbarState from './bookmarkstoolbar-state';
+import Settings from './settings/Settings.vue'
+import settings from './data/settings'
+import BookmarksToolbar from './bookmarks-toolbar/BookmarksToolbar.vue';
+import bookmarksToolbarState from './bookmarks-toolbar/bookmarkstoolbar-state';
 
 export default {
   name: 'App',
@@ -26,8 +26,7 @@ export default {
 
 </script>
 <style lang="sass">
-  @import colors
-  @import style
   @import layout
+  @import style
 
 </style>

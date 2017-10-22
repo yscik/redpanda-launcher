@@ -19,8 +19,3 @@
   })
 
 </script>
-
-<style lang="sass" scoped>
-@import colors
-
-</style>

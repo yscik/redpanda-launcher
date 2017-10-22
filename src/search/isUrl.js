@@ -1,5 +1,5 @@
 
-import tld_txt from 'raw-loader!./tlds-alpha-by-domain.txt'
+import tld_txt from 'raw-loader!../data/tlds-alpha-by-domain.txt'
 
 const tldInFile = /^[a-zA-Z]/;
 
