@@ -14,7 +14,7 @@ const visitSort = (a,b) => b.visitCount - a.visitCount;
 const QUERY_LIMIT = 2;
 const ABORT_TRESHOLD = 3;
 
-export default class Datasource
+export default class SearchBackend
 {
 
   constructor()
@@ -41,9 +41,9 @@ export default class Datasource
     console.log('Querying', term);
 
     let history = this.searchHistory(term);
-    let tabs = Datasource.filter(term, this.tabs);
+    let tabs = SearchBackend.filter(term, this.tabs);
 
-    let bookmarks = Datasource.filter(term, this.bookmarks);
+    let bookmarks = SearchBackend.filter(term, this.bookmarks);
 
     [history, tabs] = await Promise.all([history, tabs]);
 

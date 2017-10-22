@@ -3,6 +3,7 @@ import {isUrl, protocol} from './isUrl';
 import Entry from './Entry';
 import Engines from './Engines';
 import Bookmarks from './Bookmarks';
+import SearchState from "./searchservice";
 
 function formatUrl(term) {
   if (protocol.test(term)) return term;
@@ -10,48 +11,18 @@ function formatUrl(term) {
   else return 'http://' + term;
 }
 
-class SearchService
+export default class SearchService
 {
   constructor()
   {
-    let self = this;
-    this.state = {
-      result: null,
-      get term()
-      {
-        return this._term
-      },
-      set term(value)
-      {
-        let entry = value.url;
-        if(!entry)
-          self.setTerm(value);
-        else this._term = entry;
-      },
-      get label() {
-        return this.searching ? this.engine.desc || this.engine.title : 'Search your feelings'
-      },
-      index: 0,
-      searching: false,
-      engine: null,
-      autocomplete: null,
-      session: null,
-      topSites: null,
-      home: true,
-      isUrl: false
-    };
+    this.state = new SearchState();
 
     this.init();
-
-    // this.port = browser.runtime.connect();
-    // this.port.onMessage.addListener((result) => {
-    //   this.update(result)});
-
   }
 
   async init()
   {
-    this.data = new Datasource();
+    this.data = new SearchBackend();
 
     // this.data = (await browser.runtime.getBackgroundPage()).dataSource;
 
@@ -187,5 +158,3 @@ class SearchService
     $event.preventDefault();
   }
 }
-
-export default (window.service = new SearchService);
