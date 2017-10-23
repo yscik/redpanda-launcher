@@ -11,14 +11,11 @@
 <script>
 
   import Vue from 'vue'
-  import state from './bookmarkstoolbar-state'
+  import {state} from './bookmarkstoolbar-state'
 
   export default Vue.component('BookmarkFolder', {
     props: ['entry'],
     data: () => ({state}),
-    created() {
-      Vue.set(this.entry, 'folderOpen', false)
-    },
     methods: {
       openFolder(entry) {
         state.folder = (state.folder != entry) ? entry : null;

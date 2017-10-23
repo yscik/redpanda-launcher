@@ -1,4 +1,4 @@
-export default class SearchState
+export class SearchState
 {
   constructor(service)
   {
@@ -8,8 +8,6 @@ export default class SearchState
       searching: false,
       engine: null,
       autocomplete: null,
-      session: null,
-      topSites: null,
       home: true,
       isUrl: false
     });

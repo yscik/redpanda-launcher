@@ -1,10 +1,10 @@
 <template lang="pug">
 .home-page
-  .group.home-session(v-if="settings.home.recent")
+  .group.home-session(v-if="settings.recent")
     h3
       icon(type='session')
       span Recent tabs
-    results.session-tabs(:entries='state.session')
+    results.session-tabs(:entries='entries.session')
   .group.home-bookmarks(v-if='bookmarks')
     h3
       icon(type='bookmark')
@@ -14,22 +14,21 @@
     h3
       icon(type='topsite')
       span Top sites
-    results.top-sites(:entries='state.topSites')
+    results.top-sites(:entries='entries.topSites')
 </template>
 <script>
 
-  import Bookmarks from './data/Bookmarks';
-  import settings from './data/settings';
-  import SearchService from './searchservice'
+  import {bookmarks, home} from '../app/app';
+  import {settings} from '../app/state';
 
   export default {
     data: () => ({
-      settings: settings,
-      state: SearchService.state
+      settings: settings.home,
+      entries: home.state
     }),
     computed: {
       bookmarks() {
-        return Bookmarks.folders && settings.home.bookmarks.enabled && Bookmarks.folders[settings.home.bookmarks.folder]
+        return bookmarks.folders && settings.home.bookmarks.enabled && bookmarks.folders[settings.home.bookmarks.folder]
       }
     }
 

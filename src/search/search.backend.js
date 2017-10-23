@@ -1,28 +1,21 @@
 
-const days = ms => ms / days.ratio;
-  days.ratio = 1000*60*60*24;
-  days.ms = day => day * days.ratio,
-  days.now = Date.now()
+import {days} from "../helpers";
 
-const startTime = new Date(days.now - days.ms(60));
+import {Entry} from '../data/Entry';
 
-import Entry from '../data/Entry';
-
-const weightSort = (a,b) => b.weight - a.weight;
+const weightSort = (a,b) => SearchBackend.weight - SearchBackend.weight;
 const visitSort = (a,b) => b.visitCount - a.visitCount;
 
 const QUERY_LIMIT = 2;
 const ABORT_TRESHOLD = 3;
 
-export default class SearchBackend
+export class SearchBackend
 {
 
-  constructor()
+  constructor(browsingData)
   {
-    this.session = [];
-    this.topSites = [];
     this.queries = {pending: 0, latest: null, lastFinished: null};
-    this.raw = {};
+    this.data = browsingData;
   }
 
   async search(term, options)
@@ -32,27 +25,22 @@ export default class SearchBackend
 
     if(this.queries.pending >= QUERY_LIMIT)
     {
-      console.log('Delaying', term);
       await (new Promise((resolve, reject) => this.queries.latest.run = resolve));
     }
     this.queries.pending++;
-    let t = performance.now();
-
-    console.log('Querying', term);
 
     let history = this.searchHistory(term);
-    let tabs = SearchBackend.filter(term, this.tabs);
+    let tabs = SearchBackend.filter(term, this.data.tabs);
 
-    let bookmarks = SearchBackend.filter(term, this.bookmarks);
+    let bookmarks = SearchBackend.filter(term, this.data.bookmarks);
 
-    [history, tabs] = await Promise.all([history, tabs]);
+    history = await history;
 
     await this.continueOrSkipToLatest(term);
 
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
-    let result = this.compile({history, tabs, bookmarks, autocomplete, term});
-    console.log('Time', term, performance.now() - t);
+    let result = this.compileResults({history, tabs, bookmarks, autocomplete, term});
     this.finish(term);
 
     return result;
@@ -79,10 +67,10 @@ export default class SearchBackend
     this.queries.latest.run && this.queries.latest.run();
   }
 
-  compile(data, term)
+  compileResults(data, term)
   {
     data.result = data.history.concat(data.bookmarks, data.tabs);
-    data.result.forEach(this.weight.bind(this, term));
+    data.result.forEach(SearchBackend.weight.bind(this, term));
     data.result.sort(weightSort);
     data.result.length = Math.min(data.result.length, 15);
     return data;
@@ -90,7 +78,8 @@ export default class SearchBackend
 
   async searchHistory(term) {
 
-    let entries = await browser.history.search({text: term, maxResults: 100, startTime: startTime});
+    const startTime = new Date(Date.now() - days.ms(60));
+    let entries = await this.data.history({text: term, maxResults: 100, startTime});
     await this.continueOrSkipToLatest(term);
 
     entries = Entry.process(entries, {setup: e => {e.weight = e.visitCount}});
@@ -101,7 +90,7 @@ export default class SearchBackend
 
   }
 
-  weight(term, entry)
+  static weight(term, entry)
   {
     let weight = Math.min(100, entry.weight);
     if(entry.domain.startsWith(term) || entry.title.toLowerCase().startsWith(term)) return entry.weight = weight * 5;
@@ -125,16 +114,6 @@ export default class SearchBackend
     return hosts.find(h => h.domain.startsWith(term));
   }
 
-
-  // async searchTabs(term)
-  // {
-  //   let tabs = this.tabs.filter(t => t.url.toLowerCase().includes(term) || t.title.toLowerCase().includes(term))
-  //
-  //   tabs = Entry.process(tabs, {props: {weight: 50, type: 'tab', source: 'tab'}});
-  //
-  //   return tabs;
-  // }
-
   static filter(term, collection)
   {
     return (collection||[]).filter(s => (s.title && s.title.includes(term))
@@ -142,50 +121,4 @@ export default class SearchBackend
             s.origin.includes(term)))
   }
 
-  loadLongtermEntries()
-  {
-
-    return Promise.all([
-      this.loadBookmarks(),
-      this.loadSession(),
-      this.loadTopsites(),
-      this.loadTabs()
-    ])
-  }
-
-  async loadSession()
-  {
-    let tabs = await browser.sessions.getRecentlyClosed({maxResults: 15});
-    tabs = tabs.map(t => t.tab || t);
-    tabs.length = Math.min(tabs.length, 15);
-    return this.session = Entry.process(tabs, {props: {source: 'session'}} );
-
-  }
-
-  async loadTopsites()
-  {
-    let sites = await browser.topSites.get();
-    sites.length = Math.min(sites.length, 15);
-    return this.topSites = Entry.process(sites, {props: {source: 'topsite'}});
-
-  }
-
-  async loadTabs()
-  {
-    let tabs = await browser.tabs.query({});
-    return this.tabs = Entry.process(tabs, {props: {source: 'tab', type: 'tab', weight: 50}});
-
-  }
-
-  async loadBookmarks()
-  {
-    const bookmarks = (await browser.bookmarks.search({}));
-    this.raw.bookmarks = bookmarks;
-    this.bookmarks = Entry.process(bookmarks.filter(b => b.type == 'bookmark'), {props: {source: 'bookmark'}, setup: b => b.weight = age(b)});
-
-    function age(b)
-    {
-      return Math.max(5, 30 - days(days.now - b.dateAdded))
-    }
-  }
 }

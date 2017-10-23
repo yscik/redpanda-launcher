@@ -8,13 +8,13 @@
 </template>
 <script>
 
-  import Entry from './Entry';
+  import {Outbound} from '../search/outbound'
   import Vue from 'vue'
 
   export default Vue.component('Bookmark', {
     props: ['entry'],
     methods: {
-      open: Entry.open,
+      open: Outbound.open,
     }
   })
 

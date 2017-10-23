@@ -17,15 +17,13 @@
 </template>
 <script>
 
-//  import entry from './entry.vue';
-  import Entry from './data/Entry';
+  import {Outbound} from '../search/outbound';
   import Vue from 'vue';
 
   export default Vue.component("results", {
     props: ['entries', 'selected'],
-//    components: {entry},
     methods: {
-      open: Entry.open
+      open: Outbound.open
     }
   })
 

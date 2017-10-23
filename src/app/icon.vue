@@ -6,7 +6,7 @@
 import Vue from 'vue'
 
 const typeImages = {};
-const iconFiles = require.context('../icons/', false, /\.svg$/);
+const iconFiles = require.context('../../icons/', false, /\.svg$/);
 iconFiles.keys().forEach((iconFile) =>
     typeImages[iconFile.replace(/.*\/(\w+)\.svg$/, '$1')]  = iconFiles(iconFile)
 );

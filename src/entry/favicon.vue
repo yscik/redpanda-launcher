@@ -1,11 +1,11 @@
 <template lang="pug">
-  img.favicon.icon(:class="state", :src="url")
+  img.favicon.icon(:src="url", :site="site.url" v-cloak)
 </template>
 <script>
 
 import Vue from 'vue'
 
-//import FaviconService from './Favicons'
+import {favicons} from '../app/app'
 
 export default Vue.component("favicon", {
   props: {
@@ -13,16 +13,20 @@ export default Vue.component("favicon", {
   },
   data: () => ({state: {error: false}, url: null}),
 
-  async created()
-  {
-    this.service = background.Favicons;
-    this.url = await this.service.get(this.site);
+  async created() {
+    this.service = favicons;
+    this.setUrl(this.site);
   },
   watch: {
     async site(site)
     {
-//    this.url = site && (sites.icons[site.origin] && sites.icons[site.origin].favicon) || `${site.origin}/favicon.ico`
-      this.url = await this.service.get(site);
+      this.setUrl(site);
+    }
+  },
+  methods: {
+    async setUrl(site)
+    {
+      this.url = this.service.getFromCache(site) || await this.service.load(site);
     }
   }
 })

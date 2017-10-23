@@ -1,23 +1,7 @@
-export default class Entry
+export class Entry
 {
 
-  static open(entry, $event)
-  {
-    // browser.tabs.getCurrent().then(tab => browser.tabs.remove(tab.id));
-
-    switch(entry.type)
-    {
-      case 'tab':
-        browser.tabs.update(entry.id, {active: true});
-        break;
-      default:
-        ($event && $event.ctrlKey ? browser.tabs.create : browser.tabs.update)({url: entry.url})
-    }
-
-
-  }
-
-  static process(entries, {copy = false, props = null, setup = null} = {})
+  static process(entries, {copy = false, props = null, setup = null, reactive = false} = {})
   {
     return entries.reduce((result,entrydata) =>
     {
@@ -34,6 +18,7 @@ export default class Entry
         result.push(entry);
         entry.selected = false;
         if(setup) setup(entry);
+        if(!reactive) Object.seal(entry);
       }
       catch (e) {
         // Invalid entry, discarded

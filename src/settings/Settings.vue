@@ -11,113 +11,60 @@
         .tab(@click='tab = "general"', :class='{active: tab == "general"}') General
         .tab(@click='tab = "engines"', :class='{active: tab == "engines"}') Search engines
         .tab(@click='tab = "advanced"', :class='{active: tab == "advanced"}') Advanced
-    .settings-content(v-if="s")
+    .settings-content(v-if="editor")
       .tab-content(v-show='tab == "general"')
         label.control
-          .control-input: input(type='checkbox' v-model="s.settings.sync")
+          .control-input: input(type='checkbox' v-model="settings.sync")
           .control-label Sync settings and search engines between devices
-        HomePageSettings(:settings="s.settings.home")
-      .tab-content.search-engines-tab(v-show='tab == "engines"' v-if="loadSearch")
-        .search-engines-settings
-          .control(v-if="s.defaultEngine")
-            .control-label Default:
-            .control-input
-              favicon(:site='s.defaultEngine.urlo')
-              strong {{s.defaultEngine.title}}
-          label.control
-            .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.autoadd")
-            .control-label Add OpenSearch search engines defined by sites
-          .control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
-            .control-label
-              | When site has at least
-              |
-              input.inline.w4(type='number' v-model.number="s.settings.search.opensearch.visits", :disabled="!s.settings.search.opensearch.autoadd")
-              |  visit
-              span(v-show="s.settings.search.opensearch.visits > 1") s
-          label.control.ident-1(:class="{disabled: !s.settings.search.opensearch.autoadd}")
-            .control-input: input(type='checkbox' v-model="s.settings.search.opensearch.manual")
-            .control-label Manually enable discovered search engines
-        .headers
-          span.flex-1
-            input.input.engine-filter(v-model="engine_filter" ref="engine_filter" placeholder="Filter search engines")
-          span.keyword-header Keyword
-        .search-engines-list
-          .group(v-for="(group, type) in engines")
-            h3.group-label {{label[type]}}
-            .row(v-for="(entry, index) in group", :key="entry.url", :class="{active: entry.active}")
-              .icons
-                favicon(:site='entry')
-              .text.ellipsis
-                .title {{entry.title}}
-                .url {{entry.url}}
-              .actions
-                .setdefault.action(@click='s.set_default_engine(entry)')
-                  .button Set As Default
-                .keyword
-                  input.input.engine-keyword(v-model='entry.keyword', @input='s.change(entry, true)')
-                .remove.action(v-if="entry.type == 'opensearch'", @click='s.remove_engine(entry)')
-                  icon(type="close")
-                .spacing
-      .tab-content(v-show='tab == "advanced"' v-if="loadSearch")
-        SearchTransformSettings(:settings="s.settings.search.transforms")
-      message.settings-message(:action="s.lastAction")
+        HomePageSettings(:settings="settings.home")
+      <!--SearchEngineSettings.tab-content(v-show='tab == "engines"' v-if="loadSearch")-->
+      <!--SearchTransformSettings.tab-content(v-show='tab == "advanced"' v-if="loadSearch", :settings="settings.search.transforms")-->
+      message.settings-message(:action="editor.lastAction")
 
 </template>
 <script>
 
 import SettingsEditor from './settingseditor'
 import SearchTransformSettings from './settings.transforms.vue'
+import SearchEngineSettings from './settings.engines.vue'
 import HomePageSettings from './settings.home.vue'
+import {radio} from '../app/radio'
+import {settings} from '../app/state'
 
 export default {
   data: () => {
     return {
       open: false,
-      s: null,
-      engine_filter: '',
+      settings,
       tab: 'general',
       loadSearch: false
     }
   },
-  components: {SearchTransformSettings, HomePageSettings},
-  created(){
-    this.label = {bookmark: 'From bookmarks', opensearch: 'Discovered', builtin: 'Defaults'}
-//    setTimeout(()=>this.toggle(), 500)
+  components: {SearchTransformSettings, HomePageSettings, SearchEngineSettings},
+
+  created() {
+    this.editor = null;
   },
-  computed: {
-    engines()
-    {
-      return this.s && this.s.engines.reduce((m,e) => {
-        (e.title.includes(this.engine_filter) || e.url.includes(this.engine_filter)) &&
-          m[e.type].push(e);
-        return m;
-      },
-      {opensearch: [], bookmark: [], builtin: []})
-    }
-  },
+
   methods: {
     toggle(state)
     {
       this.open = typeof(state) == "undefined" ? !this.open : state;
 
-      this.$nextTick(() => {
-        if (!this.s) this.init();
-
-        this.engine_filter = '';
-        if (this.open) setTimeout(() => this.open && this.$refs.engine_filter && this.$refs.engine_filter.focus(), 300);
-        else window.radio.$emit('focus-search-input');
-      })
+      if (!this.editor) this.init();
+      else
+        radio.$emit('focus-search-input');
 
     },
     init() {
-      this.s = new SettingsEditor();
+      this.editor = new SettingsEditor();
       setTimeout(() => this.loadSearch = true, 500)
     }
   },
   watch: {
-      's.settings': {
+      settings: {
         handler(value, oldvalue) {
-          this.s && this.s.change(value, oldvalue)
+          this.editor && this.editor.change(value, oldvalue)
         },
         deep: true,
         immediate: true

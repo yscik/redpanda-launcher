@@ -1,13 +1,13 @@
 <template lang="pug">
 .bookmarks-toolbar(:class="{icons: settings.icons}")
   template(v-for="entry in bookmarks.children")
-    Bookmark.bookmark(v-if='entry.type=="bookmark"', :entry='entry', :key='entry.index')
-    BookmarkFolder.bookmark(v-if='entry.type == "folder"', :entry='entry', :key='entry.index')
+    Bookmark.bookmark(v-if='entry.type=="bookmark"', :entry='entry', :key='entry.index' v-cloak)
+    BookmarkFolder.bookmark(v-if='entry.type == "folder"', :entry='entry', :key='entry.index' v-cloak)
 </template>
 <script>
 
-  import Bookmarks from './Bookmarks';
-  import settings from './settings';
+  import {bookmarks} from '../app/app';
+  import {settings} from '../app/state';
   import './Bookmark.vue';
   import './BookmarkFolder.vue';
 
@@ -19,9 +19,9 @@
     }),
     computed: {
       bookmarks() {
-        return Bookmarks.folders && settings.home.bookmarkstoolbar.enabled && Bookmarks.toolbar
+        return settings.home.bookmarkstoolbar.enabled && bookmarks.toolbar
       }
-    }
+    },
 
   }
 </script>

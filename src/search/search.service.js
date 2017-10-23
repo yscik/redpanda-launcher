@@ -1,38 +1,27 @@
-import {isUrl, protocol} from './isUrl';
-import Entry from '../data/Entry';
-import Engines from '../data/Engines';
-import Bookmarks from '../data/Bookmarks';
-import SearchState from "./search.service";
+import {isUrl} from './isUrl';
+import {Engines} from '../data/Engines';
+import {SearchState} from "./search.state";
+import {SearchBackend} from "./search.backend";
+import {Outbound} from "./outbound";
 
-function formatUrl(term) {
-  if (protocol.test(term)) return term;
-
-  else return 'http://' + term;
-}
-
-export default class SearchService
+export class SearchService
 {
-  constructor()
+  constructor(browsingData, engines)
   {
-    this.state = new SearchState();
+    this.backend = new SearchBackend(browsingData);
+    this.engines = engines;
+    this.searchTerm = null;
+    this.entry = null;
+    this.state = null;
   }
 
-  async init(backend)
+  attach()
   {
-    this.data = backend;
-
-    // this.data = (await browser.runtime.getBackgroundPage()).dataSource;
-
+    this.state = new SearchState(this);
     this.update({});
     this.state.home = true;
-    await this.data.loadLongtermEntries();
-    Engines.addBookmarks(this.data.bookmarks);
-    Bookmarks.init(this.data.raw.bookmarks);
-    this.data.engines = Engines.engines;
 
-    // this.state.bookmarks = Object.freeze([...this.data.bookmarks]);
-    this.state.session = Object.freeze([...this.data.session]);
-    this.state.topSites = Object.freeze([...this.data.topSites]);
+    return this.state;
   }
 
   update({term, autocomplete, result} = {}) {
@@ -56,7 +45,7 @@ export default class SearchService
   {
     let url = autocomplete ? autocomplete.domain : term;
 
-    return Engines.engines.find(e => e.active && e.keyword == term.trim()) || Engines.engines.find(e => e.active && e.domain.startsWith(url))
+    return this.engines.find(e => e.active && e.keyword == term.trim()) || this.engines.find(e => e.active && e.domain.startsWith(url))
   }
 
   setTerm(term)
@@ -75,6 +64,13 @@ export default class SearchService
     searchexpr ? this.search(searchexpr, options) : this.clear();
 
     this.state._term = term;
+  }
+
+  async search(term, options) {
+
+    const data = await this.backend.search(term, options);
+    this.update(data);
+
   }
 
   clear() {
@@ -108,18 +104,18 @@ export default class SearchService
 
   enter($event) {
     if (this.entry) {
-      Entry.open(this.entry, $event)
+      Outbound.open(this.entry, $event)
     }
     else if (this.state.autocomplete) {
-      Entry.open(this.state.autocomplete)
+      Outbound.open(this.state.autocomplete)
     }
     else if (this.state.searching) {
-      Entry.open({url: Engines.prepare(this.state.term, this.state.engine)})
+      Outbound.search(this.state.term, this.state.engine)
     }
     else {
-      if (isUrl(this.state.term)) Entry.open({url: formatUrl(this.state.term)});
+      if (isUrl(this.state.term)) Outbound.open({url: Outbound.formatUrl(this.state.term)});
       else {
-        Entry.open({url: Engines.prepare(this.state.term, Engines.default)})
+        Outbound.search(this.state.term, Engines.default)
       }
     }
   }
@@ -130,15 +126,6 @@ export default class SearchService
       this.state.searching = false;
       this.state.term = lastTerm;
     }
-  }
-
-
-  async search(term, options) {
-
-    // this.port.postMessage({search: {term, options}})
-    const data = await this.data.search(term, options);
-    this.update(data);
-
   }
 
   select(direction, $event) {

@@ -16,18 +16,18 @@
 <script>
 
   import './input-complete.vue'
-  import SearchService from './search.service'
+  import {search} from '../app/state'
+  import {radio} from '../app/radio'
 
   export default {
     data: () => {
       return {
-        state: SearchService.state
+        state: search
       }
     },
     created()
     {
-      this.service = SearchService;
-      window.radio.$on('focus-search-input', () => this.focus())
+      radio.$on('focus-search-input', () => this.focus())
     },
     mounted() { this.focus() },
     methods: {

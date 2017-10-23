@@ -8,22 +8,24 @@ import '../icons/redpanda-256.png'
 
 import './helpers'
 import Vue from 'vue'
-import App from './app/app.vue'
+import SearchApp from './app/SearchApp.vue'
 import './app/icon.vue'
 import './entry/favicon.vue'
 import './app/message.vue'
-import settings from './data/settings'
 import './entry/results.vue';
-import './data/Storage';
+
+import {app, loadApp} from "./app/app";
 
 window.focus();
-window.radio = new Vue();
+
 (async () => {
-  window.background = await browser.runtime.getBackgroundPage()
-  await settings.promise
+
+  await loadApp();
+  window.app = app;
+
   new Vue({
     el: '#app',
-    render: h => h(App)
+    render: h => h(SearchApp)
   });
 
 })();

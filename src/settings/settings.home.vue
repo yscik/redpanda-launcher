@@ -13,20 +13,20 @@
   label.control
     .control-input: input(type='checkbox' v-model="settings.bookmarks.enabled")
     .control-label Show bookmarks folder:
-    .control-input: select(v-model="settings.bookmarks.folder")
-      option(v-for="(folder, id) in bookmarks.folders", :value="folder.id") {{folder.title}}
+    .control-input: select(v-model="settings.bookmarks.folder", @change=" settings.bookmarks.enabled = true")
+      option(v-for="(folder, id) in bookmarks", :value="folder.id") {{folder.title}}
 
 
 
 </template>
 <script>
-import Bookmarks from '../data/Bookmarks'
+import {bookmarks} from '../app/app'
 
 export default {
-  props: {settings: {}},
+  props: {settings: Object},
   data: () => ({
-    bookmarks: Bookmarks
-  })
+    bookmarks: bookmarks.folders
+  }),
 }
 
 </script>

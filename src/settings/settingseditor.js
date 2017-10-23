@@ -1,23 +1,22 @@
-import Engines from '../data/Engines'
-import {default as settings, save as storeSettings} from "../data/settings";
+import {settingsService, engines} from "../app/app";
+import {clone} from "../helpers";
 
 const e = document.createElement.bind(document);
-const clone = v => JSON.parse(JSON.stringify(v));
-const stripEngine = ({url, keyword, title, type, active}) => ({url, keyword, title, type, active});
+
 export default class SettingsEditor {
   constructor() {
 
     this.lastAction = {};
 
-    this.engines = Engines.engines;
-    this.settings = settings;
-    this.data = {settings, engines: this.engines};
+    this.engines = settingsService.state.engines;
+    this.settings = settingsService.state.settings;
+    this.data = settingsService.state;
     this.changing = {original: clone(this.data)};
-    this.defaultEngine = Engines.updateDefault();
+    this.defaultEngine = engines.default;
   }
 
   async save() {
-    return storeSettings({engines: this.data.engines.map(stripEngine)});
+    return settingsService.save();
   }
 
   async commit(action)
@@ -53,6 +52,8 @@ export default class SettingsEditor {
   {
     if(!oldvalue) return;
 
+    settingsService.applyChanges();
+
     if(this.changing.internal) {
       this.changing.internal = false;
       return;
@@ -84,14 +85,14 @@ export default class SettingsEditor {
   {
     let previous = this.defaultEngine;
     this.settings.search.defaultEngine = engine.url;
-    this.defaultEngine = Engines.updateDefault();
+    this.defaultEngine = engines.updateDefault();
 
     this.changing.internal = true;
     this.commit({html: [['b', engine.title], ' set as default search engine.'], favicon: engine,
       undo: () =>  {
         this.changing.internal = true;
         this.settings.search.defaultEngine = previous.url;
-        this.defaultEngine = Engines.updateDefault();
+        this.defaultEngine = engines.updateDefault();
     }});
   }
 
