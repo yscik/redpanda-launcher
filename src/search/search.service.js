@@ -1,5 +1,4 @@
 import {isUrl} from './isUrl';
-import {Engines} from '../data/Engines';
 import {SearchState} from "./search.state";
 import {SearchBackend} from "./search.backend";
 import {Outbound} from "./outbound";
@@ -115,7 +114,7 @@ export class SearchService
     else {
       if (isUrl(this.state.term)) Outbound.open({url: Outbound.formatUrl(this.state.term)});
       else {
-        Outbound.search(this.state.term, Engines.default)
+        Outbound.search(this.state.term, this.engines.default)
       }
     }
   }

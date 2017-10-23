@@ -10,6 +10,7 @@ export class Engines {
     this.addConfiguration(engineSettings);
     this.addDiscovered(data.storage);
     this.addBookmarked(data.bookmarks);
+    this.addDefaults();
 
     this.updateDefault();
 
@@ -17,11 +18,15 @@ export class Engines {
   }
 
   updateDefault() {
-    return this.default = Object.freeze(this.engines.find(e => e.url == (this.settings.defaultEngine || Engines.defaults[0].url)));
+    return this.default = this.engines.default = this.engines.find(e => e.url == (this.settings.defaultEngine || Engines.defaults[0].url));
   }
 
   addConfiguration(engines) {
     this.add(engines);
+  }
+
+  addDefaults() {
+    this.add(Engines.defaults);
   }
 
   addDiscovered(sites)
