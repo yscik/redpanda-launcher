@@ -17,7 +17,7 @@ export class Settings {
 
     let settings = storage[storageKey] = parseIfJson(storage[storageKey]);
 
-    if (settings.sync)
+    if (settings && settings.sync)
     {
       storage = await browser.storage.sync.get();
       settings = storage[storageKey] = parseIfJson(storage[storageKey]);
@@ -71,7 +71,7 @@ export class Settings {
 
   static *readEngines(all) {
     let index = 1, e;
-    while (e = all[`_engines_${index++}`]) yield* (JSON.parse(e) || []);
+    while (e = all[`_engines_${index++}`]) yield* (e && JSON.parse(e) || []);
   }
 
   static defaults() {
