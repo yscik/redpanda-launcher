@@ -3,7 +3,7 @@ import {days} from "../helpers";
 
 import {Entry} from '../data/Entry';
 
-const weightSort = (a,b) => SearchBackend.weight - SearchBackend.weight;
+const weightSort = (a,b) => b.weight - a.weight;
 const visitSort = (a,b) => b.visitCount - a.visitCount;
 
 const QUERY_LIMIT = 2;
