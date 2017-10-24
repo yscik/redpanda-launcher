@@ -1,57 +1,45 @@
 import {settingsService, engines} from "../app/app";
 import {clone} from "../helpers";
 
-const e = document.createElement.bind(document);
 
 export default class SettingsEditor {
-  constructor() {
+  constructor(state) {
 
-    this.lastAction = {};
+    this.state = state || {};
 
-    this.engines = settingsService.state.engines;
-    this.settings = settingsService.state.settings;
-    this.data = settingsService.state;
+    this.data = {settings: settingsService.state, engines: engines.engines};
     this.changing = {original: clone(this.data)};
     this.defaultEngine = engines.default;
   }
 
   async save() {
-    return settingsService.save();
+
+    this.state.changes = 'saving';
+    await settingsService.save();
+    this.state.changes = 'saved';
   }
 
   async commit(action)
   {
     await this.save();
-    let clear = () => this.lastAction == action && (this.lastAction = {});
-    let decay = () => this.lastAction == action && (this.lastAction.fresh = false);
 
     if(action.undo) {
       let undo = action.undo;
-      action.undo = () => {undo(); clear(); this.save();}
+      action.undo = async () => {
+        undo();
+        await this.save();
+        this.state.changes = 'undid';
+      }
     }
 
-    action.active = true;
-    if(action.html) {
-      let node = action.node = e('span');
-      action.html.forEach(item => {
-        if(item instanceof Array) {
-          let el = e(item[0]);
-          el.innerText = item[1];
-          node.appendChild(el)
-        }
-        else node.appendChild(document.createTextNode(item))
-      })
-    }
-
-    if(action.fresh) setTimeout(decay, 1000);
-    setTimeout(clear, 5000);
-    this.lastAction = action;
+    this.state.lastAction = action;
   }
 
   change(value, oldvalue)
   {
     if(!oldvalue) return;
 
+    this.state.changes = 'dirty';
     settingsService.applyChanges();
 
     if(this.changing.internal) {

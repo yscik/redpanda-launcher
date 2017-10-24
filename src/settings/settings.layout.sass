@@ -22,46 +22,8 @@ $margin: 0
     right: $margin
     & + .main
       right: $width
-  .toggle
-    position: absolute
-    top: 50%
-    margin-top: -1.5rem
-    right: 1rem + $width
-    height: 3rem
-    width: 3rem
-    display: flex
-    align-items: center
-    justify-content: center
-    z-index: 3
-    padding: .4rem
-    //background: #fff
-    border-radius: 3px
-    line-height: 0
-    .i
-      transition: transform .3s
-      width: 1.5rem
-      height: 1.5rem
 
-      /*background: url(../icons/preferences-16-macos.svg) no-repeat center center*/
-      /*background-size: 60%*/
-      path
-        fill: $Grey90
-      border-radius: 3px
-    &:hover
-      .i
-        path
-          fill: $Blue50
-      cursor: pointer
-      background: $Grey10
-  &.open .toggle
-    right: 1rem
-    .i
-      transform: rotate(240deg)
-    &:not(:hover)
-      path
-        fill: $Blue60
-
-.settings, .main, .toggle
+.settings, .main, .settings-toggle
   transition: right .3s
 
 .settings-content

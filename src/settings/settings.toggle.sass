@@ -1,0 +1,55 @@
+.settings-toggle
+  position: absolute
+  top: 50%
+  margin-top: -1.5rem
+  right: 1rem + $width
+  height: 3rem
+  width: 3rem
+  display: flex
+  align-items: center
+  justify-content: center
+  z-index: 3
+  padding: .4rem
+  //background: #fff
+  border-radius: 3px
+  line-height: 0
+  .i
+    width: 1.5rem
+    height: 1.5rem
+    transition: transform .3s
+    path
+      fill: $Grey90
+    border-radius: 3px
+  &:hover
+    .i
+      path
+        fill: $Blue50
+    cursor: pointer
+    background: $Grey10
+  .settings.open &
+    right: 1rem
+    .i
+      transform: rotate(240deg)
+        
+  &.dirty
+    .i
+      path
+        fill: $red
+      animation: 1s infinite linear forwards roll
+  &.saved
+    .i
+      //path
+        animation: 1s done
+      animation: 1s 1 linear forwards roll
+
+@keyframes roll
+  from
+    transform: rotate(240deg)
+  to
+    transform: rotate(600deg)
+
+@keyframes done
+  from
+    fill: green
+  to
+    fill: $Blue60
