@@ -109,7 +109,8 @@ export class Settings {
         recent: true,
         topSites: {
           source: 'topSites'
-        }
+        },
+        urls: true
       }
     }
   }

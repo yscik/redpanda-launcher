@@ -8,7 +8,7 @@
         favicon(:site='entry')
       .text
         .title {{entry.title}}
-        .url
+        .url(v-show="settings.home.urls")
           icon.source-icon(:type="entry.source")
           strong {{entry.weight}}
           |  {{entry.url}}
@@ -19,9 +19,11 @@
 
   import {Outbound} from '../search/outbound';
   import Vue from 'vue';
+  import {settings} from '../app/state'
 
   export default Vue.component("results", {
     props: ['entries', 'selected'],
+    data: () => ({settings}),
     methods: {
       open: Outbound.open
     }

@@ -6,6 +6,9 @@
   label.control.ident-1
     .control-input: input(type='checkbox' v-model="settings.bookmarkstoolbar.icons")
     .control-label Only show icons
+  label.control
+    .control-input: input(type='checkbox' v-model="settings.urls")
+    .control-label Show URLs
   h3.title Start page
   label.control
     .control-input: input(type='checkbox' v-model="settings.recent")
