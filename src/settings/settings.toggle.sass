@@ -2,7 +2,7 @@
   position: absolute
   top: 50%
   margin-top: -1.5rem
-  right: 1rem + $width
+  right: 1rem + $settings-width
   height: 3rem
   width: 3rem
   display: flex
@@ -27,26 +27,27 @@
     cursor: pointer
     background: $Grey10
   .settings.open &
-    right: 1rem
+    right: 1rem - $settings-margin
     .i
       transform: rotate(240deg)
         
   &.dirty
     .i
-      path
-        fill: $red
-      animation: 1s infinite linear forwards roll
-  &.saved
+      animation: .5s .5s infinite linear forwards roll
+  &.undid
     .i
-      //path
-        animation: 1s done
-      animation: 1s 1 linear forwards roll
+      animation: .5s 1 linear reverse forwards roll
 
 @keyframes roll
   from
     transform: rotate(240deg)
   to
-    transform: rotate(600deg)
+    transform: rotate(420deg)
+@keyframes rollback
+  from
+    transform: rotate(240deg)
+  to
+    transform: rotate(420deg)
 
 @keyframes done
   from

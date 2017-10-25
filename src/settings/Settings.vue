@@ -71,6 +71,9 @@ export default {
         },
         deep: true,
         immediate: true
+      },
+      'editorState.changes'(v) {
+        if(v != "dirty") setTimeout(() => this.editor.state.changes == v && (this.editor.state.changes = null), 500)
       }
   }
 }

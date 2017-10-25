@@ -1,30 +1,33 @@
 @import ../app/colors
 
-$width: 50rem
-$margin: 0
 .settings
   left: auto
-  width: $width
-  right: -$width
-  top: $margin
-  bottom: $margin
+  width: $settings-width
+  right: -$settings-width
+  top: $settings-margin
+  bottom: $settings-margin
   background: #fff
   z-index: 2
   box-shadow: 0 0 20px -15px rgba(#0f1126, .8)
-  //border: 1px solid rgba(#0f1126, .1)
-  //border-radius: 3px
-  border-left: 1px solid $border
+  border: 1px solid rgba(#0f1126, .2)
+  border-radius: 3px
+  //border: 1px solid $border
+
 
   display: flex
   flex-direction: column
 
   &.open
-    right: $margin
+    right: $settings-margin
     & + .main
-      right: $width
+      .content
+        width: calc(80vw - #{$settings-width} / 2)
+        transform: translateX(calc((-100vw + (80vw - #{$settings-width} / 2))/2 + 3rem))
 
 .settings, .main, .settings-toggle
   transition: right .3s
+.main .content
+    transition: transform .3s, width .3s
 
 .settings-content
   margin: .5rem 0
@@ -34,10 +37,11 @@ $margin: 0
 
 .settings-header
   position: relative
-  height: $headHeight
+  height: $head-height
   display: flex
   flex-direction: column
   margin: 0 1rem
+    top: calc(-#{$settings-margin} - 1px)
   .title
     display: flex
     align-items: center
