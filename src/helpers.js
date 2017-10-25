@@ -28,7 +28,7 @@ function deepCopy(strict, target, source)
       (target[key] || (target[key] = [])).set(source[key] ? source[key].map(
           el => deepCopy(false, {}, el)) : []);
     }
-    else target[key] = source[key];
+    else if(!strict || source[key] != null) target[key] = source[key];
   }
 
   return target;
