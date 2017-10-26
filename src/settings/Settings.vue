@@ -1,7 +1,7 @@
 <template lang="pug">
   .settings(:class="{open: open}")
     .settings-header
-      .settings-toggle.settings-state-indicator(@mousedown="toggle()", :class="editorState.changes")
+      .settings-toggle.settings-state-indicator(@mousedown="toggle()", :class="editor.state.changes")
         svg.i(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16")
           path(fill="context-fill" d="M15 7h-2.1a4.967 4.967 0 0 0-.732-1.753l1.49-1.49a1 1 0 0 0-1.414-1.414l-1.49 1.49A4.968 4.968 0 0 0 9 3.1V1a1 1 0 0 0-2 0v2.1a4.968 4.968 0 0 0-1.753.732l-1.49-1.49a1 1 0 0 0-1.414 1.415l1.49 1.49A4.967 4.967 0 0 0 3.1 7H1a1 1 0 0 0 0 2h2.1a4.968 4.968 0 0 0 .737 1.763c-.014.013-.032.017-.045.03l-1.45 1.45a1 1 0 1 0 1.414 1.414l1.45-1.45c.013-.013.018-.031.03-.045A4.968 4.968 0 0 0 7 12.9V15a1 1 0 0 0 2 0v-2.1a4.968 4.968 0 0 0 1.753-.732l1.49 1.49a1 1 0 0 0 1.414-1.414l-1.49-1.49A4.967 4.967 0 0 0 12.9 9H15a1 1 0 0 0 0-2zM5 8a3 3 0 1 1 3 3 3 3 0 0 1-3-3z")
       h2.title
@@ -17,9 +17,9 @@
           .control-input: input(type='checkbox' v-model="settings.sync")
           .control-label Sync settings and search engines between devices
         HomePageSettings(:settings="settings.home")
-      <!--SearchEngineSettings.tab-content(v-show='tab == "engines"' v-if="loadSearch")-->
+      SearchEngineSettings.tab-content(v-show='tab == "engines"' v-if="loadSearch", :settings-editor="editor")
       <!--SearchTransformSettings.tab-content(v-show='tab == "advanced"' v-if="loadSearch", :settings="settings.search.transforms")-->
-      message.settings-message(:action="editorState.lastAction")
+      message.settings-message(:action="editor.state.lastAction")
 
 </template>
 <script>
@@ -33,18 +33,19 @@ import {settings} from '../app/state'
 
 export default {
   data: () => {
+    const editor = window.editor = new SettingsEditor();
     return {
       open: false,
-      settings,
+      settings: editor.data.settings,
       tab: 'general',
       loadSearch: false,
-      editorState: {changes: null, lastAction: {}},
+      editor
     }
   },
   components: {SearchTransformSettings, HomePageSettings, SearchEngineSettings},
 
   created() {
-    this.editor = null;
+
   },
 
   methods: {
@@ -52,17 +53,14 @@ export default {
     {
       this.open = typeof(state) == "undefined" ? !this.open : state;
 
-      if (!this.editor) this.init();
-      else
+      if (!this.loadSearch) setTimeout(() => this.loadSearch = true, 500);
+
+      if(!this.open)
         radio.$emit('focus-search-input');
 
-      this.editorState.changes = null;
+      this.editor.state.changes = null;
 
-    },
-    init() {
-      this.editor = window.editor = new SettingsEditor(this.editorState);
-      setTimeout(() => this.loadSearch = true, 500)
-    },
+    }
   },
   watch: {
       settings: {
@@ -72,7 +70,7 @@ export default {
         deep: true,
         immediate: true
       },
-      'editorState.changes'(v) {
+      'editor.state.changes'(v) {
         if(v != "dirty") setTimeout(() => this.editor.state.changes == v && (this.editor.state.changes = null), 500)
       }
   }
@@ -122,58 +120,11 @@ export default {
     overflow-y: hidden
     & + .row
       border-top: 1px solid $border
-  .search-engines-tab
-    flex: 1
-    display: flex
-    flex-direction: column
-    min-height: 0
-    .search-engines-list
-      border-top: 1px solid $border
-      margin: 0 -2rem
-      padding: 0 2rem
-      flex: 1
-      overflow-y: auto
-    .row
-      &:not(.active)
-        max-height: 0
-        padding: 0 .4em
-        border: 0
-  .actions
-    align-self: center
-    margin-left: -9rem
-    display: flex
-    align-items: center
-    .action.remove + .spacing
-      display: none
-    .spacing, .action.remove
-      width: 1.7rem
-      margin-left: .5em
-  .action
-    padding: .2em .5em
-    &:hover
-      background: $Grey20
-    .icon
-      margin: 0
-    .icon.close svg
-      width: 10px
-      height: 10px
 
-  .setdefault
-    .button:not(:hover):not(:active):not(:focus)
-      background: $Grey40
-    &:hover
-      background: transparent
-  .row:not(:hover) .setdefault
-    opacity: 0
-
-  .type
-    opacity: .5
   .group-label
     padding: .4em
     margin: 0
 
-  .engine-keyword
-    width: 3rem
   .headers
     padding: .5rem 0
     display: flex

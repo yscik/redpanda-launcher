@@ -1,15 +1,13 @@
-import {settingsService, engines} from "../app/app";
+import {settingsService} from "../app/app";
 import {clone} from "../helpers";
 
-
 export default class SettingsEditor {
-  constructor(state) {
+  constructor() {
 
-    this.state = state || {};
+    this.state = {changes: null, lastAction: {}};
 
-    this.data = {settings: settingsService.state, engines: engines.engines};
-    this.changing = {original: clone(this.data)};
-    this.defaultEngine = engines.default;
+    this.data = {settings: settingsService.state};
+    this.changing = {};
   }
 
   async save() {
@@ -66,33 +64,6 @@ export default class SettingsEditor {
     };
 
     this.changing.timeout = setTimeout(save_changes, 1000);
-
   }
-
-  set_default_engine(engine)
-  {
-    let previous = this.defaultEngine;
-    this.settings.search.defaultEngine = engine.url;
-    this.defaultEngine = engines.updateDefault();
-
-    this.changing.internal = true;
-    this.commit({html: [['b', engine.title], ' set as default search engine.'], favicon: engine,
-      undo: () =>  {
-        this.changing.internal = true;
-        this.settings.search.defaultEngine = previous.url;
-        this.defaultEngine = engines.updateDefault();
-    }});
-  }
-
-  remove_engine(engine)
-  {
-    engine.active = false;
-
-    this.commit({html: ['Search engine ', ['b', engine.title], ' removed.'],
-      undo: () => engine.active = true});
-  }
-
-
-
 
 }

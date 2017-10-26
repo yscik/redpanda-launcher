@@ -1,4 +1,5 @@
 import {Entry} from './Entry';
+import {strictDeepCopy} from "../helpers";
 
 export class Engines {
   constructor() {
@@ -21,6 +22,11 @@ export class Engines {
     return this.default = this.engines.default = this.engines.find(e => e.url == (this.settings.defaultEngine || Engines.defaults[0].url));
   }
 
+  set(engines)
+  {
+    strictDeepCopy({engines: this.engines}, {engines})
+  }
+
   addConfiguration(engines) {
     this.add(engines);
   }
@@ -37,12 +43,11 @@ export class Engines {
 
       if (url.startsWith('_')) continue;
       if (site.opensearch && !this.find(site.opensearch.url)) {
-        let engine = Object.assign({active: true, type: 'opensearch', keyword: null}, site.opensearch);
-        newEngines.unshift(engine);
+        newEngines.unshift(site.opensearch);
       }
     }
 
-    return this.add(newEngines);
+    return this.add(newEngines, {active: false, pending: true, type: 'opensearch', keyword: null});
 
   }
 

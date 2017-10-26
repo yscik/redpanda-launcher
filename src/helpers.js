@@ -16,7 +16,7 @@ export const days = ms => ms / days.ratio;
 days.ratio = 1000 * 60 * 60 * 24;
 days.ms = day => day * days.ratio;
 
-function deepCopy(strict, target, source)
+export function deepCopy(strict, target, source)
 {
   let authority = strict ? target : source;
   if(authority && source) for (let key in authority)
