@@ -1,5 +1,5 @@
 <template lang="pug">
-.home-page
+.home-page(:class="{hideUrls: !settings.urls}")
   .group.home-session(v-if="settings.recent")
     h3
       icon(type='session')
@@ -48,5 +48,8 @@
   .entry .source-icon
     display: none
 
+  &.hideUrls
+    .entry .url
+      display: none
 
 </style>

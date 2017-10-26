@@ -6,9 +6,6 @@
   label.control.ident-1
     .control-input: input(type='checkbox' v-model="settings.bookmarkstoolbar.icons")
     .control-label Only show icons
-  label.control
-    .control-input: input(type='checkbox' v-model="settings.urls")
-    .control-label Show URLs
   h3.title Start page
   label.control
     .control-input: input(type='checkbox' v-model="settings.recent")
@@ -18,6 +15,9 @@
     .control-label Show bookmarks folder:
     .control-input: select(v-model="settings.bookmarks.folder", @change=" settings.bookmarks.enabled = true")
       option(v-for="(folder, id) in bookmarks", :value="folder.id") {{folder.title}}
+  label.control
+    .control-input: input(type='checkbox' v-model="settings.urls")
+    .control-label Show URLs
 
 
 
