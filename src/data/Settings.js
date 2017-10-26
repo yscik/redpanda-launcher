@@ -1,4 +1,5 @@
 import {clone, strictDeepCopy} from "../helpers";
+import schema from './settings.schema'
 
 const storageKey = '_settings';
 
@@ -75,44 +76,7 @@ export class Settings {
   }
 
   static defaults() {
-    return {
-      sync: false,
-      engines: {
-        defaultEngine: null,
-        opensearch: {
-          discover: true,
-          activate: true
-        },
-        transforms: []
-      },
-      data: {
-        history: {
-          days: 30,
-          autoextend: false
-        }
-      },
-      search: {
-        autocomplete: {
-          url: true,
-          selected: true,
-        }
-      },
-      home: {
-        bookmarks: {
-          enabled: false,
-          folder: null,
-        },
-        bookmarkstoolbar: {
-          enabled: false,
-          icons: false
-        },
-        recent: true,
-        topSites: {
-          source: 'topSites'
-        },
-        urls: true
-      }
-    }
+    return schema();
   }
 
 }
