@@ -11,12 +11,13 @@ export class SearchService
     this.engines = engines;
     this.searchTerm = null;
     this.entry = null;
-    this.state = null;
+    this.state = new SearchState(this);
   }
 
   attach()
   {
     this.state = new SearchState(this);
+    this.state.setTerm("");
     this.update({});
     this.state.home = true;
 
@@ -58,11 +59,9 @@ export class SearchService
     let searchexpr = (this.state.searching ? this.state.engine.host + ' ' : '') + term;
 
     let options = {
-      autocomplete: !this.state.searching && term && (!this.state.term || term.length > this.state.term.length),
+      autocomplete: !this.state.searching && term && (!this.state.prevTerm || term.length > this.state.prevTerm.length),
       term: term};
     searchexpr ? this.search(searchexpr, options) : this.clear();
-
-    this.state._term = term;
   }
 
   async search(term, options) {
@@ -87,9 +86,13 @@ export class SearchService
   }
 
   tab($event) {
-    if (this.state.engine && !this.state.searching) this.setEngine();
+    if(this.state.result) {
+      $event.preventDefault();
 
-    else this.select($event)
+      if (this.state.engine && !this.state.searching) this.setEngine();
+
+      else this.select($event)
+    }
 
   }
 
@@ -136,7 +139,7 @@ export class SearchService
     this.state.index = Math.min(Math.max(-1, this.state.index + direction), this.state.result.length);
 
     this.entry = this.state.result[this.state.index];
-    this.state.term = this.entry || this.searchTerm;
+    this.entry ? this.state.setEntry(this.entry) : this.state.term = this.searchTerm;
 
     $event.preventDefault();
   }

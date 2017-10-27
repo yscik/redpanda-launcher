@@ -9,7 +9,8 @@ export class SearchState
       engine: null,
       autocomplete: null,
       home: true,
-      isUrl: false
+      isUrl: false,
+      term: "",
     });
 
     // prevent Vue observation
@@ -19,16 +20,15 @@ export class SearchState
 
   };
 
-  get term()
+  setTerm(term)
   {
-    return this._term
+    this.prevTerm = this.term;
+    this.term = term;
+    this.service.setTerm(term)
   }
-  set term(value)
+  setEntry(entry)
   {
-    let entry = value.url;
-    if(!entry)
-      this.service.setTerm(value);
-    else this._term = entry;
+    this.term = entry.url;
   }
   get label() {
     return this.searching ? this.engine.desc || this.engine.title : 'Search your feelings'

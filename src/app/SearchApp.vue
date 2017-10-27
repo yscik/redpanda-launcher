@@ -5,14 +5,14 @@
     Settings
     .main(@keydown.up="service.select(-1, $event)",
           @keydown.down="service.select(1, $event)",
-          @keydown.tab.prevent="service.tab($event)",
+          @keydown.tab="service.tab($event)",
           @keydown.enter="service.enter($event)",
           @keydown.delete="service.backspace($event)")
       //.suggestions: .content
         .logo(v-if="!state.term")
         results.result(v-if="!state.home", :entries='state.suggestions')
       .head: .content
-        Searchbar
+        Searchbar(:state="state")
       .results: .content
         results.result(v-if="!state.home", :entries='state.result', :selected='state.index')
         Homepage(v-if='state.home')
@@ -23,22 +23,24 @@ import Searchbar from '../search/searchbar.vue';
 import Homepage from './Homepage.vue';
 import Settings from '../settings/Settings.vue'
 import BookmarksToolbar from '../bookmarks-toolbar/BookmarksToolbar.vue';
-import {search as searchService} from './app'
-import {search, settings} from './state'
+import {app} from './app'
+import {settings} from './state'
 import {radio} from './radio'
+import {SearchService} from "../search/search.service";
 
 export default
 {
   name: 'SearchApp',
-  data: () => {
+  data: function() {
     return {
       settings,
-      state: search,
+      state: this.service.state,
     }
   },
-  created: function()
+  beforeCreate: function()
   {
-    this.service = searchService
+    this.service = new SearchService(app.data, app.engines.engines);
+
   },
   components: {Searchbar, Homepage, Settings, BookmarksToolbar},
   methods: {

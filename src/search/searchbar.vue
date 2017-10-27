@@ -4,7 +4,8 @@
       favicon.search-engine(:site='state.engine' v-if="state.searching")
       icon.search-icon(type='engine')
       icon.link-icon(type='link')
-    input-complete.search-input(type="text" v-model="state.term", :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
+    input-complete.search-input(type="text", :value="state.term", @input="state.setTerm($event)",
+      :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
       :placeholder='state.label')
     .tab-info(v-if="state.engine && !state.searching")
       span.key TAB
@@ -20,9 +21,9 @@
   import {radio} from '../app/radio'
 
   export default {
+    props: ['state'],
     data: () => {
       return {
-        state: search,
         focused: false
       }
     },

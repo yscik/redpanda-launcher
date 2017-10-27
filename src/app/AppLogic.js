@@ -15,7 +15,6 @@ export class AppLogic {
 
     this.data = new BrowsingData();
     this.engines = new Engines();
-    this.search = new SearchService(this.data, this.engines.engines);
     this.home = new HomePage(this.data);
     this.bookmarks = new Bookmarks();
     this.settingsService = new Settings();
@@ -30,7 +29,6 @@ export class AppLogic {
   attach()
   {
     return {
-      search: this.search.attach(),
       home: this.home.attach(),
       settings: this.settingsService.attach()
     };

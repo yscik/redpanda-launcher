@@ -48,13 +48,11 @@ export class SearchBackend
 
   async continueOrSkipToLatest(term)
   {
-    console.log([this.queries.lastFinished, term, this.queries.latest.term].join(':'), );
     if(term == this.queries.latest.term
       || !this.queries.lastFinished
       || (term.length - this.queries.lastFinished.length >= ABORT_TRESHOLD && this.queries.latest.term.startsWith(term)))
         return true;
     else {
-      console.log('Aborting', term);
       this.finish();
       await new Promise(function() {});
     }
