@@ -3,7 +3,7 @@
     a.entry(v-for="(entry, index) in entries",
     :href="entry.url",
     @click.prevent="open(entry, $event)",
-    :class="{selected: index === selected}")
+    :class="{selected: index === selected}" tabindex="0")
       .icons
         favicon(:site='entry')
       .text
@@ -32,25 +32,31 @@
 @import "../app/colors"
 
 .entry
-  padding: .4em
+  padding: .4em 0
+    left: 2.2rem
   border-radius: 2px
   position: relative
   display: flex
   cursor: pointer
   border: 2px solid transparent
   word-break: break-all
-
+  &:focus
+    outline: none
   &:hover
-    background-color: #fff
     color: $Blue60
     .url
       color: $Blue40
-  &.selected
+  &:active
+    color: $Blue70
+    .url
+      color: $Blue50
+  &.selected, &.selected:active, &:focus
     background-color: $Blue40
     color: $darktext
-
     .url
       color: $darktext2
+  &:focus
+    background-color: $Blue50
 .text
   flex: 1
   /*display: flex*/

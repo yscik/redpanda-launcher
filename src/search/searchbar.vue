@@ -65,12 +65,19 @@
   margin: 0
   &.focus
     border-color: $Blue50
+    box-shadow: 0 0 0 1px $Blue50
+    .icon path
+      fill: $Blue60
   .search-input
     padding: .5rem
     font-size: 1.5rem
     border: none
     background: 0
     flex: 1
+
+  ::-moz-selection
+    background-color: $Blue50
+    color: #fff
 
 .prefix-icon
   padding: .5em
@@ -83,8 +90,6 @@
   align-items: center
   .icon
     line-height: 0
-  .search-icon
-    opacity: .5
   &.search, &.link
     .search-icon
       display: none
@@ -95,14 +100,17 @@
 
 .link-icon
   svg *
-    fill: $Blue70
+    fill: $Blue50
 
 .tab-info
   display: flex
   align-items: center
   color: #999
   margin-right: .5em
-  > *
+  .f
+    display: flex
+    align-items: center
+  span:not(:empty)
     margin-right: .3em
   .icon
     position: relative

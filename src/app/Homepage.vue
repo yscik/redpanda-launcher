@@ -39,14 +39,16 @@
 
 .home-page
   display: flex
-  .group:first-child .entries
-    margin-left: -0.45rem
+  padding: 0 2.2rem
   .group
     flex: 1 50%
   .group + .group
     margin-left: .5rem
   .entry .source-icon
     display: none
+  .entry
+    margin-left: -.5rem
+    padding-left: .5rem
 
   &.hideUrls
     .entry .url
