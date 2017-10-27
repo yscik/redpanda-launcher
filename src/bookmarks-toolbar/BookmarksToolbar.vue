@@ -53,9 +53,9 @@
     &:hover
       background: $Grey30
   &.icons
-    .bookmark > a
+    > .bookmark:not(.folder)
       position: relative
-      .title
+      > .title
         position: absolute
         left: 0
         top: 1.8rem
