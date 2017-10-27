@@ -11,12 +11,13 @@ export class HomePage {
   {
     let self = this;
     this.state = {};
-    this._updateState();
+    this.updateState();
     return this.state;
   }
 
-  _updateState()
+  updateState()
   {
+    if(!this.state) return;
     this.state.session = this.data.session.slice();
     this.state.topSites = this.data.topSites.slice();
   }
@@ -25,7 +26,6 @@ export class HomePage {
   {
     await this.data.loadSession();
     await this.data.loadTopsites();
-    this._updateState();
-
+    this.updateState();
   }
 }

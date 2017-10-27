@@ -38,15 +38,8 @@ export class AppLogic {
 
   async init()
   {
-
-    await this.data.load();
-
-    await this.settingsService.load(this.data.storage);
     this.settingsService.configureServices(this);
-
-    this.engines.setup(this.data, this.settingsService.engines);
-
-    this.bookmarks.init(this.data.bookmarks_all);
+    await this.update();
 
     for(let name in this) {
       Object.seal(this[name]);
@@ -56,6 +49,14 @@ export class AppLogic {
 
   async update()
   {
-    this.home.update();
+    await this.data.load();
+
+    await this.settingsService.load(this.data.storage);
+
+    this.engines.setup(this.data, this.settingsService.engines);
+
+    this.bookmarks.init(this.data.bookmarks_all);
+
+    this.home.updateState();
   }
 }
