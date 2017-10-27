@@ -1,10 +1,10 @@
 <template lang="pug">
-  .searchbar
+  .searchbar.input(:class="{focus: focused}")
     .prefix-icon(:class="{search: state.searching, link: state.isUrl}")
       favicon.search-engine(:site='state.engine' v-if="state.searching")
       icon.search-icon(type='engine')
       icon.link-icon(type='link')
-    input-complete.input.search-input(type="text" v-model="state.term", :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
+    input-complete.search-input(type="text" v-model="state.term", :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
       :placeholder='state.label')
     .tab-info(v-if="state.engine && !state.searching")
       span.key TAB
@@ -22,14 +22,19 @@
   export default {
     data: () => {
       return {
-        state: search
+        state: search,
+        focused: false
       }
     },
     created()
     {
       radio.$on('focus-search-input', () => this.focus())
     },
-    mounted() { this.focus() },
+    mounted() {
+      this.$refs.input.$el.addEventListener('focus', () => this.focused = true);
+      this.$refs.input.$el.addEventListener('blur', () => this.focused = false);
+      this.focus()
+    },
     methods: {
       focus()
       {
@@ -46,28 +51,29 @@
   flex: 1
   position: relative
   display: flex
-  height: 3rem
   justify-content: space-between
   > *
     position: relative
     z-index: 1
 
   /*border: 1px solid red*/
-.search-input
   //box-shadow: 0 1px 0 hsla(210,65%,9%,.02) inset, 0 0 2px hsla(210,65%,9%,.1) inset, 0 1px 0 hsla(0,0%,100%,.2)
   box-shadow: 0 0 6px -3px #ccc
-  position: absolute
-  top: 0
-  left: 0
-  font-size: 1.5rem
-  padding: .5rem
-  display: block
-  width: 100%
   z-index: 0
+  padding: .1em .5em
+  margin: 0
+  &.focus
+    border-color: $Blue50
+  .search-input
+    padding: .5rem
+    font-size: 1.5rem
+    border: none
+    background: 0
+    flex: 1
 
 .prefix-icon
-  padding: 1em
-  width: 2.9rem
+  padding: .5em
+
   margin: .3rem 0
   border-right: 1px solid #ccc
   font-weight: 600
@@ -85,8 +91,6 @@
   &:not(.link)
     .link-icon
       display: none
-  + .search-input
-    padding-left: 3.4rem
 
 .link-icon
   svg *
