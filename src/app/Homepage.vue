@@ -26,6 +26,9 @@
       settings: settings.home,
       entries: home.state
     }),
+    created() {
+      window.addEventListener("focus", () => home.update())
+    },
     computed: {
       bookmarks() {
         return bookmarks.folders && settings.home.bookmarks.enabled && bookmarks.folders[settings.home.bookmarks.folder]
