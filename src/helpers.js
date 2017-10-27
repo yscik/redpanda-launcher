@@ -16,17 +16,17 @@ export const days = ms => ms / days.ratio;
 days.ratio = 1000 * 60 * 60 * 24;
 days.ms = day => day * days.ratio;
 
-export function deepCopy(strict, target, source)
+function copyDeep(strict, target, source)
 {
   let authority = strict ? target : source;
   if(authority && source) for (let key in authority)
   {
     if (authority[key] instanceof Object) {
-      deepCopy(strict, target[key] || (target[key] = {}), source[key]);
+      copyDeep(strict, target[key] || (target[key] = {}), source[key]);
     }
     else if (authority[key] instanceof Array) {
       (target[key] || (target[key] = [])).set(source[key] ? source[key].map(
-          el => deepCopy(false, {}, el)) : []);
+          el => copyDeep(false, {}, el)) : []);
     }
     else if(!strict || source[key] != null) target[key] = source[key];
   }
@@ -34,6 +34,7 @@ export function deepCopy(strict, target, source)
   return target;
 }
 
-export const strictDeepCopy = deepCopy.bind(null, true);
+export const strictDeepCopy = copyDeep.bind(null, true);
+export const deepCopy = copyDeep.bind(null, false);
 
 export const clone = v => JSON.parse(JSON.stringify(v));

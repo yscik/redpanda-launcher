@@ -13,6 +13,7 @@ export class Settings {
   constructor()
   {
     this.state = null;
+    this.settings = Settings.defaults();
   }
   async load(storage) {
 
@@ -24,10 +25,10 @@ export class Settings {
       settings = storage[storageKey] = parseIfJson(storage[storageKey]);
     }
 
-    this.settings = strictDeepCopy(Settings.defaults(), settings);
+    strictDeepCopy(this.settings, settings);
     this.engines = Array.from(Settings.readEngines(storage));
-
   }
+
 
   attach()
   {
@@ -54,7 +55,7 @@ export class Settings {
     }
     let type = this.settings.sync ? 'sync' : 'local';
     let data = Settings.sliceEngines(this.engines);
-    data[storageKey] = JSON.stringify(this.settings);
+    data[storageKey] = this.settings;
     browser.storage[type].set(data);
   }
 
@@ -63,12 +64,12 @@ export class Settings {
     items = items.slice();
     let index = 1;
     while (items.length)
-      result[`_engines_${index++}`] = JSON.stringify(items.splice(0, 10).map(Settings.stripEngine));
+      result[`_engines_${index++}`] = JSON.stringify(items.splice(0, 10));
 
     return result;
   }
 
-  static stripEngine({url, keyword, title, type, active}) { return {url, keyword, title, type, active}};
+  // static stripEngine({url, keyword, title, desc, type, active}) { return {url, keyword, title, desc, type, active}};
 
   static *readEngines(all) {
     let index = 1, e;

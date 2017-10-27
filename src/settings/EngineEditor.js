@@ -1,29 +1,20 @@
 import {settingsService, engines} from "../app/app";
 import {clone} from "../helpers";
+import SettingsEditor from './settingseditor';
 
-export default class EngineEditor{
-  constructor(settingsEditor) {
-    this.settingsEditor = settingsEditor;
+export default class EngineSettingsEditor extends SettingsEditor {
+  constructor() {
+    super();
 
-    this.engines = settingsEditor.data.engines = clone(engines.engines);
-    this.settings = settingsEditor.data.settings;
+    this.data.engines = clone(engines.engines);
     this.defaultEngine = engines.default;
   }
 
-  save() {
-
-    engines.set(this.engines);
+  async save() {
+    engines.set(this.data.engines);
     settingsService.engines = engines.engines;
-  }
-  change(...args)
-  {
-    this.settingsEditor.change(...args)
-  }
+    await super.save();
 
-  commit(action)
-  {
-    this.save();
-    this.settingsEditor.commit(action);
   }
 
   set_default_engine(engine)
@@ -36,7 +27,7 @@ export default class EngineEditor{
       engines.updateDefault();
     };
 
-    set(engine)
+    set(engine);
 
     this.settingsEditor.changing.internal = true;
     this.commit({html: [['b', engine.title], ' set as default search engine.'], favicon: engine,
@@ -48,10 +39,22 @@ export default class EngineEditor{
 
   remove_engine(engine)
   {
-    engine.active = false;
+    engine.active = engine.pending = false;
 
     this.commit({html: ['Search engine ', ['b', engine.title], ' removed.'],
       undo: () => engine.active = true});
+  }
+
+  enable_engine(engine)
+  {
+    engine.active = true;
+    engine.pending = false;
+
+    this.commit({html: ['Search engine ', ['b', engine.title], ' enabled.'],
+      undo: () => {
+        engine.active = false;
+        engine.pending = true;
+      }});
   }
 
 

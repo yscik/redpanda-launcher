@@ -17,14 +17,14 @@
           .control-input: input(type='checkbox' v-model="settings.sync")
           .control-label Sync settings and search engines between devices
         HomePageSettings(:settings="settings.home")
-      SearchEngineSettings.tab-content(v-show='tab == "engines"' v-if="loadSearch", :settings-editor="editor")
+      SearchEngineSettings.tab-content(:show='tab == "engines"' v-if="loadSearch", :editor="editor")
       <!--SearchTransformSettings.tab-content(v-show='tab == "advanced"' v-if="loadSearch", :settings="settings.search.transforms")-->
       message.settings-message(:action="editor.state.lastAction")
 
 </template>
 <script>
 
-import SettingsEditor from './settingseditor'
+import EngineSettingsEditor from './EngineEditor'
 import SearchTransformSettings from './settings.transforms.vue'
 import SearchEngineSettings from './settings.engines.vue'
 import HomePageSettings from './settings.home.vue'
@@ -33,7 +33,7 @@ import {settings} from '../app/state'
 
 export default {
   data: () => {
-    const editor = window.editor = new SettingsEditor();
+    const editor = window.editor = new EngineSettingsEditor();
     return {
       open: false,
       settings: editor.data.settings,
