@@ -3,8 +3,8 @@
   label.control
     .control-input: input(type='checkbox' v-model="settings.bookmarkstoolbar.enabled")
     .control-label Show bookmarks toolbar
-  label.control.ident-1
-    .control-input: input(type='checkbox' v-model="settings.bookmarkstoolbar.icons")
+  label.control.ident-1(:class="{disabled: !settings.bookmarkstoolbar.enabled}")
+    .control-input: input(type='checkbox' v-model="settings.bookmarkstoolbar.icons", :disabled="!settings.bookmarkstoolbar.enabled")
     .control-label Only show icons
   h3.title Start page
   label.control
