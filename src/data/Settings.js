@@ -1,4 +1,4 @@
-import {clone, strictDeepCopy} from "../helpers";
+import {clone, deepCopy, strictDeepCopy} from "../helpers";
 import schema from './settings.schema'
 
 const storageKey = '_settings';
@@ -15,6 +15,7 @@ export class Settings {
     this.state = null;
     this.settings = Settings.defaults();
   }
+
   async load(storage) {
 
     let settings = storage[storageKey] = parseIfJson(storage[storageKey]);
@@ -22,11 +23,13 @@ export class Settings {
     if (settings && settings.sync)
     {
       storage = await browser.storage.sync.get();
+
       settings = storage[storageKey] = parseIfJson(storage[storageKey]);
     }
 
-    strictDeepCopy(this.settings, settings);
-    this.engines = Array.from(Settings.readEngines(storage));
+    deepCopy(this.settings, settings);
+
+    // this.engines = Array.from(Settings.readEngines(storage));
   }
 
 
@@ -42,39 +45,25 @@ export class Settings {
 
   configureServices(services)
   {
-    ['engines', 'data', 'search', 'home'].forEach(name =>
+    ['engines', 'data', 'home'].forEach(name =>
         services[name].settings = this.settings[name])
   }
 
   async save()
   {
 
-
     if (!this.settings.sync) {
       browser.storage.sync.set({[storageKey]: {sync: false}});
     }
+    else {
+      browser.storage.local.set({[storageKey]: {sync: true}});
+    }
+
     let type = this.settings.sync ? 'sync' : 'local';
-    let data = Settings.sliceEngines(this.engines);
-    data[storageKey] = this.settings;
-    browser.storage[type].set(data);
+
+    browser.storage[type].set({[storageKey]: this.settings});
   }
 
-  static sliceEngines(items) {
-    let result = {};
-    items = items.slice();
-    let index = 1;
-    while (items.length)
-      result[`_engines_${index++}`] = JSON.stringify(items.splice(0, 10));
-
-    return result;
-  }
-
-  // static stripEngine({url, keyword, title, desc, type, active}) { return {url, keyword, title, desc, type, active}};
-
-  static *readEngines(all) {
-    let index = 1, e;
-    while (e = all[`_engines_${index++}`]) yield* (e && JSON.parse(e) || []);
-  }
 
   static defaults() {
     return schema();

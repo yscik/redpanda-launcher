@@ -8,7 +8,8 @@ export default function () {
         activate: true,
         visits: 5
       },
-      transforms: []
+      transforms: [],
+      config: {}
     },
     data: {
       history: {

@@ -51,9 +51,8 @@ export class AppLogic {
 
     await this.settingsService.load(this.data.storage);
 
-    this.engines.setup(this.data, this.settingsService.engines);
-
     this.bookmarks.init(this.data.bookmarks_all);
+    this.engines.setup(this.data, this.settingsService.engines);
 
     this.home.updateState();
   }

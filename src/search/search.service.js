@@ -45,18 +45,18 @@ export class SearchService
   {
     let url = autocomplete ? autocomplete.domain : term;
 
-    return this.engines.find(e => e.active && e.keyword == term.trim()) || this.engines.find(e => e.active && e.domain.startsWith(url))
+    return this.engines.find(term, url)
   }
 
   setTerm(term)
   {
     if(this.state.engine) {
       let [,keyword] = /^(\w+)\s/.exec(term)||[];
-      if(keyword && this.state.engine.keyword == keyword) return this.setEngine();
+      if(keyword && this.state.engine.config.keyword == keyword) return this.setEngine();
     }
     this.searchTerm = term;
 
-    let searchexpr = (this.state.searching ? this.state.engine.host + ' ' : '') + term;
+    let searchexpr = (this.state.searching ? this.state.engine.domain + ' ' : '') + term;
 
     let options = {
       autocomplete: !this.state.searching && term && (!this.state.prevTerm || term.length > this.state.prevTerm.length),

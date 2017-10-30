@@ -1,9 +1,9 @@
 export class Entry
 {
 
-  static process(entries, {copy = false, props = null, setup = null, reactive = false} = {})
+  static process(entries, {copy = false, props = null, setup = null, reactive = false, constructor = null} = {})
   {
-    return entries.reduce((result,entrydata) =>
+    return entries && entries.reduce((result,entrydata) =>
     {
       let entry = copy ? Object.assign({}, entrydata, props) : props ? Object.assign(entrydata, props) : entrydata;
       try {
@@ -15,17 +15,17 @@ export class Entry
         entry.origin = urlo.origin;
         entry.protocol = urlo.protocol;
 
-        result.push(entry);
-        entry.selected = false;
         if(setup) setup(entry);
+        if(constructor) entry = new constructor(entry);
         if(!reactive) Object.seal(entry);
+        result.push(entry);
       }
       catch (e) {
         // Invalid entry, discarded
       }
 
       return result;
-    }, [])
+    }, []) || []
   }
 
 }

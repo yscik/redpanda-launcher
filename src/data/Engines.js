@@ -1,38 +1,90 @@
 import {Entry} from './Entry';
-import {strictDeepCopy} from "../helpers";
+import {Engine} from "./Engine";
 
+let BOOKMARK_FOLDER = 'Search Engines - Red Panda Launcher';
 export class Engines {
+
   constructor() {
     this.engines = [];
   }
 
-  setup(data, engineSettings)
+  find(keyword, url)
   {
-    this.addConfiguration(engineSettings);
+    keyword = keyword.trim();
+    return this.engines.find(e => e.config.active && e.config.keyword == keyword) || this.engines.find(e => e.config.active && e.domain.startsWith(url))
+  }
+
+  setup(data)
+  {
+    this.addSaved(data.bookmarks_all);
+    this.addDefaults();
     this.addDiscovered(data.storage);
     this.addBookmarked(data.bookmarks);
-    this.addDefaults();
 
     this.updateDefault();
 
     return this.engines;
   }
 
+
+  save(engine = null)
+  {
+    const isNew = (engine) => engine.config.active && engine.type == 'opensearch'
+        && !this.folder.children.find(b => b.url == engine.url);
+
+    const createBookmark = ({title, url}) => {
+      browser.bookmarks.create({title, url, parentId: this.folder.id})
+    };
+
+    engine ? createBookmark(engine) : this.engines.filter(isNew).forEach(createBookmark);
+
+  }
+
+  addSaved(bookmarks)
+  {
+    this.folder = bookmarks.find(b => b.title == BOOKMARK_FOLDER);
+    if(this.folder) this.add(this.folder.children, {type: 'opensearch'});
+    else this.createBookmarkFolder();
+  }
+
+  async createBookmarkFolder() {
+    this.folder = await browser.bookmarks.create({
+      type: 'folder',
+      title: BOOKMARK_FOLDER
+    });
+  }
+
   updateDefault() {
     return this.default = this.engines.default = this.engines.find(e => e.url == (this.settings.defaultEngine || Engines.defaults[0].url));
   }
 
-  set(engines)
+  configure(engines, defaultConfig)
   {
-    strictDeepCopy({engines: this.engines}, {engines})
+    (engines || this.engines).forEach(engine => {
+      this.settings.config[engine.id] = engine.configure(this.settings.config[engine.id] || (defaultConfig && Object.assign({}, defaultConfig)))
+    });
+
   }
 
-  addConfiguration(engines) {
-    this.add(engines);
+  exists(url) {
+    return this.engines.find(e => e.url.endsWith(url))
+  }
+
+  add(engines, props, config) {
+    if(!engines) return;
+    engines = engines.filter((entry) => entry.url && !this.exists(entry.url));
+
+    engines = Entry.process(engines, {constructor: Engine, props});
+
+    Array.prototype.push.apply(this.engines, engines);
+    this.configure(engines, config);
+
+    return engines;
   }
 
   addDefaults() {
-    this.add(Engines.defaults);
+    let engines = this.add(Engines.defaults, {type: 'builtin'}, {active: true});
+    engines.forEach(e => e.keyword && (e.config.keyword = e.keyword))
   }
 
   addDiscovered(sites)
@@ -42,28 +94,13 @@ export class Engines {
       let site = sites[url];
 
       if (url.startsWith('_')) continue;
-      if (site.opensearch && !this.find(site.opensearch.url)) {
+      if (site.opensearch && !this.exists(site.opensearch.url)) {
         newEngines.unshift(site.opensearch);
       }
     }
 
-    return this.add(newEngines, {active: false, pending: true, type: 'opensearch', keyword: null});
+    return this.add(newEngines, {type: 'opensearch'}, {active: false, pending: true});
 
-  }
-
-  find(url) {
-    return this.engines.find(e => e.url.endsWith(url))
-  }
-
-  add(engines, props) {
-    engines = Entry.process(engines, {copy: true, props});
-
-    engines.forEach((entry) => {
-      if(!this.find(entry.url))
-        this.engines.push(entry);
-    });
-
-    return engines;
   }
 
   addBookmarked(entries) {
@@ -72,9 +109,10 @@ export class Engines {
         b.url && b.url.includes('%s')
     );
 
-    this.add(engines, {type: 'bookmark', active: true, keyword: null});
+    this.add(engines, {type: 'bookmark'}, {active: true});
 
   }
+
 }
 
 Engines.defaults = [
@@ -86,4 +124,3 @@ Engines.defaults = [
   {title: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=%s'},
   {title: 'Twitter', url: 'https://twitter.com/search?q=%s'},
 ];
-Engines.defaults.forEach(e => {e.active = true; e.type='builtin'});

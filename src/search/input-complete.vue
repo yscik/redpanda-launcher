@@ -16,10 +16,6 @@ export default Vue.component('input-complete',
 //      this.displayvalue = value;
       this.$emit('input', value)
     },
-    focus: function()
-    {
-      this.$refs.input.focus();
-    },
     suggest: function(suggestion)
     {
       this.displayvalue = this.value;
