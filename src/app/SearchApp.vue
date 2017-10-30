@@ -39,7 +39,7 @@ export default
   },
   beforeCreate: function()
   {
-    this.service = new SearchService(app.data, app.engines.engines);
+    this.service = new SearchService(app.data, app.engines);
 
   },
   components: {Searchbar, Homepage, Settings, BookmarksToolbar},
