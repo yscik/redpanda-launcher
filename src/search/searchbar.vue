@@ -29,7 +29,7 @@
     },
     created()
     {
-      radio.$on('focus-search-input', () => this.focus())
+      radio.$on('focus-search-input', () => this.$nextTick(this.focus))
     },
     mounted() {
       this.$refs.input.$el.addEventListener('focus', () => this.focused = true);
@@ -39,7 +39,7 @@
     methods: {
       focus()
       {
-        this.$refs.input.focus()
+        this.$refs.input.$el.focus()
       }
     }
   }
