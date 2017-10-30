@@ -1,7 +1,7 @@
 <template lang="pug">
   .settings(:class="{open: open}")
     .settings-header
-      .settings-toggle.settings-state-indicator(@mousedown="toggle()", :class="editor.state.changes")
+      .settings-toggle.settings-state-indicator(@mousedown="toggle()", :class="state.changes")
         svg.i(xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16")
           path(fill="context-fill" d="M15 7h-2.1a4.967 4.967 0 0 0-.732-1.753l1.49-1.49a1 1 0 0 0-1.414-1.414l-1.49 1.49A4.968 4.968 0 0 0 9 3.1V1a1 1 0 0 0-2 0v2.1a4.968 4.968 0 0 0-1.753.732l-1.49-1.49a1 1 0 0 0-1.414 1.415l1.49 1.49A4.967 4.967 0 0 0 3.1 7H1a1 1 0 0 0 0 2h2.1a4.968 4.968 0 0 0 .737 1.763c-.014.013-.032.017-.045.03l-1.45 1.45a1 1 0 1 0 1.414 1.414l1.45-1.45c.013-.013.018-.031.03-.045A4.968 4.968 0 0 0 7 12.9V15a1 1 0 0 0 2 0v-2.1a4.968 4.968 0 0 0 1.753-.732l1.49 1.49a1 1 0 0 0 1.414-1.414l-1.49-1.49A4.967 4.967 0 0 0 12.9 9H15a1 1 0 0 0 0-2zM5 8a3 3 0 1 1 3 3 3 3 0 0 1-3-3z")
       h2.title
@@ -15,11 +15,11 @@
       .tab-content(v-show='tab == "general"')
         label.control
           .control-input: input(type='checkbox' v-model="settings.sync")
-          .control-label Sync settings and search engines between devices
+          .control-label Sync settings between devices
         HomePageSettings(:settings="settings.home")
       SearchEngineSettings.tab-content(:show='tab == "engines"' v-if="loadSearch", :editor="editor")
       <!--SearchTransformSettings.tab-content(v-show='tab == "advanced"' v-if="loadSearch", :settings="settings.search.transforms")-->
-      message.settings-message(:action="editor.state.lastAction")
+      message.settings-message(:action="state.lastAction")
 
 </template>
 <script>
@@ -32,20 +32,20 @@ import {radio} from '../app/radio'
 import {settings} from '../app/state'
 
 export default {
-  data: () => {
-    const editor = window.editor = new EngineSettingsEditor();
+  data: function() {
+
     return {
       open: false,
-      settings: editor.data.settings,
+      settings: this.editor.data.settings,
       tab: 'general',
       loadSearch: false,
-      editor
+      state: editor.state,
     }
   },
   components: {SearchTransformSettings, HomePageSettings, SearchEngineSettings},
 
-  created() {
-
+  beforeCreate() {
+    this.editor = window.editor = new EngineSettingsEditor();
   },
 
   methods: {
@@ -58,7 +58,7 @@ export default {
       if(!this.open)
         radio.$emit('focus-search-input');
 
-      this.editor.state.changes = null;
+      this.state.changes = null;
 
     }
   },
@@ -70,8 +70,8 @@ export default {
         deep: true,
         immediate: true
       },
-      'editor.state.changes'(v) {
-        if(v != "dirty") setTimeout(() => this.editor.state.changes == v && (this.editor.state.changes = null), 500)
+      'state.changes'(v) {
+        if(v != "dirty") setTimeout(() => this.state.changes == v && (this.state.changes = null), 500)
       }
   }
 }
@@ -133,8 +133,4 @@ export default {
     font-size: .8rem
     font-weight: 600
     color: $text2
-    .keyword-header
-      margin-right: 3.8rem
-    .engine-filter
-      width: 60%
 </style>

@@ -10,22 +10,23 @@
             strong {{editor.defaultEngine.title}}
             icon(type="")
           .select-dropdown(v-if="selectingDefaultEngine")
-            .search-engine.row(v-for="(entry, index) in editor.data.engines", :key="index", :class="{active: entry.active}",
-              @click='editor.set_default_engine(entry); selectingDefaultEngine = false')
+            .search-engine.row(v-for="(engine, index) in editor.engines", :key="index", v-if="engine.active",
+              @click='editor.set_default(engine); selectingDefaultEngine = false')
               .icons
-                favicon(:site='entry')
-              .title.ellipsis {{entry.title}}
+                favicon(:site='engine')
+              .title.ellipsis {{engine.title}}
 
-    label.control
-      .control-input: input(type='checkbox' v-model="settings.opensearch.discover")
-      .control-label Auto-discover search engines
-    .control.ident-1(:class="{disabled: !settings.opensearch.discover}")
+    .control
+      .control-input: input(id='settings_opensearch_discover' type='checkbox' v-model="settings.opensearch.discover")
+      label.control-label(for='settings_opensearch_discover') Auto-discover search engines
+    //.control.ident-1(:class="{disabled: !settings.opensearch.discover}")
       .control-label
-        .control-input: input(id='opensearch_activate' type='checkbox' v-model="settings.opensearch.activate", :disabled="!settings.opensearch.discover")
-        label(for="opensearch_activate") Enable new engines automatically when site has at least
+        .control-input: input(id='opensearch_activate' type='checkbox', :value='true'
+          v-model="settings.opensearch.activate", :disabled="!settings.opensearch.discover")
+        label(for="opensearch_activate") Add automatically when site has at least
         |
         |
-        input.inline.w4(type='number' v-model.number="settings.opensearch.visits", :disabled="!settings.opensearch.activate")
+        input.inline.w4(type='number' min='0' v-model.number="settings.opensearch.visits", :disabled="!settings.opensearch.activate")
         |  visit
         span(v-show="settings.opensearch.visits > 1") s
   .headers
@@ -33,22 +34,20 @@
       input.input.engine-filter(v-model="engine_filter" ref="engine_filter" placeholder="Filter search engines")
     span.keyword-header Keyword
   .search-engines-list
-    .group(v-for="(group, type) in engines")
+    .group(v-for="(group, type) in engines" v-show="group.length")
       h3.group-label {{label[type]}}
 
-      .search-engine.row(v-for="(entry, index) in group", :key="entry.url", :class="{active: entry.active, pending: entry.pending}")
+      .search-engine.row(v-for="engine in group", :key="engine.url", :class="{active: engine.config.active, pending: engine.config.pending}")
         .icons
-          favicon(:site='entry')
+          favicon(:site='engine')
         .text.ellipsis
-          .title {{entry.title}}
-          .url {{entry.url}}
+          .title {{engine.title}}
+          .url {{engine.url}}
         .actions
+          icon.enable.action(type='add' v-if="engine.config.pending", @click.native='editor.enable(engine)')
           .keyword
-            input.input.engine-keyword(v-model='entry.keyword', @input='editor.change(entry, true)')
-          .enable.action(v-if="entry.pending", @click='editor.enable_engine(entry)')
-            icon(type="add")
-          .remove.action(v-if="entry.type == 'opensearch'", @click='editor.remove_engine(entry)')
-            icon(type="close")
+            input.input.engine-keyword(v-model='engine.config.keyword', :disabled="engine.config.pending")
+          icon.remove.action(type="close" v-if="engine.type == 'opensearch'", @click.native='editor.remove(engine)')
           .spacing
 
 </template>
@@ -67,18 +66,19 @@
         selectingDefaultEngine: false
       }
     },
-    created(){
+    created() {
 
       this.label = {pending: 'Pending', bookmark: 'From bookmarks', opensearch: 'Discovered', builtin: 'Defaults'}
 
       radio.$on('click', () => this.selectingDefaultEngine = false);
+      radio.$on('settings-open', this.focus)
     },
     computed: {
       engines()
       {
-        return this.editor.data.engines.reduce((m,e) => {
+        return this.editor.engines.reduce((m,e) => {
               (e.title.includes(this.engine_filter) || e.url.includes(this.engine_filter)) &&
-              m[!e.active ? 'pending' : e.type].push(e);
+              m[e.config.pending ? 'pending' : e.type||'opensearch'].push(e);
               return m;
             },
             {pending: [], opensearch: [], bookmark: [], builtin: []})
@@ -86,8 +86,14 @@
     },
     watch: {
       show(visible) {
-        console.log("show")
-        if(visible) setTimeout(() => this.$refs.engine_filter.focus(), 300)
+        if(visible) this.focus()
+      }
+    },
+    methods: {
+      focus()
+      {
+        setTimeout(() => this.$refs.engine_filter.focus(), 100)
+
       }
     }
   }
@@ -103,45 +109,48 @@
     min-height: 0
     .search-engines-list
       border-top: 1px solid $border
-      margin: 0 -1.5rem
-      padding: .5rem 1rem
+      margin: 0 -2rem
+      padding: .5rem 1.5rem
+      background: #fff
       flex: 1
       overflow-y: auto
-    .search-engine
-      &:not(.active):not(.pending)
-        display: none
+      .search-engine
+        &:not(.active):not(.pending)
+          display: none
     .actions
       align-self: center
       display: flex
       align-items: center
       margin-left: 1rem
-    .pending
-      .keyword
-        display: none
-      .actions
-        margin-left: 0
     .action
-      padding: .2em .5em
-      &:hover
-        background: $Grey20
-      .icon
-        margin: 0
+      margin: 0
+      width: 2rem
+      height: 2rem
+      display: flex
+      align-items: center
+      justify-content: center
+      &.remove
         svg
-          width: 16px
-          height: 16px
-      .icon.close svg
-        width: 12px
-        height: 12px
+          width: 12px
+          height: 12px
+        path
+          fill: $Grey50
+      &:hover
+        background: $Grey10
+        path
+          fill: $Blue50
+
     .action.remove + .spacing
       display: none
     .spacing, .action.remove
-      width: 1.7rem
+      width: 2rem
       margin-left: .5em
-    .enable.action
-      path
-        fill: $Blue60
+  .keyword
+    margin-left: .5rem
   .engine-keyword
     width: 4rem
+    &[disabled]
+      opacity: .3
 
   .default-engine
     position: relative
@@ -159,5 +168,13 @@
       left: .1rem
       top: 2.2rem
       z-index: 2
+
+  .keyword-header
+    margin-right: 3.5rem
+  .engine-filter
+    width: 60%
+
+  .group-label
+
 
 </style>

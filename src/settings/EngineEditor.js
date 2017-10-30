@@ -6,22 +6,25 @@ export default class EngineSettingsEditor extends SettingsEditor {
   constructor() {
     super();
 
-    this.data.engines = clone(engines.engines);
+    this.engines = engines.engines.map(e => this.wrap(e));
     this.defaultEngine = engines.default;
+    this.config = this.data.settings.engines.config;
   }
 
-  async save() {
-    engines.set(this.data.engines);
-    settingsService.engines = engines.engines;
-    await super.save();
-
+  wrap(engine)
+  {
+    return new Proxy(engine, {
+      get: (target, name) => {
+        return name == 'config' ? this.config[target.id] : target[name]
+      }
+    })
   }
 
-  set_default_engine(engine)
+  set_default(engine)
   {
     let previous = this.defaultEngine;
     let set = (engine) => {
-      this.settings.engines.defaultEngine = engine.url;
+      this.data.settings.engines.defaultEngine = engine.url;
       settingsService.applyChanges();
       this.defaultEngine = engine;
       engines.updateDefault();
@@ -29,34 +32,41 @@ export default class EngineSettingsEditor extends SettingsEditor {
 
     set(engine);
 
-    this.settingsEditor.changing.internal = true;
+    this.changing.internal = true;
     this.commit({html: [['b', engine.title], ' set as default search engine.'], favicon: engine,
       undo: () =>  {
-        this.settingsEditor.changing.internal = true;
+        this.changing.internal = true;
         set(previous);
       }});
   }
 
-  remove_engine(engine)
+  remove(engine)
   {
-    engine.active = engine.pending = false;
+    let pending = engine.config.pending;
+    engine.config.active = engine.config.pending = false;
 
     this.commit({html: ['Search engine ', ['b', engine.title], ' removed.'],
-      undo: () => engine.active = true});
+      undo: () => {
+        engine.config.active = true;
+        engine.config.pending = pending
+    }});
   }
 
-  enable_engine(engine)
+  enable(engine)
   {
-    engine.active = true;
-    engine.pending = false;
+    engine.config.pending = false;
+    engine.config.active = true;
+
+    engines.save(engine);
+
+    // settingsService.change({engine: engine});
 
     this.commit({html: ['Search engine ', ['b', engine.title], ' enabled.'],
       undo: () => {
-        engine.active = false;
-        engine.pending = true;
+        engine.config.pending = true;
+        engine.config.active = false;
       }});
   }
-
 
 
 
