@@ -47,23 +47,7 @@ export default class SettingsEditor {
 
     if(this.changing.timeout) clearTimeout(this.changing.timeout);
 
-    const save_changes = () =>
-    {
-      let original = this.changing.original;
-      this.changing.original = clone(this.data);
-
-      this.commit({message: 'Settings updated.', fresh: true, icon: 'success',
-        undo: () =>
-        {
-          this.changing.internal = true;
-          Object.assign(this.data.settings, original.settings);
-          this.changing.original = clone(this.data);
-        }
-      });
-
-    };
-
-    this.changing.timeout = setTimeout(save_changes, 1000);
+    this.changing.timeout = setTimeout(() => this.save(), 1000);
   }
 
 }
