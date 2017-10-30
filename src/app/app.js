@@ -8,8 +8,10 @@ async function loadApp()
 {
   let background = await browser.runtime.getBackgroundPage();
 
-  if(background && background.app)
+  if(background && background.app) {
     app = background.app;
+
+  }
 
   else {
     app = new AppLogic();
@@ -19,11 +21,11 @@ async function loadApp()
   attach(app);
   app.update();
 
-  ({search, data, home, engines, bookmarks, settingsService, favicons} = app);
+  ({data, home, engines, bookmarks, settingsService, favicons} = app);
 }
 
-let search, data, home, engines, bookmarks, settingsService, favicons;
-export {search, data, home, engines, bookmarks, settingsService, favicons};
+let data, home, engines, bookmarks, settingsService, favicons;
+export {data, home, engines, bookmarks, settingsService, favicons};
 
 
 export {app, loadApp};
