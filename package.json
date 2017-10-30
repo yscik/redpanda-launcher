@@ -1,7 +1,7 @@
 {
   "name": "red-panda",
   "description": "A Firefox launcher",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "author": "Peter Kiss <peter@yscik.com>",
   "license": "MPL-2.0",
   "scripts": {
