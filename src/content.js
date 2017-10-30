@@ -2,7 +2,8 @@
 let key, result;
 
 try {
-  parse_site();
+  if(!browser.extension.inIncognitoContext)
+    parse_site();
 }
 catch(err) {
   console.error("[Red Panda Launcher]", err);
