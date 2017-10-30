@@ -57,6 +57,7 @@ export default {
 
       if(!this.open)
         radio.$emit('focus-search-input');
+      else radio.$emit('settings-open');
 
       this.state.changes = null;
 
@@ -93,11 +94,13 @@ export default {
   .tabs
     padding-left: .5rem
     padding-right: 1rem
+    margin-bottom: -3px
   .tab
     margin: .1rem
     padding: .4em
-    border-bottom: 2px solid $border
+    border-bottom: 2px solid transparent
     text-transform: uppercase
+    text-align: center
     &:hover
       color: $Blue40
     &.active
@@ -122,8 +125,11 @@ export default {
       border-top: 1px solid $border
 
   .group-label
-    padding: .4em
+    padding: .4rem
     margin: 0
+  .group + .group
+    margin-top: 1rem
+
 
   .headers
     padding: .5rem 0
