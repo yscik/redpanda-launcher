@@ -10,7 +10,7 @@ async function loadApp()
 
   if(background && background.app) {
     app = background.app;
-
+    app.update();
   }
 
   else {
@@ -19,7 +19,6 @@ async function loadApp()
   }
 
   attach(app);
-  app.update();
 
   ({data, home, engines, bookmarks, settingsService, favicons} = app);
 }

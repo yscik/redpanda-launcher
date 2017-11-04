@@ -6,7 +6,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   entry: {
     app: './src/main.js',
-    'redpanda.background': './src/background.js'
+    'redpanda.background': './src/background.js',
+    'search.backend.worker': './src/search/search.backend.worker.js',
   },
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -76,7 +77,7 @@ module.exports = {
     hints: false
   },
 
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   plugins: [
       new ExtractTextPlugin("style.css")
   ]

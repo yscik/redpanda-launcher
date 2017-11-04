@@ -28,7 +28,7 @@ export class BrowsingData
     ])
   }
 
-  async history(options)
+  async searchHistory(options)
   {
     return browser.history.search(options)
   }
@@ -39,6 +39,13 @@ export class BrowsingData
     tabs = tabs.map(t => t.tab || t);
     tabs.length = Math.min(tabs.length, 15);
     return this.session = Entry.process(tabs, {props: {source: 'session'}} );
+
+  }
+
+  async loadHistory(options)
+  {
+    let history = await browser.history.search(options);
+    return Entry.process(history, {props: {source: 'history'}} );
 
   }
 

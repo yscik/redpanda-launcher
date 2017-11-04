@@ -1,13 +1,15 @@
 import {isUrl} from './isUrl';
 import {SearchState} from "./search.state";
-import {SearchBackend} from "./search.backend";
 import {Outbound} from "./outbound";
 
 export class SearchService
 {
-  constructor(browsingData, engines)
+  constructor(backend, engines)
   {
-    this.backend = new SearchBackend(browsingData);
+    this.backend = backend;
+    this.backend.onResult = (data) => {
+      if(data.log) console.log('[Worker]', data.log);
+      this.update(data)};
     this.engines = engines;
     this.searchTerm = null;
     this.entry = null;
@@ -61,15 +63,15 @@ export class SearchService
     let options = {
       autocomplete: !this.state.searching && term && (!this.state.prevTerm || term.length > this.state.prevTerm.length),
       term: term};
-    searchexpr ? this.search(searchexpr, options) : this.clear();
+    searchexpr ? this.backend.search(searchexpr, options) : this.clear();
   }
 
-  async search(term, options) {
-
-    const data = await this.backend.search(term, options);
-    this.update(data);
-
-  }
+  // async search(term, options) {
+  //
+  //   const data = await this.backend.search(term, options);
+  //   this.update(data);
+  //
+  // }
 
   clear() {
     this.update({});
