@@ -1,4 +1,4 @@
-# Version 2017100800, Last Updated Sun Oct  8 07:07:02 2017 UTC
+# Version 2017110401, Last Updated Sun Nov  5 07:07:01 2017 UTC
 AAA
 AARP
 ABARTH
@@ -594,7 +594,6 @@ HOW
 HR
 HSBC
 HT
-HTC
 HU
 HUGHES
 HYATT
