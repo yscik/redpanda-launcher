@@ -7,9 +7,7 @@ export class SearchService
   constructor(backend, engines)
   {
     this.backend = backend;
-    this.backend.onResult = (data) => {
-      if(data.log) console.log('[Worker]', data.log);
-      this.update(data)};
+    this.backend.onResult = (data) => this.update(data);
     this.engines = engines;
     this.searchTerm = null;
     this.entry = null;

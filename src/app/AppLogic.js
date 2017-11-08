@@ -5,7 +5,6 @@ import {Engines} from "../data/Engines";
 import {Bookmarks} from "../data/Bookmarks";
 import {FaviconLoader} from "../entry/Favicons";
 import {HomePage} from "../data/HomePage";
-import {SearchWorker} from "../search/search.worker";
 
 export class AppLogic {
 
@@ -19,7 +18,6 @@ export class AppLogic {
     this.bookmarks = new Bookmarks();
     this.settingsService = new Settings();
     this.favicons = new FaviconLoader(this.data);
-    this.backend = new SearchWorker(this.data);
   }
 
   async fastload()
@@ -50,7 +48,6 @@ export class AppLogic {
   {
     await this.data.load();
 
-    this.backend.updateData();
     await this.settingsService.load(this.data.storage);
 
     this.bookmarks.init(this.data.bookmarks_all);

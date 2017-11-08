@@ -27,6 +27,7 @@ import {app} from './app'
 import {settings} from './state'
 import {radio} from './radio'
 import {SearchService} from "../search/search.service";
+import {SearchBackend} from "../search/search.backend";
 
 export default
 {
@@ -39,7 +40,7 @@ export default
   },
   beforeCreate: function()
   {
-    this.service = new SearchService(app.backend, app.engines);
+    this.service = window.service = new SearchService(new SearchBackend(app.data), app.engines);
 
   },
   components: {Searchbar, Homepage, Settings, BookmarksToolbar},

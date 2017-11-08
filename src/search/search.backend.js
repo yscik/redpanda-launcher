@@ -1,6 +1,5 @@
 
 import {days} from "../helpers";
-
 import {Entry} from '../data/Entry';
 
 const weightSort = (a,b) => b.weight - a.weight;
@@ -16,36 +15,38 @@ export class SearchBackend
   {
     this.queries = {pending: 0, latest: null, lastFinished: null};
     this.data = browsingData;
-
   }
 
-  search(term, options)
+  async search(term, options)
   {
-    console.log('Search', term, options);
+    performance.mark('search-start-'+term);
     term = term.toLowerCase();
-    // this.queries.latest = {term, options};
-    //
-    // if(this.queries.pending >= QUERY_LIMIT)
-    // {
-    //   await (new Promise((resolve, reject) => this.queries.latest.run = resolve));
-    // }
-    // this.queries.pending++;
+    this.queries.latest = {term, options};
 
-    let history = SearchBackend.filter(term, this.history);
-    let tabs = SearchBackend.filter(term, this.data.tabs);
+    if(this.queries.pending >= QUERY_LIMIT)
+    {
+      await (new Promise((resolve, reject) => this.queries.latest.run = resolve));
+    }
+    this.queries.pending++;
 
-    let bookmarks = SearchBackend.filter(term, this.data.bookmarks);
+    let history = await this.searchHistory(term, this.history);
+    let tabs = this.filter(term, this.data.tabs);
 
-    // history = await history;
+    let bookmarks = this.filter(term, this.data.bookmarks);
 
-    // await this.continueOrSkipToLatest(term);
+    history = await history;
+
+    await this.continueOrSkipToLatest(term);
 
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
     let result = this.compileResults({history, tabs, bookmarks}, term);
-    // this.finish(term);
+    this.finish(term);
 
-    this.onresult({result, autocomplete, term});
+    this.onResult({result, autocomplete, term});
+    performance.mark('search-end-'+term);
+    performance.measure('search-'+term, 'search-start-'+term, 'search-end-'+term)
+    // return {result, autocomplete, term};
   }
 
   async continueOrSkipToLatest(term)
@@ -119,7 +120,7 @@ export class SearchBackend
     return hosts.find(h => h.domain.startsWith(term));
   }
 
-  static filter(term, collection)
+  filter(term, collection)
   {
     return (collection||[]).filter(s => (s.title && s.title.includes(term))
         || (s.origin &&

@@ -7,7 +7,6 @@ module.exports = {
   entry: {
     app: './src/main.js',
     'redpanda.background': './src/background.js',
-    'search.backend.worker': './src/search/search.backend.worker.js',
   },
   output: {
     path: path.resolve(__dirname, './dist'),
