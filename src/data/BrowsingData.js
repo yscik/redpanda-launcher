@@ -67,13 +67,14 @@ export class BrowsingData
   {
     const bookmarks = (await browser.bookmarks.search({}));
     this.bookmarks_all = bookmarks;
-    this.bookmarks = Entry.process(bookmarks.filter(b => b.type == 'bookmark' && !b.url.match(/%s|{searchTerms}/)), {props: {source: 'bookmark'}, setup: b => b.weight = age(b), reactive: true});
+    this.bookmarks = Entry.process(bookmarks.filter(isWebsite), {
+      props: {source: 'bookmark'},
+      setup: b => b.weight = Math.max(5, 30 - days.age(b.dateAdded)),
+      reactive: true
+    });
 
-    function age(b)
-    {
-      console.log(b.dateAdded, Math.max(5, 30 - days(Date.now() - b.dateAdded)));
-      return Math.max(5, 30 - days(Date.now() - b.dateAdded))
-    }
+    function isWebsite(bookmarkNode) { return bookmarkNode.type == 'bookmark' && !bookmarkNode.url.match(/%s|{searchTerms}/) }
+
   }
 
   async loadStorage()

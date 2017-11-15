@@ -3,7 +3,7 @@ import {days} from "../helpers";
 import {Entry} from '../data/Entry';
 
 const weightSort = (a,b) => b.weight - a.weight;
-const visitSort = (a,b) => b.visitCount - a.visitCount;
+const ageWeight = date => Math.max(0, 30 - days.age(date));
 
 export class SearchBackend
 {
@@ -48,6 +48,7 @@ export class SearchBackend
     if(this.query.pending) {
       return this.search(this.query.pending.term, this.query.pending.options);
     }
+
   }
 
   compileResults(data, term)
@@ -62,9 +63,13 @@ export class SearchBackend
   async searchHistory(term) {
 
     const startTime = new Date(Date.now() - days.ms(60));
-    let entries = await this.data.searchHistory({text: term, maxResults: 100, startTime});
+    let entries = await this.data.searchHistory({text: term, maxResults: 500, startTime});
 
-    entries = Entry.process(entries, {setup: e => {e.weight = e.visitCount}});
+    entries = Entry.process(entries, {setup: e => {
+      e.weight = Math.min(60, e.visitCount) + ageWeight(e.lastVisitTime);
+      e.age = days.age(e.lastVisitTime)
+    }});
+
     entries.sort(weightSort);
     entries.length = Math.min(entries.length, 15);
 
@@ -76,12 +81,16 @@ export class SearchBackend
   {
     let weight = Math.min(60, entry.weight);
     let urlIndex = entry.url.indexOf(term);
-    let title = entry.title.toLowerCase().indexOf(term);
+    let domainIndex = entry.domain.indexOf(term);
+    let titleIndex = entry.title.toLowerCase().indexOf(term);
 
-    if(urlIndex == 0 || title == 0) weight *= 5;
+    let index = Number.MAX_SAFE_INTEGER;
+    [urlIndex, domainIndex, titleIndex].forEach(i => { if(i != -1 && i < index) index = i });
 
-    if(entry.domain.startsWith(term) || entry.title.toLowerCase().startsWith(term)) return entry.weight = weight * 5;
-    else return entry.weight = weight;
+    if(index == 0) weight *= 5;
+    else weight += 30 - index;
+
+    return entry.weight = weight;
   }
 
   autocomplete(term, entries)
@@ -103,9 +112,9 @@ export class SearchBackend
 
   filter(term, collection)
   {
-    return (collection||[]).filter(s => (s.title && s.title.includes(term))
+    return (collection||[]).filter(s => (s.title && s.title.toLowerCase().includes(term))
         || (s.origin &&
-            s.origin.includes(term)))
+            s.origin.toLowerCase().includes(term)))
   }
 
 }

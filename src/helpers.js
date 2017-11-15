@@ -12,9 +12,14 @@ Array.prototype.set = function (newValue) {
   return this;
 };
 
-export const days = ms => ms / days.ratio;
+export const days = ms => Math.round(ms / days.ratio);
 days.ratio = 1000 * 60 * 60 * 24;
 days.ms = day => day * days.ratio;
+
+days.age = (date) =>
+{
+  return days(Date.now() - date);
+};
 
 function copyDeep(strict, target, source)
 {
