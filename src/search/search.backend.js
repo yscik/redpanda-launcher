@@ -53,11 +53,27 @@ export class SearchBackend
 
   compileResults(data, term)
   {
-    const result = data.history.concat(data.bookmarks, data.tabs);
+    let result = data.history.concat(data.bookmarks, data.tabs);
+    result = this.removeDuplicates(result);
     result.forEach(SearchBackend.weight.bind(this, term));
+
     result.sort(weightSort);
     result.length = Math.min(result.length, 15);
     return result;
+  }
+
+  removeDuplicates(data)
+  {
+    return data.filter(a => {
+      return !data.find(b => {
+
+        if (a != b && b.url == a.url) {
+          return (b.source == "tab" || !a.source)
+        }
+        else return false;
+      });
+
+    })
   }
 
   async searchHistory(term) {
