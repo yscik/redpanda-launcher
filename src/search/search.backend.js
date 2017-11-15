@@ -5,29 +5,28 @@ import {Entry} from '../data/Entry';
 const weightSort = (a,b) => b.weight - a.weight;
 const visitSort = (a,b) => b.visitCount - a.visitCount;
 
-const QUERY_LIMIT = 2;
-const ABORT_TRESHOLD = 3;
-
 export class SearchBackend
 {
 
   constructor(browsingData)
   {
-    this.queries = {pending: 0, latest: null, lastFinished: null};
+    this.query = {running: false, pending: null};
     this.data = browsingData;
   }
 
   async search(term, options)
   {
-    performance.mark('search-start-'+term);
     term = term.toLowerCase();
-    this.queries.latest = {term, options};
 
-    if(this.queries.pending >= QUERY_LIMIT)
-    {
-      await (new Promise((resolve, reject) => this.queries.latest.run = resolve));
+    if(this.query.running) {
+      this.query.pending = {term, options};
+      return;
     }
-    this.queries.pending++;
+
+    this.query.pending = null;
+    this.query.running = true;
+
+    performance.mark('search-start-'+term);
 
     let history = await this.searchHistory(term, this.history);
     let tabs = this.filter(term, this.data.tabs);
@@ -36,36 +35,19 @@ export class SearchBackend
 
     history = await history;
 
-    await this.continueOrSkipToLatest(term);
-
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
     let result = this.compileResults({history, tabs, bookmarks}, term);
-    this.finish(term);
 
     this.onResult({result, autocomplete, term});
+
     performance.mark('search-end-'+term);
-    performance.measure('search-'+term, 'search-start-'+term, 'search-end-'+term)
-    // return {result, autocomplete, term};
-  }
+    performance.measure('search-'+term, 'search-start-'+term, 'search-end-'+term);
 
-  async continueOrSkipToLatest(term)
-  {
-    if(term == this.queries.latest.term
-      || !this.queries.lastFinished
-      || (term.length - this.queries.lastFinished.length >= ABORT_TRESHOLD && this.queries.latest.term.startsWith(term)))
-        return true;
-    else {
-      this.finish();
-      await new Promise(function() {});
+    this.query.running = false;
+    if(this.query.pending) {
+      return this.search(this.query.pending.term, this.query.pending.options);
     }
-  }
-
-  finish(term)
-  {
-    this.queries.pending--;
-    if(term) this.queries.lastFinished = term;
-    this.queries.latest.run && this.queries.latest.run();
   }
 
   compileResults(data, term)
@@ -81,7 +63,6 @@ export class SearchBackend
 
     const startTime = new Date(Date.now() - days.ms(60));
     let entries = await this.data.searchHistory({text: term, maxResults: 100, startTime});
-    await this.continueOrSkipToLatest(term);
 
     entries = Entry.process(entries, {setup: e => {e.weight = e.visitCount}});
     entries.sort(weightSort);
