@@ -13,6 +13,7 @@ import './app/icon.vue'
 import './entry/favicon.vue'
 import './app/message.vue'
 import './entry/results.vue';
+import {settings} from "./app/state";
 
 import {app, loadApp} from "./app/app";
 
@@ -22,6 +23,7 @@ window.focus();
 
   await loadApp();
   window.app = app;
+  if(settings.focusHack && !document.hasFocus()) return focusHack();
 
   new Vue({
     el: '#app',
@@ -29,3 +31,10 @@ window.focus();
   });
 
 })();
+
+async function focusHack () {
+  const URL = location.href;
+  const tab = await browser.tabs.getCurrent();
+  browser.tabs.create({url: URL});
+  browser.tabs.remove(tab.id);
+};

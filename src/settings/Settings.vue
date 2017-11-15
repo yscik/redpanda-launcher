@@ -16,6 +16,10 @@
         label.control
           .control-input: input(type='checkbox' v-model="settings.sync")
           .control-label Sync settings between devices
+        label.control
+          .control-input: input(type='checkbox' v-model="settings.focusHack")
+          .control-label Focus hack
+
         HomePageSettings(:settings="settings.home")
       SearchEngineSettings.tab-content(:show='tab == "engines"' v-if="loadSearch", :editor="editor")
       <!--SearchTransformSettings.tab-content(v-show='tab == "advanced"' v-if="loadSearch", :settings="settings.search.transforms")-->

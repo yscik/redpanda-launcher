@@ -1,6 +1,7 @@
 export default function () {
   return {
     sync: false,
+    focusHack: true,
     engines: {
       defaultEngine: null,
       opensearch: {
