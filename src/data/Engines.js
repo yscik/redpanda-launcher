@@ -1,7 +1,7 @@
 import {Entry} from './Entry';
 import {Engine} from "./Engine";
 
-let BOOKMARK_FOLDER = 'Search Engines - Red Panda Launcher';
+const BOOKMARK_FOLDER = 'Search Engines - Red Panda Launcher';
 export class Engines {
 
   constructor() {
@@ -19,7 +19,7 @@ export class Engines {
     this.addSaved(data.bookmarks_all);
     this.addDefaults();
     this.addDiscovered(data.storage);
-    this.addBookmarked(data.bookmarks);
+    this.addBookmarked(data.bookmarks_all);
 
     this.updateDefault();
 
