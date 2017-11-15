@@ -11,7 +11,7 @@
         .tab(@click='tab = "general"', :class='{active: tab == "general"}') General
         .tab(@click='tab = "engines"', :class='{active: tab == "engines"}') Search engines
         .tab(@click='tab = "advanced"', :class='{active: tab == "advanced"}') Advanced
-    .settings-content(v-if="editor")
+    .settings-content(v-if="editor && open")
       .tab-content(v-show='tab == "general"')
         label.control
           .control-input: input(type='checkbox' v-model="settings.sync")
