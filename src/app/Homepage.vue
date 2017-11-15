@@ -3,7 +3,7 @@
   .group.home-session(v-if="settings.recent")
     h3
       icon(type='session')
-      span Recent tabs
+      span Recently closed tabs
     results.session-tabs(:entries='entries.session')
   .group.home-bookmarks(v-if='bookmarks')
     h3
