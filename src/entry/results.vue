@@ -5,12 +5,13 @@
     @click.prevent="open(entry, $event)",
     :class="{selected: index === selected}" tabindex="0")
       .icons
+        icon.source-icon(:type="entry.source")
         favicon(:site='entry')
       .text
         .title {{entry.title}}
         .url
-          icon.source-icon(:type="entry.source")
-          strong {{entry.weight}}
+          //strong {{entry.weight}}
+          //strong {{entry.age}} days ago
           |  {{entry.url}}
 
 
@@ -69,6 +70,8 @@
   max-height: 2rem
   overflow: hidden
 .source-icon
+  position: absolute
+  left: 0.5rem
   opacity: .6
   img
     /*width: 12px*/
