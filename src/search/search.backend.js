@@ -26,8 +26,6 @@ export class SearchBackend
     this.query.pending = null;
     this.query.running = true;
 
-    performance.mark('search-start-'+term);
-
     let history = await this.searchHistory(term, this.history);
     let tabs = this.filter(term, this.data.tabs);
 
@@ -40,9 +38,6 @@ export class SearchBackend
     let result = this.compileResults({history, tabs, bookmarks}, term);
 
     this.onResult({result, autocomplete, term});
-
-    performance.mark('search-end-'+term);
-    performance.measure('search-'+term, 'search-start-'+term, 'search-end-'+term);
 
     this.query.running = false;
     if(this.query.pending) {

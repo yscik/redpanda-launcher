@@ -15,7 +15,6 @@ function isUrl(term)
     const tldDot = hostname.lastIndexOf('.');
     if(tldDot < 0) return false;
     let tld = hostname.substr(tldDot+1);
-    console.log(tld);
     return tlds.includes(tld)
   }
   catch(err) {
