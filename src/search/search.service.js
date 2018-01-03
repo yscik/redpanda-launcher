@@ -36,7 +36,7 @@ export class SearchService
     this.state.selected = null;
     this.state.result = Object.freeze(result);
     this.state.home = false;
-    this.state.isUrl = (this.state.autocomplete || this.state.term && isUrl(this.state.term));
+    this.state.isUrl = (this.state.autocomplete || this.state.term && !this.state.searching && isUrl(this.state.term));
 
   }
 
