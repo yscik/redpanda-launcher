@@ -35,8 +35,10 @@ export class BrowsingData
 
   async loadSession()
   {
-    let tabs = await browser.sessions.getRecentlyClosed({maxResults: 15});
-    tabs = tabs.map(t => t.tab || t);
+    let tabs = await browser.sessions.getRecentlyClosed({maxResults: 25});
+    tabs = tabs
+        .map(t => t.tab || t)
+        .filter(tab => !tab.incognito);
     tabs.length = Math.min(tabs.length, 15);
     return this.session = Entry.process(tabs, {props: {source: 'session'}} );
 
