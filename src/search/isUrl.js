@@ -7,7 +7,9 @@ const tlds = tld_txt.split('\n').filter(t => t && tldInFile.test(t)).map(t => t.
 
 function isUrl(term)
 {
-  if(!term || term.includes(' ')) return false;
+  if(!term) return false;
+  term = term.trim();
+  if(term.includes(' ')) return false;
   if(protocol.test(term)) return true;
   try {
     const {hostname, port} = new URL('http://'+term);
