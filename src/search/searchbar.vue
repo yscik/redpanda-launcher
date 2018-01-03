@@ -1,5 +1,5 @@
 <template lang="pug">
-  .searchbar.input(:class="{focus: focused}")
+  .searchbar.input
     .prefix-icon(:class="{search: state.searching, link: state.isUrl}")
       favicon.search-engine(:site='state.engine' v-if="state.searching")
       icon.search-icon(type='engine')
@@ -32,8 +32,6 @@
       radio.$on('focus-search-input', () => this.$nextTick(this.focus))
     },
     mounted() {
-      this.$refs.input.$el.addEventListener('focus', () => this.focused = true);
-      this.$refs.input.$el.addEventListener('blur', () => this.focused = false);
       this.focus()
     },
     methods: {
@@ -63,7 +61,7 @@
   z-index: 0
   padding: .1em .5em
   margin: 0
-  &.focus
+  &:focus-within
     border-color: $Blue50
     box-shadow: 0 0 0 1px $Blue50
     .icon path
