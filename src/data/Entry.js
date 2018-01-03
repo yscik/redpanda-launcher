@@ -14,6 +14,7 @@ export class Entry
         entry.domain = urlo.hostname.replace(/^www\./, '');
         entry.origin = urlo.origin;
         entry.protocol = urlo.protocol;
+        entry.pathname = urlo.pathname;
 
         if(setup) setup(entry);
         if(constructor) entry = new constructor(entry);

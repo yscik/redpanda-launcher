@@ -14,7 +14,10 @@ export class FaviconLoader
 
   getUrl(site) {
     if (!site || !site.protocol || !site.protocol.startsWith('http')) return defaultIcon;
-    return site && (this.data.storage[site.origin] && this.data.storage[site.origin].favicon) || `${site.origin}/favicon.ico`;
+
+    const siteInfo = this.data.storage[site.origin];
+
+    return siteInfo && (siteInfo[site.pathname] || siteInfo.favicon) || `${site.origin}/favicon.ico`;
   }
 
   getFromCache(site)
