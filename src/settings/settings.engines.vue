@@ -37,7 +37,7 @@
     .group(v-for="(group, type) in engines" v-show="group.length")
       h3.group-label {{label[type]}}
 
-      .search-engine.row(v-for="engine in group", :key="engine.url", :class="{active: engine.config.active, pending: engine.config.pending}")
+      .search-engine.row(v-for="(engine, index) in group", :key="index", :class="{active: engine.config.active, pending: engine.config.pending}")
         .icons
           favicon(:site='engine')
         .text.ellipsis
