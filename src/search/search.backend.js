@@ -74,15 +74,19 @@ export class SearchBackend
   async searchHistory(term) {
 
     const startTime = new Date(Date.now() - days.ms(60));
+
+
     let entries = await this.data.searchHistory({text: term, maxResults: 500, startTime});
 
-    entries = Entry.process(entries, {setup: e => {
+    entries.forEach(e => {
       e.weight = Math.min(60, e.visitCount) + ageWeight(e.lastVisitTime);
       e.age = days.age(e.lastVisitTime)
-    }});
+    });
 
     entries.sort(weightSort);
+
     entries.length = Math.min(entries.length, 15);
+    entries = Entry.process(entries);
 
     return entries;
 
