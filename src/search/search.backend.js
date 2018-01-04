@@ -10,7 +10,7 @@ export class SearchBackend
 
   constructor(browsingData)
   {
-    this.query = {running: false, pending: null};
+    this.query = {running: false, pending: null, last: {}};
     this.data = browsingData;
   }
 
@@ -33,6 +33,7 @@ export class SearchBackend
 
     history = await history;
 
+
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
     let result = this.compileResults({history, tabs, bookmarks}, term);
@@ -44,6 +45,7 @@ export class SearchBackend
       return this.search(this.query.pending.term, this.query.pending.options);
     }
 
+    this.query.last.term = term;
   }
 
   compileResults(data, term)
@@ -73,8 +75,13 @@ export class SearchBackend
 
   async searchHistory(term) {
 
-    const startTime = new Date(Date.now() - days.ms(60));
+    if(this.query.last.term && term.startsWith(this.query.last.term) && !this.query.last.history)
+    {
+      console.log(this.query.last);
+      return [];
+    }
 
+    const startTime = new Date(Date.now() - days.ms(60));
 
     let entries = await this.data.searchHistory({text: term, maxResults: 500, startTime});
 
@@ -87,6 +94,8 @@ export class SearchBackend
 
     entries.length = Math.min(entries.length, 15);
     entries = Entry.process(entries);
+
+    this.query.last.history = !!entries.length;
 
     return entries;
 
