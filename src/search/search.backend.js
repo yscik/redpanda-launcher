@@ -5,7 +5,7 @@ import {Entry} from '../data/Entry';
 const weightSort = (a,b) => b.weight - a.weight;
 const ageWeight = date => Math.max(0, 30 - days.age(date));
 
-const HistorySearchLimit = 1000;
+const HistorySearchLimit = [50,50,50,500];
 
 export class SearchBackend
 {
@@ -75,11 +75,14 @@ export class SearchBackend
     })
   }
 
-  async searchHistory(term) {
+  async searchHistory(term)
+  {
+
+    const limit = HistorySearchLimit[Math.min(term.length, HistorySearchLimit.length)-1];
 
     const finalizeResult = (entries) =>
     {
-      this.query.last.history = entries.length < HistorySearchLimit ? entries : null;
+      this.query.last.history = entries.length < limit ? entries : null;
       return Entry.process(entries.slice(0, 15));
     };
 
@@ -98,7 +101,7 @@ export class SearchBackend
 
     const startTime = new Date(Date.now() - days.ms(60));
 
-    let entries = await this.data.searchHistory({text: term, maxResults: HistorySearchLimit, startTime});
+    let entries = await this.data.searchHistory({text: term, maxResults: limit, startTime});
 
     entries.forEach(e => {
       e.weight = Math.min(60, e.visitCount) + ageWeight(e.lastVisitTime);
