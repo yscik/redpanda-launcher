@@ -1,3 +1,6 @@
+import placeholderList from '../data/placeholder-eastereggs.txt'
+const placeholders = placeholderList.split('\n');
+
 export class SearchState
 {
   constructor(service)
@@ -16,7 +19,9 @@ export class SearchState
     // prevent Vue observation
     Object.defineProperty(this, 'service', {
       value: service
-    })
+    });
+
+    this.placeholder = placeholders[Math.round(Math.random()*100)] || ''
 
   };
 
@@ -31,7 +36,7 @@ export class SearchState
     this.term = entry.url;
   }
   get label() {
-    return this.searching ? this.engine.desc || this.engine.title : 'Search your feelings'
+    return this.searching ? this.engine.desc || this.engine.title : this.placeholder
   }
 
 }
