@@ -5,6 +5,8 @@ import {Entry} from '../data/Entry';
 const weightSort = (a,b) => b.weight - a.weight;
 const ageWeight = date => Math.max(0, 30 - days.age(date));
 
+const HistorySearchLimit = 1000;
+
 export class SearchBackend
 {
 
@@ -33,7 +35,6 @@ export class SearchBackend
 
     history = await history;
 
-
     let autocomplete = options.autocomplete ? this.autocomplete(term, history) : null;
 
     let result = this.compileResults({history, tabs, bookmarks}, term);
@@ -52,6 +53,7 @@ export class SearchBackend
   {
     let result = data.history.concat(data.bookmarks, data.tabs);
     result = this.removeDuplicates(result);
+
     result.forEach(SearchBackend.weight.bind(this, term));
 
     result.sort(weightSort);
@@ -75,15 +77,28 @@ export class SearchBackend
 
   async searchHistory(term) {
 
-    if(this.query.last.term && term.startsWith(this.query.last.term) && !this.query.last.history)
+    const finalizeResult = (entries) =>
     {
-      console.log(this.query.last);
-      return [];
+      this.query.last.history = entries.length < HistorySearchLimit ? entries : null;
+      return Entry.process(entries.slice(0, 15));
+    };
+
+    if(this.query.last.history && this.query.last.term && term.startsWith(this.query.last.term) && this.query.last.history)
+    {
+      if(!this.query.last.history.length)
+      {
+        return [];
+      }
+      else
+      {
+        const entries = this.filter(term, this.query.last.history);
+        return finalizeResult(entries);
+      }
     }
 
     const startTime = new Date(Date.now() - days.ms(60));
 
-    let entries = await this.data.searchHistory({text: term, maxResults: 500, startTime});
+    let entries = await this.data.searchHistory({text: term, maxResults: HistorySearchLimit, startTime});
 
     entries.forEach(e => {
       e.weight = Math.min(60, e.visitCount) + ageWeight(e.lastVisitTime);
@@ -92,12 +107,7 @@ export class SearchBackend
 
     entries.sort(weightSort);
 
-    entries.length = Math.min(entries.length, 15);
-    entries = Entry.process(entries);
-
-    this.query.last.history = !!entries.length;
-
-    return entries;
+    return finalizeResult(entries);
 
   }
 
@@ -136,9 +146,16 @@ export class SearchBackend
 
   filter(term, collection)
   {
-    return (collection||[]).filter(s => (s.title && s.title.toLowerCase().includes(term))
-        || (s.origin &&
-            s.origin.toLowerCase().includes(term)))
+    const terms = term.split(' ');
+
+    return (collection||[]).filter(s => containsTerms(s.title) || containsTerms(s.url));
+
+    function containsTerms(value)
+    {
+      if(!value) return false;
+      value = value.toLowerCase();
+      return terms.every(term => value.includes(term))
+    }
   }
 
 }
