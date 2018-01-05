@@ -1,9 +1,9 @@
-import tld_txt from 'raw-loader!../data/tlds-alpha-by-domain.txt'
+import tld_txt from '../data/tlds-alpha-by-domain.txt'
 
 const tldInFile = /^[a-zA-Z]/;
+const tlds = tld_txt.split('\n').filter(t => t && tldInFile.test(t)).map(t => t.toLowerCase());
 
 const protocol = /^(about:|.*:\/\/)/;
-const tlds = tld_txt.split('\n').filter(t => t && tldInFile.test(t)).map(t => t.toLowerCase());
 
 function isUrl(term)
 {

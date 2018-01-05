@@ -50,7 +50,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(svg)$/,
+        test: /\.(svg|txt)$/,
         loader: 'raw-loader'
       }
     ]
