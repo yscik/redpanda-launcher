@@ -10,7 +10,7 @@
       .text
         .title {{entry.title}}
         .url
-          //strong {{entry.weight}}
+          strong {{entry.weight}}
           //strong {{entry.age}} days ago
           |  {{entry.url}}
 

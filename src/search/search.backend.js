@@ -104,7 +104,7 @@ export class SearchBackend
     let entries = await this.data.searchHistory({text: term, maxResults: limit, startTime});
 
     entries.forEach(e => {
-      e.weight = Math.min(60, e.visitCount) + ageWeight(e.lastVisitTime);
+      e.weight = Math.min(60, e.visitCount) + ageWeight(e.lastVisitTime) * 0.3;
       e.age = days.age(e.lastVisitTime)
     });
 
