@@ -51,7 +51,7 @@ export class SearchBackend
     let result = data.history.concat(data.bookmarks, data.tabs);
     result = this.removeDuplicates(result);
 
-    result.forEach(SearchBackend.weight.bind(this, term));
+    // result.forEach(entry => this.adjustWeightForTermPosition(entry, term));
 
     result.sort(weightSort);
     result.length = Math.min(result.length, 15);
