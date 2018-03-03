@@ -43,3 +43,5 @@ export const strictDeepCopy = copyDeep.bind(null, true);
 export const deepCopy = copyDeep.bind(null, false);
 
 export const clone = v => JSON.parse(JSON.stringify(v));
+
+export const weightSort = (a,b) => b.weight - a.weight;
