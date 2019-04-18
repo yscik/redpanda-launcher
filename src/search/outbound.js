@@ -7,7 +7,8 @@ export class Outbound {
     switch(entry.type)
     {
       case 'tab':
-        browser.tabs.update(entry.id, {active: true});
+        browser.windows.update(entry.windowId, {active: true});
+        browser.tabs.update(entry.id, {focused: true});
         break;
       default:
         ($event && $event.ctrlKey ? browser.tabs.create : browser.tabs.update)({url: entry.url})
