@@ -4,7 +4,7 @@
       favicon.search-engine(:site='state.engine' v-if="state.searching")
       icon.search-icon(type='engine')
       icon.link-icon(type='link')
-    input-complete.search-input(type="text", :value="state.term", @input="state.setTerm($event)",
+    input-complete.search-input(type="text", :value="state.term", @input="search($event)",
       :complete-to='state.autocomplete && state.autocomplete.domain' ref="input" tabindex="0",
       :placeholder='state.label')
     .tab-info(v-if="state.engine && !state.searching")
@@ -35,6 +35,13 @@
       this.focus()
     },
     methods: {
+      search(term) {
+        this.cb && cancelIdleCallback(this.cb);
+        this.cb = requestIdleCallback(() => {
+          this.state.setTerm(term);
+        })
+
+      },
       focus()
       {
         this.$refs.input.$el.focus()

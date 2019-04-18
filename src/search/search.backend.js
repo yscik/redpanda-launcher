@@ -1,7 +1,7 @@
 
 import {SearchHistory} from "./search.history.js";
 import {filter} from "./filter.js";
-import {weightSort} from "../helpers.js";
+import {idle, weightSort} from "../helpers.js";
 
 export class SearchBackend
 {
@@ -25,7 +25,8 @@ export class SearchBackend
     this.query.pending = null;
     this.query.running = true;
 
-    let history = await this.history.search(term);
+    await idle();
+    let history = this.history.search(term);
     let tabs = filter(term, this.data.tabs);
 
     let bookmarks = filter(term, this.data.bookmarks);

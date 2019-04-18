@@ -39,7 +39,7 @@ export class SearchHistory
 
   setSearchLimit(term)
   {
-    this.searchLimit = HistorySearchLimit[Math.min(term.length, HistorySearchLimit.length) - 1];
+    this.searchLimit = 50 // HistorySearchLimit[Math.min(term.length, HistorySearchLimit.length) - 1];
   }
 
   async runSearch(term)
