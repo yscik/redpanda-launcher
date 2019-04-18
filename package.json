@@ -8,7 +8,7 @@
     "dev": "npx webpack -w",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules; cd dist; web-ext build",
     "version": "node ./copy-version.js && git add manifest.json",
-    "sign": "cd dist; web-ext sign"
+    "sign": "source .env; cd dist; web-ext sign --api-key=$WEB_EXT_API_KEY --api-secret=$WEB_EXT_API_SECRET"
   },
   "dependencies": {
     "vue": "^2.4.4"
