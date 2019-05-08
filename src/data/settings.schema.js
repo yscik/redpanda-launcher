@@ -2,6 +2,7 @@ export default function () {
   return {
     sync: false,
     focusHack: true,
+    nightmode: false,
     engines: {
       defaultEngine: null,
       opensearch: {

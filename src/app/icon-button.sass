@@ -1,0 +1,25 @@
+.icon-button
+  height: 3rem
+  width: 3rem
+  display: flex
+  align-items: center
+  justify-content: center
+  z-index: 3
+  padding: .4rem
+  border-radius: 3px
+  line-height: 0
+  .icon
+    margin: 0
+  svg
+    width: 1.5rem
+    height: 1.5rem
+    transition: transform .3s
+    path
+      fill: var(--Grey90)
+    border-radius: 3px
+  &:hover
+    svg
+      path
+        fill: var(--Blue50)
+    cursor: pointer
+    background: var(--Grey10)

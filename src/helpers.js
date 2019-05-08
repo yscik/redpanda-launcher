@@ -52,3 +52,13 @@ export async function idle() {
   })
 
 }
+
+export function isNight() {
+  const hour = new Date().getHours()
+  return hour < 8 || hour > 20;
+}
+
+export function setNightmode(active) {
+  document.body.classList.toggle("nightmode", !!active)
+  document.body.classList.toggle("daymode", !active)
+}

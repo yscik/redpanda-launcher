@@ -16,8 +16,10 @@ import './entry/results.vue';
 import {settings} from "./app/state";
 
 import {app, loadApp} from "./app/app";
+import {isNight, setNightmode} from "./helpers.js";
 
 window.focus();
+setNightmode(isNight())
 
 (async () => {
 

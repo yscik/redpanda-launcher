@@ -3,39 +3,17 @@
   top: 50%
   margin-top: -1.5rem
   right: 1rem + $settings-width
-  height: 3rem
-  width: 3rem
-  display: flex
-  align-items: center
-  justify-content: center
-  z-index: 3
-  padding: .4rem
-  //background: #fff
-  border-radius: 3px
-  line-height: 0
-  .i
-    width: 1.5rem
-    height: 1.5rem
-    transition: transform .3s
-    path
-      fill: $Grey90
-    border-radius: 3px
-  &:hover
-    .i
-      path
-        fill: $Blue50
-    cursor: pointer
-    background: $Grey10
+
   .settings.open &
-    right: 1rem - $settings-margin
-    .i
+    right: 1rem -  $settings-margin
+    svg
       transform: rotate(240deg)
         
   &.dirty
-    .i
+    svg
       animation: .5s .5s infinite linear forwards roll
   &.undid
-    .i
+    svg
       animation: .5s 1 linear reverse forwards roll
 
 @keyframes roll

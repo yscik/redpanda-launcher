@@ -16,6 +16,7 @@
       .results: .content
         results.result(v-if="!state.home", :entries='state.result', :selected='state.index')
         Homepage(v-if='state.home')
+    Nightmode
 </template>
 <script>
 
@@ -23,6 +24,7 @@ import Searchbar from '../search/searchbar.vue';
 import Homepage from './Homepage.vue';
 import Settings from '../settings/Settings.vue'
 import BookmarksToolbar from '../bookmarks-toolbar/BookmarksToolbar.vue';
+import Nightmode from './Nightmode.vue';
 import {app} from './app'
 import {settings} from './state'
 import {radio} from './radio'
@@ -42,8 +44,9 @@ export default
   {
     this.service = window.service = new SearchService(new SearchBackend(app.data), app.engines);
 
+
   },
-  components: {Searchbar, Homepage, Settings, BookmarksToolbar},
+  components: {Searchbar, Homepage, Settings, BookmarksToolbar, Nightmode},
   methods: {
     rootClick() {
       radio.$emit('click');
