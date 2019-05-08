@@ -36,11 +36,7 @@
     },
     methods: {
       search(term) {
-        this.cb && cancelIdleCallback(this.cb);
-        this.cb = requestIdleCallback(() => {
-          this.state.setTerm(term);
-        })
-
+        this.state.setTerm(term);
       },
       focus()
       {
