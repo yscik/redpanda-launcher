@@ -76,12 +76,16 @@
     computed: {
       engines()
       {
-        return this.editor.engines.reduce((m,e) => {
+        const engines = this.editor.engines.reduce((m,e) => {
               (e.title.includes(this.engine_filter) || e.url.includes(this.engine_filter)) &&
               m[e.config.pending ? 'pending' : e.type||'opensearch'].push(e);
               return m;
             },
             {pending: [], opensearch: [], bookmark: [], builtin: []})
+
+        engines.pending.length = 20;
+
+        return engines;
       }
     },
     watch: {
