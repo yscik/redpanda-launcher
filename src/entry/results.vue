@@ -30,7 +30,7 @@
 
 </script>
 <style lang="sass">
-@import "../app/colors"
+@import "../app/vars"
 
 .entry
   padding: .4em 0
@@ -44,20 +44,20 @@
   &:focus
     outline: none
   &:hover
-    color: $Blue60
+    color: var(--Blue60)
     .url
-      color: $Blue40
+      color: var(--Blue40)
   &:active
-    color: $Blue70
+    color: var(--Blue70)
     .url
-      color: $Blue50
+      color: var(--Blue50)
   &.selected, &.selected:active, &:focus
-    background-color: $Blue40
-    color: $darktext
+    background-color: var(--Blue40)
+    color: var(--darktext)
     .url
-      color: $darktext2
+      color: var(--darktext2)
   &:focus
-    background-color: $Blue50
+    background-color: var(--Blue50)
 .text
   flex: 1
   /*display: flex*/
@@ -65,7 +65,7 @@
 .title
   font-weight: bold
 .url
-  color: $Grey50
+  color: var(--Grey50)
   font-size: .9em
   max-height: 2rem
   overflow: hidden

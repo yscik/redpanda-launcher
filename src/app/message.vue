@@ -64,7 +64,7 @@ export default Vue.component('message',
 </script>
 
 <style lang="sass">
-@import "./colors"
+@import "vars"
 .message
   position: fixed
   right: 2rem
@@ -72,8 +72,8 @@ export default Vue.component('message',
   width: 30rem
   min-height: 3rem
   padding: .5rem
-  background: $Grey20
-  color: $text
+  background: var(--Grey20)
+  color: var(--text)
   border-radius: 2px
   display: flex
   align-items: center
@@ -87,7 +87,7 @@ export default Vue.component('message',
       margin-left: .3em
   transition: bottom .5s
   .icon path
-    fill: $Blue50
+    fill: var(--Blue50)
   &.fresh
     animation: .5s flash-message
   &:not(.active)

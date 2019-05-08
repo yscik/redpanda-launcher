@@ -25,7 +25,7 @@ export default Vue.component("icon", {
 
 </script>
 <style lang="sass">
-@import "colors"
+@import "vars"
 
 .icon
   display: inline-block
@@ -35,15 +35,16 @@ export default Vue.component("icon", {
   vertical-align: middle
   svg
     transform: translateZ(0)
+    fill: var(--Grey60)
 
   &.action, .action &
     cursor: pointer
   &.action:hover, .action:hover &
     svg *
-      fill: $Blue50
+      fill: var(--Blue50)
   &.action:active, .action:active &,
   &.action:focus, .action:focus &
     svg *
-      fill: $Blue60
+      fill: var(--Blue60)
 
 </style>

@@ -99,7 +99,7 @@
   }
 </script>
 <style lang="sass">
-@import ../app/colors
+@import "../app/vars"
 
 .settings-content
   .search-engines-tab
@@ -108,10 +108,10 @@
     flex-direction: column
     min-height: 0
     .search-engines-list
-      border-top: 1px solid $border
+      border-top: 1px solid var(--border)
       margin: 0 -2rem
       padding: .5rem 1.5rem
-      background: #fff
+      background: var(--white)
       flex: 1
       overflow-y: auto
       .search-engine
@@ -134,11 +134,11 @@
           width: 12px
           height: 12px
         path
-          fill: $Grey50
+          fill: var(--Grey50)
       &:hover
-        background: $Grey10
+        background: var(--Grey10)
         path
-          fill: $Blue50
+          fill: var(--Blue50)
 
     .action.remove + .spacing
       display: none
@@ -161,8 +161,8 @@
     .search-engine
       border: none
       &:hover
-        background-color: $Blue40
-        color: #fff
+        background-color: var(--Blue40)
+        color: var(--white)
     .select-dropdown
       position: absolute
       left: .1rem
@@ -173,8 +173,6 @@
     margin-right: 3.5rem
   .engine-filter
     width: 60%
-
-  .group-label
 
 
 </style>

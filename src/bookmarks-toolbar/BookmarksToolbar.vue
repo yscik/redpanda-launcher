@@ -27,7 +27,7 @@
 </script>
 
 <style lang="sass">
-@import "../app/colors"
+@import "../app/vars"
 .bookmarks-toolbar
   padding: .3em .5rem
   background: $ChromeLight
@@ -51,7 +51,7 @@
       margin-left: 6px
       font-weight: normal
     &:hover
-      background: $Grey30
+      background: var(--Grey30)
   &.icons
     > .bookmark:not(.folder)
       position: relative
@@ -60,8 +60,8 @@
         left: 0
         top: 1.8rem
         padding: .3em
-        background: $Grey80
-        color: #fff
+        background: var(--Grey80)
+        color: var(--white)
         display: none
         border-radius: 2px
         font-weight: normal

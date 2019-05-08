@@ -30,16 +30,15 @@ export default {
 
 </script>
 <style lang="sass" scoped>
-@import "../app/colors"
+@import "../app/vars"
 .transforms
   position: relative
   .box
     /*border: none*/
-    background: $Grey10
+    background: var(--Grey10)
     height: auto
     min-height: 5rem
     max-height: 15rem
-  .add-transform
 
   .headers
     padding: 0 .5rem

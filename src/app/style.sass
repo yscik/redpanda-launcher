@@ -1,4 +1,5 @@
 
+@import vars
 @import colors
 
 [v-cloak]
@@ -12,27 +13,27 @@
   height: 16px
 a
   text-decoration: none
-  color: $text
+  color: var(--text)
 
 
 .input
   font-size: 1rem
   margin: 0
   padding: 6px 10px
-  background: #fff padding-box
+  background: var(--white) padding-box
   border: 1px solid currentcolor
   border-radius: 3px
   border-color: hsla(210,54%,20%,.15) hsla(210,54%,20%,.17) hsla(210,54%,20%,.2)
   &:focus
-    border-color: $Blue50
+    border-color: var(--Blue50)
 
 input[type=text]
   color: inherit
   unicode-bidi: plaintext
 
 .key
-  color: $Blue60
-  border: 1px solid $Blue60
+  color: var(--Blue60)
+  border: 1px solid var(--Blue60)
   font-weight: 600
   border-radius: 2px
   padding: 3px 5px
@@ -40,15 +41,15 @@ input[type=text]
 h1
   font-weight: normal
   font-size: 24px
-  color: $text2
+  color: var(--text2)
 
 h2
-  color: $Grey60
+  color: var(--Grey60)
 h3
   font-weight: normal
   font-size: 12px
-  color: $text2
-  border-bottom: 1px solid $border
+  color: var(--text2)
+  border-bottom: 1px solid var(--border)
   text-transform: uppercase
 
 .row
@@ -68,16 +69,17 @@ h3
   display: inline-block
   padding: .3em .5em
   border-radius: 2px
-  background: $Blue60
-  color: $Grey10
+  background: var(--Blue60)
+  color: var(--Grey10)
   font-weight: 600
   text-transform: uppercase
   cursor: pointer
   &:hover
-    background: $Blue70
+    background: var(--Blue70)
   &:focus, &:active
-    background: $Blue80
+    background: var(--Blue80)
   .icon
     margin: 0
     path
-      fill: $Grey10
+      fill: var(--Grey10)
+      

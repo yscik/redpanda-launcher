@@ -83,7 +83,7 @@ export default {
 
 </script>
 <style lang="sass">
-@import "../app/colors"
+@import "../app/vars"
 @import "../app/form"
 @import "./settings.layout"
 @import "./settings.toggle"
@@ -106,16 +106,16 @@ export default {
     text-transform: uppercase
     text-align: center
     &:hover
-      color: $Blue40
+      color: var(--Blue40)
     &.active
-      color: $Blue60
-      border-bottom-color: $Blue40
+      color: var(--Blue60)
+      border-bottom-color: var(--Blue40)
 .settings-content
   overflow: auto
   display: flex
   flex-direction: column
   .box
-    border: 1px solid $Grey40
+    border: 1px solid var(--Grey40)
     height: 25rem
     overflow-y: auto
     padding: .3rem
@@ -126,7 +126,7 @@ export default {
     transition: max-height .5s, padding .5s
     overflow-y: hidden
     & + .row
-      border-top: 1px solid $border
+      border-top: 1px solid var(--border)
 
   .group-label
     padding: .4rem
@@ -142,5 +142,5 @@ export default {
     text-transform: uppercase
     font-size: .8rem
     font-weight: 600
-    color: $text2
+    color: var(--text2)
 </style>

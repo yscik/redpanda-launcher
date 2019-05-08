@@ -1,4 +1,4 @@
-@import colors
+@import vars
 
 *
   box-sizing: border-box
@@ -7,8 +7,8 @@ html
   font: message-box
 
 body
-  background: #fff
-  color: $text
+  background: #777
+  color: var(--text)
   margin: 0
   padding: 0
 
@@ -34,23 +34,23 @@ body
   flex-direction: column
 .main
   .head
-    background: $Grey10
+    background: var(--Grey10)
     //background: linear-gradient(5deg, rgb(241, 184, 103) 0%, rgb(241, 142, 70) 100%)
     //border-bottom: 1px solid #d2a248
-    border-bottom: 1px solid $border
+    border-bottom: 1px solid var(--border)
     .content
       display: flex
       align-items: center
       height: $head-height
     margin-bottom: 0.5rem
-    box-shadow: inset 0 4px 20px -10px rgba(#000, .1)
+    box-shadow: inset 0 4px 20px -10px rgba(var(--black), .1)
 
   .results
     flex: 1
     overflow-y: auto
   .suggestions
     height: 1rem
-    background: #fff
+    background: var(--white)
     overflow-y: hidden
 
 .content

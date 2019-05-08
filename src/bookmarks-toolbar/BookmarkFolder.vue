@@ -35,19 +35,19 @@
 </script>
 
 <style lang="sass" scoped>
-@import "../app/colors"
+@import "../app/vars"
 .folder
   position: relative
 
   &:hover
-    /*background: #fff*/
+    /*background: var(--white)*/
     /*outline: 1px solid #ccc*/
     cursor: pointer
   &.open
     > .title
-      color: $Blue60
+      color: var(--Blue60)
     > .icon
-      fill: $Blue60
+      fill: var(--Blue60)
   .children:empty
     display: none
   .children
@@ -58,8 +58,8 @@
     top: 1.8rem
     /*padding: .5rem*/
     width: 30rem
-    background: #fff
-    box-shadow: 1px 1px 6px -2px rgba(#000, .3)
+    background: var(--white)
+    box-shadow: 1px 1px 6px -2px rgba(var(--black), .3)
     border: 1px solid #ccc
     z-index: 5
     white-space: normal
@@ -67,13 +67,13 @@
       display: flex
       padding: .2em .3em
       &:hover
-        background: $Blue40
-        color: #fff
+        background: var(--Blue40)
+        color: var(--white)
       @for $i from 2 through 5
         &.level-#{$i}
           padding-left: ($i - 1) * 1.5rem
       &.folder
-        border-top: 1px solid $border
+        border-top: 1px solid var(--border)
         .title
           font-weight: bold
 
